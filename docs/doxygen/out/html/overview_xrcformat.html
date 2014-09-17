@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 3.0.0</span>
+   <span id="projectnumber">Version: 3.0.1</span>
   </td>
  </tr>
  </tbody>
@@ -1472,6 +1472,8 @@ wxTextCtrl</h3>
 <td>value </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Initial value of the control (default: empty). </td></tr>
 <tr>
 <td>maxlength </td><td>integer </td><td>Maximum length of the text which can be entered by user (default: unlimited). </td></tr>
+<tr>
+<td>hint </td><td><a class="el" href="overview_xrcformat.html#overview_xrcformat_type_text">Text</a> </td><td>Hint shown in empty control (new since wxWidgets 3.0.1). </td></tr>
 </table>
 <h3><a class="anchor" id="xrc_wxtimepickerctrl"></a>
 wxTimePickerCtrl</h3>
@@ -1534,7 +1536,7 @@ wxToolBar</h3>
 <p>Children that are not <code>tool</code>, <code>space</code> or <code>separator</code> must be instances of classes derived from <a class="el" href="classwx_control.html" title="This is the base class for a control or &quot;widget&quot;.">wxControl</a> and are added to the toolbar using <a class="el" href="classwx_tool_bar.html#aec263a8e47372eb78e91b8db8797731d" title="Adds any control to the toolbar, typically e.g. a wxComboBox.">wxToolBar::AddControl()</a>.</p>
 <p>Example: </p>
 <div class="fragment"><div class="line">&lt;<span class="keywordtype">object</span> <span class="keyword">class</span>=<span class="stringliteral">&quot;wxToolBar&quot;</span>&gt;</div>
-<div class="line">    &lt;style&gt;<a class="code" href="interface_2wx_2toolbar_8h.html#a84627a72058502328269676b81780f89a7360f1b3df900eb618090c012d1caaea" title="&quot;flat&quot; buttons (Win32/GTK only)">wxTB_FLAT</a>|<a class="code" href="interface_2wx_2toolbar_8h.html#a84627a72058502328269676b81780f89aedd850b575f017547a4d9396b51dd940" title="don&#39;t show the divider between toolbar and the window (Win32 only)">wxTB_NODIVIDER</a>&lt;/style&gt;</div>
+<div class="line">    &lt;style&gt;<a class="code" href="interface_2wx_2toolbar_8h.html#ae8a3b6a5d0d3244ed73924ab2421a0d0a7360f1b3df900eb618090c012d1caaea" title="&quot;flat&quot; buttons (Win32/GTK only)">wxTB_FLAT</a>|<a class="code" href="interface_2wx_2toolbar_8h.html#ae8a3b6a5d0d3244ed73924ab2421a0d0aedd850b575f017547a4d9396b51dd940" title="don&#39;t show the divider between toolbar and the window (Win32 only)">wxTB_NODIVIDER</a>&lt;/style&gt;</div>
 <div class="line">    &lt;<span class="keywordtype">object</span> <span class="keyword">class</span>=<span class="stringliteral">&quot;tool&quot;</span> name=<span class="stringliteral">&quot;foo&quot;</span>&gt;</div>
 <div class="line">        &lt;bitmap&gt;foo.png&lt;/bitmap&gt;</div>
 <div class="line">        &lt;label&gt;Foo&lt;/label&gt;</div>
@@ -1994,7 +1996,7 @@ Versions Before 2.3.0.1</h2>
 
 <address class="footer">
 	<small>
-		Generated on Sat Dec 28 2013 01:31:09 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Tue Sep 9 2014 15:03:15 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

@@ -1,4 +1,4 @@
-'''
+"""
 This test gives an example of how some computation results from an
 auxiliary thread could be 'published' via pubsub in a thread-safe
 manner, in a 'gui'-like application, ie an application where the
@@ -20,7 +20,7 @@ May 2009
 :copyright: Copyright 2008-2009 by Oliver Schoenborn, all rights reserved.
 :license: BSD, see LICENSE.txt for details.
 
-'''
+"""
 
 
 __author__="schoenb"
@@ -38,10 +38,10 @@ resultStep = 1000000 # how many counts for thread "result" to be available
 
 
 def threadObserver(transfers, threadObj, count):
-    '''Listener that listens for data from testTopic. This function 
+    """Listener that listens for data from testTopic. This function
     doesn't know where the data comes from (or in what thread it was
     generated... but threadObj is the thread in which this
-    threadObserver is called and should indicate Main thread).'''
+    threadObserver is called and should indicate Main thread)."""
 
     print_(transfers, threadObj, count / resultStep)
 
@@ -49,20 +49,20 @@ pub.subscribe(threadObserver, 'testTopic')
 
 
 def onIdle():
-    '''This should be registered with 'gui' to be called when gui is idle
+    """This should be registered with 'gui' to be called when gui is idle
     so we get a chance to transfer data from aux thread without blocking
     the gui. Ie this function must spend as little time as possible so
-    'gui' remains reponsive.'''
+    'gui' remains reponsive."""
     thread.transferData()
 
 
 class ParaFunction(threading.Thread):
-    '''
+    """
     Represent a function running in a parallel thread. The thread
     just increments a counter and puts the counter value on a synchronized
     queue every resultStep counts. The content of the queue can be published by
     calling transferData().
-    '''
+    """
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -85,10 +85,10 @@ class ParaFunction(threading.Thread):
         self.running = False
 
     def transferData(self):
-        '''Send data from aux thread to main thread. The data was put in
+        """Send data from aux thread to main thread. The data was put in
         self.queue by the aux thread, and this queue is a Queue.Queue which
         is a synchronized queue for inter-thread communication. 
-        Note: This method must be called from main thread.'''
+        Note: This method must be called from main thread."""
         self.transfer += 1
         while not self.queue.empty():
             pub.sendMessage('testTopic',

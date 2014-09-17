@@ -1,9 +1,9 @@
-'''
+"""
 
 :copyright: Copyright since 2006 by Oliver Schoenborn, all rights reserved.
 :license: BSD, see LICENSE.txt for details.
 
-'''
+"""
 
 import console_listeners
 import console_senders as senders

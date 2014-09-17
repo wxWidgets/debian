@@ -13,7 +13,7 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 23 Dec 2005
-# Latest Revision: 17 Feb 2013, 21.00 GMT
+# Latest Revision: 09 Jan 2014, 23.00 GMT
 #
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
 # Write To Me At:
@@ -4971,6 +4971,7 @@ class AuiManager(wx.EvtHandler):
                     notebook = self._notebooks[p.notebook_id]
                     id = notebook.GetPageIndex(p.window)
                     notebook.RemovePage(id)
+                    p.window.Reparent(self._frame)
 
                 # make sure there are no references to this pane in our uiparts,
                 # just in case the caller doesn't call Update() immediately after

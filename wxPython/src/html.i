@@ -167,10 +167,13 @@ public:
     void StopParsing();
     // wxObject* GetProduct();
 
+    %disownarg(wxHtmlTagHandler  *handler );
     void AddTagHandler(wxHtmlTagHandler *handler);
-    wxString* GetSource();
     void PushTagHandler(wxHtmlTagHandler* handler, wxString tags);
     void PopTagHandler();
+    %cleardisown(wxHtmlTagHandler  *handler );
+
+    wxString* GetSource();
 
     // virtual wxFSFile *OpenURL(wxHtmlURLType type, const wxString& url) const;
 
@@ -418,7 +421,8 @@ private:
     void wxHtmlWinParser_AddTagHandler(PyObject* tagHandlerClass) {
         // Dynamically create a new wxModule.  Refcounts tagHandlerClass
         // and adds itself to the wxModules list and to the wxHtmlWinParser.
-        new wxPyHtmlTagsModule(tagHandlerClass);
+        wxModule* module = new wxPyHtmlTagsModule(tagHandlerClass);
+        wxModule::InitializeModules();
     }
 %}
 

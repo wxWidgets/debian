@@ -694,10 +694,12 @@ void wxMSWDCImpl::Clear()
         if (!m_selectedBitmap.IsOk())
             return;
 
-        rect.left = -m_deviceOriginX; rect.top = -m_deviceOriginY;
-        rect.right = m_selectedBitmap.GetWidth()-m_deviceOriginX;
-        rect.bottom = m_selectedBitmap.GetHeight()-m_deviceOriginY;
+        rect.left = rect.top = 0;
+        rect.right = m_selectedBitmap.GetWidth();
+        rect.bottom = m_selectedBitmap.GetHeight();
     }
+
+    ::OffsetRect(&rect, -m_deviceOriginX, -m_deviceOriginY);
 
 #ifndef __WXWINCE__
     (void) ::SetMapMode(GetHdc(), MM_TEXT);
@@ -1271,11 +1273,26 @@ void wxMSWDCImpl::DoDrawIcon(const wxIcon& icon, wxCoord x, wxCoord y)
 
     wxCHECK_RET( icon.IsOk(), wxT("invalid icon in DrawIcon") );
 
+    // Check if we are printing: notice that it's not enough to just check for
+    // DT_RASPRINTER as this is also the kind of print preview HDC, but its
+    // type is OBJ_ENHMETADC while the type of the "real" printer DC is OBJ_DC.
+    if ( ::GetDeviceCaps(GetHdc(), TECHNOLOGY) == DT_RASPRINTER &&
+            ::GetObjectType(GetHdc()) == OBJ_DC )
+    {
+        // DrawIcon API doesn't work for printer DCs (printer DC is write-only
+        // and DrawIcon requires DC supporting SRCINVERT ROP).
+        // We need to convert icon to bitmap and use alternative API calls.
+        wxBitmap bmp(icon);
+        DoDrawBitmap(bmp, x, y, !bmp.HasAlpha() /* use mask */);
+    }
+    else
+    {
 #ifdef __WIN32__
-    ::DrawIconEx(GetHdc(), XLOG2DEV(x), YLOG2DEV(y), GetHiconOf(icon), icon.GetWidth(), icon.GetHeight(), 0, NULL, DI_NORMAL);
+        ::DrawIconEx(GetHdc(), XLOG2DEV(x), YLOG2DEV(y), GetHiconOf(icon), icon.GetWidth(), icon.GetHeight(), 0, NULL, DI_NORMAL);
 #else
-    ::DrawIcon(GetHdc(), XLOG2DEV(x), YLOG2DEV(y), GetHiconOf(icon));
+        ::DrawIcon(GetHdc(), XLOG2DEV(x), YLOG2DEV(y), GetHiconOf(icon));
 #endif
+    }
 
     CalcBoundingBox(x, y);
     CalcBoundingBox(x + icon.GetWidth(), y + icon.GetHeight());
@@ -1302,7 +1319,11 @@ void wxMSWDCImpl::DoDrawBitmap( const wxBitmap &bmp, wxCoord x, wxCoord y, bool 
         SelectInHDC select(hdcMem, GetHbitmapOf(bmp));
 
         if ( AlphaBlt(GetHdc(), x, y, width, height, 0, 0, width, height, hdcMem, bmp) )
+        {
+            CalcBoundingBox(x, y);
+            CalcBoundingBox(x + bmp.GetWidth(), y + bmp.GetHeight());
             return;
+        }
     }
 
     SET_STRETCH_BLT_MODE(GetHdc());
@@ -1409,6 +1430,9 @@ void wxMSWDCImpl::DoDrawBitmap( const wxBitmap &bmp, wxCoord x, wxCoord y, bool 
         ::SelectObject( memdc, hOldBitmap );
         ::DeleteDC( memdc );
     }
+
+    CalcBoundingBox(x, y);
+    CalcBoundingBox(x + bmp.GetWidth(), y + bmp.GetHeight());
 }
 
 void wxMSWDCImpl::DoDrawText(const wxString& text, wxCoord x, wxCoord y)
@@ -2169,7 +2193,7 @@ bool wxMSWDCImpl::DoStretchBlit(wxCoord xdest, wxCoord ydest,
         return false;
     }
 
-    const HDC hdcSrc = GetHdcOf(*implSrc);
+    HDC hdcSrc = GetHdcOf(*implSrc);
 
     // if either the source or destination has alpha channel, we must use
     // AlphaBlt() as other function don't handle it correctly
@@ -2179,7 +2203,11 @@ bool wxMSWDCImpl::DoStretchBlit(wxCoord xdest, wxCoord ydest,
     {
         if ( AlphaBlt(GetHdc(), xdest, ydest, dstWidth, dstHeight,
                       xsrc, ysrc, srcWidth, srcHeight, hdcSrc, bmpSrc) )
+        {
+            CalcBoundingBox(xdest, ydest);
+            CalcBoundingBox(xdest + dstWidth, ydest + dstHeight);
             return true;
+        }
     }
 
     wxMask *mask = NULL;
@@ -2224,6 +2252,16 @@ bool wxMSWDCImpl::DoStretchBlit(wxCoord xdest, wxCoord ydest,
         default:
            wxFAIL_MSG( wxT("unsupported logical function") );
            return false;
+    }
+
+    // Most of the operations involve the source or the pattern, but a few of
+    // them (and only those few, no other are possible) only use destination
+    // HDC. For them we must not give a valid source HDC to MaskBlt() as it
+    // still uses it, somehow, and the result is garbage.
+    if ( dwRop == BLACKNESS || dwRop == WHITENESS ||
+            dwRop == DSTINVERT || dwRop == DSTCOPY )
+    {
+        hdcSrc = NULL;
     }
 
     bool success = false;
@@ -2444,6 +2482,12 @@ bool wxMSWDCImpl::DoStretchBlit(wxCoord xdest, wxCoord ydest,
                 success = true;
             }
         }
+    }
+
+    if ( success )
+    {
+        CalcBoundingBox(xdest, ydest);
+        CalcBoundingBox(xdest + dstWidth, ydest + dstHeight);
     }
 
     return success;
@@ -2815,6 +2859,8 @@ void wxMSWDCImpl::DoGradientFillLinear (const wxRect& rect,
              ) )
         {
             // skip call of the base class version below
+            CalcBoundingBox(rect.GetLeft(), rect.GetBottom());
+            CalcBoundingBox(rect.GetRight(), rect.GetTop());
             return;
         }
 

@@ -176,8 +176,13 @@ class GUIMouse(GUIBase):
 
     def OnMove(self, event):
         ## The Move event always gets raised, even if there is a hit-test
+        EventType = FloatCanvas.EVT_FC_MOTION
+        # process the object hit test for EVT_MOTION bindings
+        self.Canvas.HitTest(event, EventType)
+        # process enter and leave events
         self.Canvas.MouseOverTest(event)
-        self.Canvas._RaiseMouseEvent(event,FloatCanvas.EVT_FC_MOTION)
+        # then raise the event on the canvas
+        self.Canvas._RaiseMouseEvent(event, EventType)
 
 
 class GUIMove(ZoomWithMouseWheel, GUIBase):

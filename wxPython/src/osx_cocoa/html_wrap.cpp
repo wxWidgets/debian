@@ -2950,7 +2950,8 @@ private:
     void wxHtmlWinParser_AddTagHandler(PyObject* tagHandlerClass) {
         // Dynamically create a new wxModule.  Refcounts tagHandlerClass
         // and adds itself to the wxModules list and to the wxHtmlWinParser.
-        new wxPyHtmlTagsModule(tagHandlerClass);
+        wxModule* module = new wxPyHtmlTagsModule(tagHandlerClass);
+        wxModule::InitializeModules();
     }
 
 
@@ -4138,7 +4139,6 @@ SWIGINTERN PyObject *_wrap_HtmlParser_AddTagHandler(PyObject *SWIGUNUSEDPARM(sel
   wxHtmlTagHandler *arg2 = (wxHtmlTagHandler *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -4152,11 +4152,10 @@ SWIGINTERN PyObject *_wrap_HtmlParser_AddTagHandler(PyObject *SWIGUNUSEDPARM(sel
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "HtmlParser_AddTagHandler" "', expected argument " "1"" of type '" "wxHtmlParser *""'"); 
   }
   arg1 = reinterpret_cast< wxHtmlParser * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_wxHtmlTagHandler, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, SWIG_as_voidptrptr(&arg2), SWIGTYPE_p_wxHtmlTagHandler, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "HtmlParser_AddTagHandler" "', expected argument " "2"" of type '" "wxHtmlTagHandler *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "HtmlParser_AddTagHandler" "', expected argument " "2"" of type '" "wxHtmlTagHandler *""'");
   }
-  arg2 = reinterpret_cast< wxHtmlTagHandler * >(argp2);
   {
     PyThreadState* __tstate = wxPyBeginAllowThreads();
     (arg1)->AddTagHandler(arg2);
@@ -4170,40 +4169,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_HtmlParser_GetSource(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  wxHtmlParser *arg1 = (wxHtmlParser *) 0 ;
-  wxString *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_wxHtmlParser, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "HtmlParser_GetSource" "', expected argument " "1"" of type '" "wxHtmlParser *""'"); 
-  }
-  arg1 = reinterpret_cast< wxHtmlParser * >(argp1);
-  {
-    PyThreadState* __tstate = wxPyBeginAllowThreads();
-    result = (wxString *)(arg1)->GetSource();
-    wxPyEndAllowThreads(__tstate);
-    if (PyErr_Occurred()) SWIG_fail;
-  }
-  {
-#if wxUSE_UNICODE
-    resultobj = PyUnicode_FromWideChar(result->c_str(), result->Len());
-#else
-    resultobj = PyString_FromStringAndSize(result->c_str(), result->Len());
-#endif
-  }
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_HtmlParser_PushTagHandler(PyObject *SWIGUNUSEDPARM(self), PyObject *args, PyObject *kwargs) {
   PyObject *resultobj = 0;
   wxHtmlParser *arg1 = (wxHtmlParser *) 0 ;
@@ -4211,7 +4176,6 @@ SWIGINTERN PyObject *_wrap_HtmlParser_PushTagHandler(PyObject *SWIGUNUSEDPARM(se
   wxString arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -4226,11 +4190,10 @@ SWIGINTERN PyObject *_wrap_HtmlParser_PushTagHandler(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "HtmlParser_PushTagHandler" "', expected argument " "1"" of type '" "wxHtmlParser *""'"); 
   }
   arg1 = reinterpret_cast< wxHtmlParser * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_wxHtmlTagHandler, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, SWIG_as_voidptrptr(&arg2), SWIGTYPE_p_wxHtmlTagHandler, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "HtmlParser_PushTagHandler" "', expected argument " "2"" of type '" "wxHtmlTagHandler *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "HtmlParser_PushTagHandler" "', expected argument " "2"" of type '" "wxHtmlTagHandler *""'");
   }
-  arg2 = reinterpret_cast< wxHtmlTagHandler * >(argp2);
   {
     wxString* sptr = wxString_in_helper(obj2);
     if (sptr == NULL) SWIG_fail;
@@ -4271,6 +4234,40 @@ SWIGINTERN PyObject *_wrap_HtmlParser_PopTagHandler(PyObject *SWIGUNUSEDPARM(sel
     if (PyErr_Occurred()) SWIG_fail;
   }
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_HtmlParser_GetSource(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  wxHtmlParser *arg1 = (wxHtmlParser *) 0 ;
+  wxString *result = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_wxHtmlParser, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "HtmlParser_GetSource" "', expected argument " "1"" of type '" "wxHtmlParser *""'"); 
+  }
+  arg1 = reinterpret_cast< wxHtmlParser * >(argp1);
+  {
+    PyThreadState* __tstate = wxPyBeginAllowThreads();
+    result = (wxString *)(arg1)->GetSource();
+    wxPyEndAllowThreads(__tstate);
+    if (PyErr_Occurred()) SWIG_fail;
+  }
+  {
+#if wxUSE_UNICODE
+    resultobj = PyUnicode_FromWideChar(result->c_str(), result->Len());
+#else
+    resultobj = PyString_FromStringAndSize(result->c_str(), result->Len());
+#endif
+  }
   return resultobj;
 fail:
   return NULL;
@@ -18026,9 +18023,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"HtmlParser_DoParsing", (PyCFunction)_wrap_HtmlParser_DoParsing, METH_O, NULL},
 	 { (char *)"HtmlParser_StopParsing", (PyCFunction)_wrap_HtmlParser_StopParsing, METH_O, NULL},
 	 { (char *)"HtmlParser_AddTagHandler", (PyCFunction) _wrap_HtmlParser_AddTagHandler, METH_VARARGS | METH_KEYWORDS, NULL},
-	 { (char *)"HtmlParser_GetSource", (PyCFunction)_wrap_HtmlParser_GetSource, METH_O, NULL},
 	 { (char *)"HtmlParser_PushTagHandler", (PyCFunction) _wrap_HtmlParser_PushTagHandler, METH_VARARGS | METH_KEYWORDS, NULL},
 	 { (char *)"HtmlParser_PopTagHandler", (PyCFunction)_wrap_HtmlParser_PopTagHandler, METH_O, NULL},
+	 { (char *)"HtmlParser_GetSource", (PyCFunction)_wrap_HtmlParser_GetSource, METH_O, NULL},
 	 { (char *)"HtmlParser_GetInnerSource", (PyCFunction) _wrap_HtmlParser_GetInnerSource, METH_VARARGS | METH_KEYWORDS, NULL},
 	 { (char *)"HtmlParser_swigregister", HtmlParser_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_HtmlWinParser", (PyCFunction) _wrap_new_HtmlWinParser, METH_VARARGS | METH_KEYWORDS, NULL},

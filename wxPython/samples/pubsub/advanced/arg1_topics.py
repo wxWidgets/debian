@@ -8,24 +8,24 @@
 
 
 class topic_1:
-    '''
+    """
     Explain when topic_1 should be used
-    '''
+    """
 
     class subtopic_11:
-        '''
+        """
         Explain when subtopic_11 should be used
-        '''
+        """
 
 class topic_2:
-    '''
+    """
     Some something useful about topic2
-    '''
+    """
 
     class subtopic_21:
-        '''
+        """
         description for subtopic 21
-        '''
+        """
 
 
 # End of topic tree definition. Note that application may load

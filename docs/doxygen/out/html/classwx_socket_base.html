@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 3.0.0</span>
+   <span id="projectnumber">Version: 3.0.1</span>
   </td>
  </tr>
  </tbody>
@@ -1399,7 +1399,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Returns a reference to the current object.</dd></dl>
 <dl class="section remark"><dt>Remarks</dt><dd></dd></dl>
 <p><a class="el" href="classwx_socket_base.html#a91abca66c1d5bf4237aa87b0e796464b" title="Sends a buffer which can be read using ReadMsg().">WriteMsg()</a> will behave as if the <b>wxSOCKET_WAITALL</b> flag was always set and it will always ignore the <b>wxSOCKET_NOWAIT</b> flag. The exact behaviour of <a class="el" href="classwx_socket_base.html#a91abca66c1d5bf4237aa87b0e796464b" title="Sends a buffer which can be read using ReadMsg().">WriteMsg()</a> depends on the <b>wxSOCKET_BLOCK</b> flag. For a detailed explanation, see <a class="el" href="classwx_socket_base.html#aa11d1db40c87c8e06e3f9849a08abafc" title="Use SetFlags to customize IO operation for this socket.">SetFlags()</a>. For thread safety, in case <a class="el" href="classwx_socket_base.html#a7c16b20282272c68acfe04107d430bf6" title="Receive a message sent by WriteMsg().">ReadMsg()</a> and <a class="el" href="classwx_socket_base.html#a91abca66c1d5bf4237aa87b0e796464b" title="Sends a buffer which can be read using ReadMsg().">WriteMsg()</a> are called in different threads, it is a good idea to call </p>
-<div class="fragment"><div class="line"><a class="code" href="classwx_socket_base.html#aa11d1db40c87c8e06e3f9849a08abafc" title="Use SetFlags to customize IO operation for this socket.">SetFlags</a>(<a class="code" href="socket_8h.html#ac205be2172292384dd687b5471a87eddaea93cf511bb913dfc17571dd29a2de22" title="Wait for all required data to be read/written unless an error occurs.">wxSOCKET_WAITALL</a>|wx_SOCKET_BLOCK) </div>
+<div class="fragment"><div class="line"><a class="code" href="classwx_socket_base.html#aa11d1db40c87c8e06e3f9849a08abafc" title="Use SetFlags to customize IO operation for this socket.">SetFlags</a>(<a class="code" href="socket_8h.html#a1fb9092bcdeada2d206bdc74afbbe122aea93cf511bb913dfc17571dd29a2de22" title="Wait for all required data to be read/written unless an error occurs.">wxSOCKET_WAITALL</a>|wx_SOCKET_BLOCK) </div>
 </div><!-- fragment --><p> before the first calls to <a class="el" href="classwx_socket_base.html#a7c16b20282272c68acfe04107d430bf6" title="Receive a message sent by WriteMsg().">ReadMsg()</a> and <a class="el" href="classwx_socket_base.html#a91abca66c1d5bf4237aa87b0e796464b" title="Sends a buffer which can be read using ReadMsg().">WriteMsg()</a> in different threads, as each of these functions calls <a class="el" href="classwx_socket_base.html#aa11d1db40c87c8e06e3f9849a08abafc" title="Use SetFlags to customize IO operation for this socket.">SetFlags()</a> which performs read/modify/write. By setting these flags before the multi-threading, it will ensure that they don't get reset by thread race conditions.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classwx_socket_base.html#a1a70bf5e24ccf3a6171ba07c06f8dac9" title="Returns true if an error occurred in the last IO operation.">Error()</a>, <a class="el" href="classwx_socket_base.html#a4b3fa4395c33fd4f99956a5585e49b2e" title="Returns the last wxSocket error.">LastError()</a>, <a class="el" href="classwx_socket_base.html#a0af60002ca2775490ad8bcd937591829" title="Returns the number of bytes written by the last Write() or WriteMsg() call (transmit direction only)...">LastWriteCount()</a>, <a class="el" href="classwx_socket_base.html#aa11d1db40c87c8e06e3f9849a08abafc" title="Use SetFlags to customize IO operation for this socket.">SetFlags()</a>, <a class="el" href="classwx_socket_base.html#a7c16b20282272c68acfe04107d430bf6" title="Receive a message sent by WriteMsg().">ReadMsg()</a> </dd></dl>
 
@@ -1409,7 +1409,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Dec 28 2013 01:31:33 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Tue Sep 9 2014 15:03:30 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

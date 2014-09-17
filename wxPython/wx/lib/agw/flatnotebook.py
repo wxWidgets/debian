@@ -11,7 +11,7 @@
 # Python Code By:
 #
 # Andrea Gavana, @ 02 Oct 2006
-# Latest Revision: 14 Mar 2012, 21.00 GMT
+# Latest Revision: 15 Feb 2014, 23.00 GMT
 #
 #
 # For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please
@@ -175,7 +175,7 @@ License And Version
 
 :class:`FlatNotebook` is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 14 Mar 2012, 21.00 GMT
+Latest Revision: Andrea Gavana @ 15 Feb 2014, 23.00 GMT
 
 Version 3.2
 """
@@ -4024,6 +4024,9 @@ class FlatNotebook(wx.PyPanel):
          :class:`FlatNotebook` behaviour with tabs.
         """
 
+        if orient == self._orientation:
+            return
+        
         self.Freeze()
         self._orientation = orient
 

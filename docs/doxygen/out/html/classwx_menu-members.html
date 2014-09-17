@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 3.0.0</span>
+   <span id="projectnumber">Version: 3.0.1</span>
   </td>
  </tr>
  </tbody>
@@ -112,20 +112,22 @@
   <tr><td class="entry"><a class="el" href="classwx_menu.html#ae69e4bd42e9e806a269143f10845d2d4">GetWindow</a>() const </td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#aec84d928bf461c59739e0e4fc7a27bbe">Insert</a>(size_t pos, wxMenuItem *menuItem)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classwx_menu.html#ae8dc1329976f47eeb01449854de0fa64">Insert</a>(size_t pos, int id, const wxString &amp;item=wxEmptyString, const wxString &amp;helpString=wxEmptyString, wxItemKind kind=wxITEM_NORMAL)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a0f1f3c5b9c349381cf89169c74251461">InsertCheckItem</a>(size_t pos, int id, const wxString &amp;item, const wxString &amp;helpString=wxEmptyString)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classwx_menu.html#a1016a10b8df49297cf4ccc970d5106aa">InsertRadioItem</a>(size_t pos, int id, const wxString &amp;item, const wxString &amp;helpString=wxEmptyString)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a77b3060d593f1f971edb5a321c5bd9bf">InsertSeparator</a>(size_t pos)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classwx_menu.html#a61bfe5dbf23efd8d98af0cd5101b9359">IsAttached</a>() const </td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a088f0097e2077518e60200f80232e291">IsChecked</a>(int id) const </td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classwx_menu.html#a1a89a50690ce163d6190c7f5612e4150">IsEnabled</a>(int id) const </td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classwx_object.html#af40d580385cf4f8112fae7713404b01e">IsKindOf</a>(const wxClassInfo *info) const </td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classwx_object.html#a80a1a3fda7b14396a9ddd3d7a46a88bd">IsSameAs</a>(const wxObject &amp;obj) const </td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classwx_evt_handler.html#a360fdeefcf53b62fb49fb828406bb8a6">IsUnlinked</a>() const </td><td class="entry"><a class="el" href="classwx_evt_handler.html">wxEvtHandler</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classwx_object.html#a9e31954530a0abd54982effc443ed2b8">m_refData</a></td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classwx_object.html#a07b8f34f5afc5743195c5fed052f55d3">operator delete</a>(void *buf)</td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classwx_object.html#a96fa423a1dbc212c8227a5d83825971f">operator new</a>(size_t size, const wxString &amp;filename=NULL, int lineNum=0)</td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a90dcfb20e389dc012bdf16c6ffefcfc9">Prepend</a>(wxMenuItem *item)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classwx_menu.html#ae471a4163a4e7728b9606401fb83ca30">Prepend</a>(int id, const wxString &amp;item=wxEmptyString, const wxString &amp;helpString=wxEmptyString, wxItemKind kind=wxITEM_NORMAL)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#af2209e386b86509773e29bd879a59274">Insert</a>(size_t pos, int id, const wxString &amp;text, wxMenu *submenu, const wxString &amp;help=wxEmptyString)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classwx_menu.html#a0f1f3c5b9c349381cf89169c74251461">InsertCheckItem</a>(size_t pos, int id, const wxString &amp;item, const wxString &amp;helpString=wxEmptyString)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a1016a10b8df49297cf4ccc970d5106aa">InsertRadioItem</a>(size_t pos, int id, const wxString &amp;item, const wxString &amp;helpString=wxEmptyString)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classwx_menu.html#a77b3060d593f1f971edb5a321c5bd9bf">InsertSeparator</a>(size_t pos)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a61bfe5dbf23efd8d98af0cd5101b9359">IsAttached</a>() const </td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classwx_menu.html#a088f0097e2077518e60200f80232e291">IsChecked</a>(int id) const </td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a1a89a50690ce163d6190c7f5612e4150">IsEnabled</a>(int id) const </td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classwx_object.html#af40d580385cf4f8112fae7713404b01e">IsKindOf</a>(const wxClassInfo *info) const </td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classwx_object.html#a80a1a3fda7b14396a9ddd3d7a46a88bd">IsSameAs</a>(const wxObject &amp;obj) const </td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classwx_evt_handler.html#a360fdeefcf53b62fb49fb828406bb8a6">IsUnlinked</a>() const </td><td class="entry"><a class="el" href="classwx_evt_handler.html">wxEvtHandler</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classwx_object.html#a9e31954530a0abd54982effc443ed2b8">m_refData</a></td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classwx_object.html#a07b8f34f5afc5743195c5fed052f55d3">operator delete</a>(void *buf)</td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classwx_object.html#a96fa423a1dbc212c8227a5d83825971f">operator new</a>(size_t size, const wxString &amp;filename=NULL, int lineNum=0)</td><td class="entry"><a class="el" href="classwx_object.html">wxObject</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classwx_menu.html#a90dcfb20e389dc012bdf16c6ffefcfc9">Prepend</a>(wxMenuItem *item)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#ae471a4163a4e7728b9606401fb83ca30">Prepend</a>(int id, const wxString &amp;item=wxEmptyString, const wxString &amp;helpString=wxEmptyString, wxItemKind kind=wxITEM_NORMAL)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classwx_menu.html#a61eef50fa2312eaf24ad5c6fbc2b3bf2">Prepend</a>(int id, const wxString &amp;text, wxMenu *submenu, const wxString &amp;help=wxEmptyString)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a78e1f3d62ab06ceab597a9ce9417aaad">PrependCheckItem</a>(int id, const wxString &amp;item, const wxString &amp;helpString=wxEmptyString)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classwx_menu.html#ad9ded06125e436b72cb7feb1e09e3ebd">PrependRadioItem</a>(int id, const wxString &amp;item, const wxString &amp;helpString=wxEmptyString)</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classwx_menu.html#a39fda27c82a2b27c11cfbc947c3aa822">PrependSeparator</a>()</td><td class="entry"><a class="el" href="classwx_menu.html">wxMenu</a></td><td class="entry"></td></tr>
@@ -171,7 +173,7 @@
 
 <address class="footer">
 	<small>
-		Generated on Sat Dec 28 2013 01:31:21 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Tue Sep 9 2014 15:03:23 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

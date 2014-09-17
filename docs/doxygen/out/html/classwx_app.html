@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 3.0.0</span>
+   <span id="projectnumber">Version: 3.0.1</span>
   </td>
  </tr>
  </tbody>
@@ -154,6 +154,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2054c2fadff9170b91e474eb02c83227"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_app.html#a2054c2fadff9170b91e474eb02c83227">MacReopenApp</a> ()</td></tr>
 <tr class="memdesc:a2054c2fadff9170b91e474eb02c83227"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called in response of a "reopen-application" Apple event.  <a href="#a2054c2fadff9170b91e474eb02c83227"></a><br/></td></tr>
 <tr class="separator:a2054c2fadff9170b91e474eb02c83227"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad50789f1fe18722d1ec17a7b30827790"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_app.html#ad50789f1fe18722d1ec17a7b30827790">OSXIsGUIApplication</a> ()</td></tr>
+<tr class="memdesc:ad50789f1fe18722d1ec17a7b30827790"><td class="mdescLeft">&#160;</td><td class="mdescRight">May be overridden to indicate that the application is not a foreground GUI application under OS X.  <a href="#ad50789f1fe18722d1ec17a7b30827790"></a><br/></td></tr>
+<tr class="separator:ad50789f1fe18722d1ec17a7b30827790"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classwx_app_console"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classwx_app_console')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classwx_app_console.html">wxAppConsole</a></td></tr>
 <tr class="memitem:a15802038794a8646f42f0cdd3bf74b3d inherit pub_methods_classwx_app_console"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_app_console.html#a15802038794a8646f42f0cdd3bf74b3d">~wxAppConsole</a> ()</td></tr>
 <tr class="memdesc:a15802038794a8646f42f0cdd3bf74b3d inherit pub_methods_classwx_app_console"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a15802038794a8646f42f0cdd3bf74b3d"></a><br/></td></tr>
@@ -815,6 +818,34 @@ Additional Inherited Members</h2></td></tr>
 <div><span class="avail">Availability:</span>&#160;&#160;only available for the <a class="el" href="page_port.html#page_port_wxosx">wxOSX</a> port.</div>  
 </div>
 </div>
+<a class="anchor" id="ad50789f1fe18722d1ec17a7b30827790"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool wxApp::OSXIsGUIApplication </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>May be overridden to indicate that the application is not a foreground GUI application under OS X. </p>
+<p>This method is called during the application startup and returns <span class="literal">true</span> by default. In this case, wxWidgets ensures that the application is ran as a foreground, GUI application so that the user can interact with it normally, even if it is not bundled. If this is undesired, i.e. if the application doesn't need to be brought to the foreground, this method can be overridden to return <span class="literal">false</span>.</p>
+<p>Notice that overriding it doesn't make any difference for the bundled applications which are always foreground unless <code>LSBackgroundOnly</code> key is specified in the <code>Info.plist</code> file.</p>
+<div><span class="avail">Availability:</span>&#160;&#160;only available for the <a class="el" href="page_port.html#page_port_wxosx">wxOSX</a> port.</div> <dl class="section since"><dt>Since</dt><dd>3.0.1 </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a3759df64f7f4df0627627d3ca7299664"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1073,7 +1104,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Sat Dec 28 2013 01:31:09 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Tue Sep 9 2014 15:03:15 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

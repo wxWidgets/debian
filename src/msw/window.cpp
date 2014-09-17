@@ -34,6 +34,7 @@
     #include "wx/dc.h"
     #include "wx/dcclient.h"
     #include "wx/dcmemory.h"
+    #include "wx/dialog.h"
     #include "wx/utils.h"
     #include "wx/app.h"
     #include "wx/layout.h"
@@ -4198,7 +4199,20 @@ bool wxWindowMSW::HandleSetCursor(WXHWND WXUNUSED(hWnd),
     //  3. if still no cursor but we're in a TLW, set the global cursor
 
     HCURSOR hcursor = 0;
+
+    // Check for "business" is complicated by the fact that modal dialogs shown
+    // while busy cursor is in effect shouldn't show it as they are active and
+    // accept input from the user, unlike all the other windows.
+    bool isBusy = false;
     if ( wxIsBusy() )
+    {
+        wxDialog* const
+            dlg = wxDynamicCast(wxGetTopLevelParent(this), wxDialog);
+        if ( !dlg || !dlg->IsModal() )
+            isBusy = true;
+    }
+
+    if ( isBusy )
     {
         hcursor = wxGetCurrentBusyCursor();
     }
@@ -5606,9 +5620,15 @@ wxWindowMSW::HandleMouseWheel(wxMouseWheelAxis axis,
     // notice that WM_MOUSEWHEEL position is in screen coords (as it's
     // forwarded up to the parent by DefWindowProc()) and not in the client
     // ones as all the other messages, translate them to the client coords for
-    // consistency
-    const wxPoint
-        pt = ScreenToClient(wxPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+    // consistency -- but do it using Windows function and not our own one
+    // because InitMouseEvent() expects coordinates in Windows client
+    // coordinates and not wx ones (the difference being the height of the
+    // toolbar, if any).
+    POINT pt;
+    pt.x = GET_X_LPARAM(lParam);
+    pt.y = GET_Y_LPARAM(lParam);
+    ::ScreenToClient(GetHwnd(), &pt);
+
     wxMouseEvent event(wxEVT_MOUSEWHEEL);
     InitMouseEvent(event, pt.x, pt.y, LOWORD(wParam));
     event.m_wheelRotation = (short)HIWORD(wParam);

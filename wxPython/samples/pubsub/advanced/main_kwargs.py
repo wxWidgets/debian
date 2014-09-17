@@ -1,4 +1,4 @@
-'''
+"""
 Uses topic definition provider for kwargs messaging protocol. Compare with 
 main_arg1.py which shows example using arg1 messaging protocol: 
 kwargs protocol provides for message data self-documentation and more 
@@ -10,7 +10,7 @@ in kwargs_topics_out.py.
 
 :copyright: Copyright since 2006 by Oliver Schoenborn, all rights reserved.
 :license: BSD, see LICENSE.txt for details.
-'''
+"""
 
 from pubsub import pub
 from pubsub.py2and3 import print_
@@ -42,7 +42,7 @@ try:
     print_('Exporting topic tree to', kwargs_topics.__name__)
     pub.exportTopicTreeSpec('kwargs_topics_out')
 
-except Exception, exc:
+except Exception:
     import traceback
     traceback.print_exc()
     print_(pub.exportTopicTreeSpec())

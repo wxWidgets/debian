@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 3.0.0</span>
+   <span id="projectnumber">Version: 3.0.1</span>
   </td>
  </tr>
  </tbody>
@@ -446,6 +446,9 @@
 <li>Set3StateValue()
 : <a class="el" href="classwx_check_box.html#aa5c882ce796f17f5742c8f81613e8a90">wxCheckBox</a>
 </li>
+<li>SetAccel()
+: <a class="el" href="classwx_menu_item.html#a1deb59611abda8b68cd06c848f48884d">wxMenuItem</a>
+</li>
 <li>SetAcceleratorTable()
 : <a class="el" href="classwx_window.html#a0af5e9aa4dee6a4e92c0700f92605642">wxWindow</a>
 </li>
@@ -506,9 +509,9 @@
 : <a class="el" href="classwx_dialog.html#a72ea7e269bedb2552bfeaccdbac07939">wxDialog</a>
 </li>
 <li>SetAlign()
-: <a class="el" href="classwx_list_item.html#afa9fff5f18ac4e9914499261b2a5ee0f">wxListItem</a>
+: <a class="el" href="classwx_html_win_parser.html#a426535f9bf8e2c44335242488212bc05">wxHtmlWinParser</a>
+, <a class="el" href="classwx_list_item.html#afa9fff5f18ac4e9914499261b2a5ee0f">wxListItem</a>
 , <a class="el" href="classwx_html_container_cell.html#a952ce8414ab6d6b11dbe7cd143875fb2">wxHtmlContainerCell</a>
-, <a class="el" href="classwx_html_win_parser.html#a426535f9bf8e2c44335242488212bc05">wxHtmlWinParser</a>
 </li>
 <li>SetAlignHor()
 : <a class="el" href="classwx_html_container_cell.html#a094ec1d188a7fb01a9ae90115480a01d">wxHtmlContainerCell</a>
@@ -916,6 +919,15 @@
 <li>SetCellFont()
 : <a class="el" href="classwx_grid.html#ae6581134d17f41e05c8d476d6599000d">wxGrid</a>
 </li>
+<li>SetCellHighlightColour()
+: <a class="el" href="classwx_grid.html#a9d50820855bb0d0f1d9d31f6067cc63f">wxGrid</a>
+</li>
+<li>SetCellHighlightPenWidth()
+: <a class="el" href="classwx_grid.html#a8720ed99743b9fc53e5570c75a34d413">wxGrid</a>
+</li>
+<li>SetCellHighlightROPenWidth()
+: <a class="el" href="classwx_grid.html#a8179e588e20fea7267eac3ab1c5a69e5">wxGrid</a>
+</li>
 <li>SetCellOverflow()
 : <a class="el" href="classwx_grid.html#a9c12922803284ce44b59033ede943c30">wxGrid</a>
 </li>
@@ -1113,11 +1125,11 @@
 <li>SetColSizes()
 : <a class="el" href="classwx_grid.html#a812bca5cff53174769e976fd2ba537de">wxGrid</a>
 </li>
-<li>SetColspan()
-: <a class="el" href="classwx_g_b_span.html#a58a5d23ca81c8053d0ddcec0e9ad79e9">wxGBSpan</a>
-</li>
 <li>SetColSpan()
 : <a class="el" href="classwx_rich_text_cell.html#ac19b713af36c42f14141cc4bccdedec2">wxRichTextCell</a>
+</li>
+<li>SetColspan()
+: <a class="el" href="classwx_g_b_span.html#a58a5d23ca81c8053d0ddcec0e9ad79e9">wxGBSpan</a>
 </li>
 <li>SetColumn()
 : <a class="el" href="classwx_data_view_event.html#a66a231dc80ba6c36840251fef78294c5">wxDataViewEvent</a>
@@ -1214,7 +1226,8 @@
 : <a class="el" href="classwx_rich_text_ctrl.html#a220fd0f4032fa7c0a1b1c2ed5c85a7aa">wxRichTextCtrl</a>
 </li>
 <li>SetControl()
-: <a class="el" href="classwx_grid_editor_created_event.html#ad74a99f2cd9d7ace62cc6554a2c90eaf">wxGridEditorCreatedEvent</a>
+: <a class="el" href="classwx_grid_cell_editor.html#ae9d8087c6b037194b0c7680d63555145">wxGridCellEditor</a>
+, <a class="el" href="classwx_grid_editor_created_event.html#ad74a99f2cd9d7ace62cc6554a2c90eaf">wxGridEditorCreatedEvent</a>
 </li>
 <li>SetControlAppearance()
 : <a class="el" href="classwx_p_g_editor.html#a9bb01134af7a481206486035c54f5c20">wxPGEditor</a>
@@ -1519,6 +1532,7 @@
 </li>
 <li>SetDisabledBitmap()
 : <a class="el" href="classwx_aui_tool_bar_item.html#a1c0e83a4cea856fc086fd4da0d1d2fe6">wxAuiToolBarItem</a>
+, <a class="el" href="classwx_menu_item.html#a2fabe431416d64dcac9e23469fcc5acb">wxMenuItem</a>
 , <a class="el" href="classwx_tool_bar_tool_base.html#a781d2be2d0c8f251692700f17d0b44c2">wxToolBarToolBase</a>
 </li>
 <li>SetDispatchPtr()
@@ -1789,16 +1803,16 @@
 <li>SetFileFilter()
 : <a class="el" href="classwx_doc_template.html#a697aa40deb94a4aa4a5b159526ffe051">wxDocTemplate</a>
 </li>
-<li>SetFileName()
-: <a class="el" href="classwx_file_picker_ctrl.html#ae191b11ea4a93273b84aba880a97e122">wxFilePickerCtrl</a>
-, <a class="el" href="classwx_icon_location.html#add6a6738682209e6d861faaedd0fbd1b">wxIconLocation</a>
-</li>
 <li>SetFilename()
 : <a class="el" href="classwx_print_data.html#ae186dfe49ba6a9d276c7128114dd4df5">wxPrintData</a>
 , <a class="el" href="classwx_document.html#aadd4ceefef4a25d637a1c2a965c889f0">wxDocument</a>
 , <a class="el" href="classwx_file_ctrl.html#aa6672f8ae14c8d59eb8312d8935eebd6">wxFileCtrl</a>
 , <a class="el" href="classwx_file_dialog.html#afb7fe41fee49450402a598dfa3526a61">wxFileDialog</a>
 , <a class="el" href="classwx_rich_text_ctrl.html#aa1867e6d6fcdf24a218e405885e3ab8f">wxRichTextCtrl</a>
+</li>
+<li>SetFileName()
+: <a class="el" href="classwx_file_picker_ctrl.html#ae191b11ea4a93273b84aba880a97e122">wxFilePickerCtrl</a>
+, <a class="el" href="classwx_icon_location.html#add6a6738682209e6d861faaedd0fbd1b">wxIconLocation</a>
 </li>
 <li>SetFiles()
 : <a class="el" href="classwx_file_ctrl_event.html#aa318626624419fedcfdb66e99f162371">wxFileCtrlEvent</a>
@@ -2877,11 +2891,11 @@
 , <a class="el" href="classwx_header_column_simple.html#a2170a87a0e410c9f4ba6568ebc138c4c">wxHeaderColumnSimple</a>
 </li>
 <li>SetMode()
-: <a class="el" href="classwx_zip_entry.html#aafe0497294d75794f5dfab9ac895a309">wxZipEntry</a>
+: <a class="el" href="classwx_tar_entry.html#ac02ce7134837e4071adb3f7a7c3918fb">wxTarEntry</a>
 , <a class="el" href="classwx_update_u_i_event.html#ab3a94b31cf5c72ae84ffa8b7cc1777e7">wxUpdateUIEvent</a>
 , <a class="el" href="classwx_idle_event.html#a655610b1a5a1c668efc7d475313af2e3">wxIdleEvent</a>
-, <a class="el" href="classwx_tar_entry.html#ac02ce7134837e4071adb3f7a7c3918fb">wxTarEntry</a>
 , <a class="el" href="classwx_text_output_stream.html#a558ee7a0478a8c5c1b0adc8bfeb1d17e">wxTextOutputStream</a>
+, <a class="el" href="classwx_zip_entry.html#aafe0497294d75794f5dfab9ac895a309">wxZipEntry</a>
 </li>
 <li>SetModel()
 : <a class="el" href="classwx_data_view_event.html#aa2ccb0d75d49a8fefa40a8fcbd7876a9">wxDataViewEvent</a>
@@ -2924,22 +2938,23 @@
 : <a class="el" href="classwx_styled_text_ctrl.html#ab747e3dc90cc75b4d706c2e7ee2a102e">wxStyledTextCtrl</a>
 </li>
 <li>SetName()
-: <a class="el" href="classwx_xml_node.html#a91e113b0061430f7ea87b4197f130759">wxXmlNode</a>
-, <a class="el" href="classwx_rich_text_drawing_handler.html#a1b2187287d1a5af23daa88eb153f8c61">wxRichTextDrawingHandler</a>
-, <a class="el" href="classwx_image_handler.html#aec863a8d58771b3c103551cf7a41eaf2">wxImageHandler</a>
-, <a class="el" href="classwx_archive_entry.html#afd7cfa9a05e971ee0355bafbeff8c93d">wxArchiveEntry</a>
+: <a class="el" href="classwx_reg_key.html#a7353a628be350a23662286d9499e4ba7">wxRegKey</a>
+, <a class="el" href="classwx_rich_text_style_sheet.html#af17d9a4df7e5d1893c0dc02d1fc07143">wxRichTextStyleSheet</a>
+, <a class="el" href="classwx_rich_text_field_type.html#ac262078a04c98149b4e4277384a608c4">wxRichTextFieldType</a>
 , <a class="el" href="classwx_about_dialog_info.html#a5fef05c5e61acb59d9554bda8de26eef">wxAboutDialogInfo</a>
+, <a class="el" href="classwx_archive_entry.html#afd7cfa9a05e971ee0355bafbeff8c93d">wxArchiveEntry</a>
 , <a class="el" href="classwx_bitmap_handler.html#ae7b2cf15809b3940cbdd339b31dec25e">wxBitmapHandler</a>
 , <a class="el" href="classwx_file_name.html#a1bf12dfe55c3a2a56982a7a731fa1230">wxFileName</a>
 , <a class="el" href="classwx_html_easy_printing.html#a4d738f1511b6da10882719cba8324762">wxHtmlEasyPrinting</a>
+, <a class="el" href="classwx_image_handler.html#aec863a8d58771b3c103551cf7a41eaf2">wxImageHandler</a>
 , <a class="el" href="classwx_reg_key.html#a72d31e5f221d4f095d665a4f5c8d7365">wxRegKey</a>
 , <a class="el" href="classwx_p_g_property.html#a79f28d83cf79c6bb87337183fb8c56f5">wxPGProperty</a>
 , <a class="el" href="classwx_rich_text_object.html#a228e281da67b7c61ac4829992ff183bd">wxRichTextObject</a>
-, <a class="el" href="classwx_rich_text_field_type.html#ac262078a04c98149b4e4277384a608c4">wxRichTextFieldType</a>
 , <a class="el" href="classwx_rich_text_file_handler.html#a1559f89c91e446ef004e9784057fc2a9">wxRichTextFileHandler</a>
+, <a class="el" href="classwx_rich_text_drawing_handler.html#a1b2187287d1a5af23daa88eb153f8c61">wxRichTextDrawingHandler</a>
 , <a class="el" href="classwx_rich_text_style_definition.html#a7085d485d0892a4f223a8e2c4a78e219">wxRichTextStyleDefinition</a>
-, <a class="el" href="classwx_rich_text_style_sheet.html#af17d9a4df7e5d1893c0dc02d1fc07143">wxRichTextStyleSheet</a>
 , <a class="el" href="classwx_window.html#af80875cda5e1af98dcd7c8e712e3c800">wxWindow</a>
+, <a class="el" href="classwx_xml_node.html#a91e113b0061430f7ea87b4197f130759">wxXmlNode</a>
 , <a class="el" href="classwx_xml_attribute.html#a98ed929db49aa024db98c476df5d490f">wxXmlAttribute</a>
 </li>
 <li>SetNativeFontInfo()
@@ -2951,6 +2966,9 @@
 <li>SetNativeTheme()
 : <a class="el" href="classwx_app.html#a66e7bd3ff1d3b9ec44a3862a1ded663e">wxApp</a>
 </li>
+<li>SetNavigationType()
+: <a class="el" href="classwx_web_kit_before_load_event.html#a9875296c07d214bc9c6391abf38e8695">wxWebKitBeforeLoadEvent</a>
+</li>
 <li>SetNegativeButton()
 : <a class="el" href="classwx_std_dialog_button_sizer.html#a2e3771a7f1b826a38f51f888210a5d85">wxStdDialogButtonSizer</a>
 </li>
@@ -2961,10 +2979,10 @@
 : <a class="el" href="classwx_rich_text_event.html#ad3e6fe55d10326f17a9a8dcfa90f7d9a">wxRichTextEvent</a>
 </li>
 <li>SetNext()
-: <a class="el" href="classwx_xml_attribute.html#a8b0176343dc66841ab801118d055435c">wxXmlAttribute</a>
-, <a class="el" href="classwx_html_cell.html#af744488eb0f3fc67b15e89c88bf8e916">wxHtmlCell</a>
+: <a class="el" href="classwx_html_cell.html#af744488eb0f3fc67b15e89c88bf8e916">wxHtmlCell</a>
 , <a class="el" href="classwx_wizard_page_simple.html#a2a6d73e88712a812ebda74860d37cd34">wxWizardPageSimple</a>
 , <a class="el" href="classwx_xml_node.html#aadb626778d184a459c3dd1992cb59785">wxXmlNode</a>
+, <a class="el" href="classwx_xml_attribute.html#a8b0176343dc66841ab801118d055435c">wxXmlAttribute</a>
 </li>
 <li>SetNextHandler()
 : <a class="el" href="classwx_evt_handler.html#a68e2ef2d2b7d68c4c9c18ca92933031b">wxEvtHandler</a>
@@ -2993,9 +3011,9 @@
 : <a class="el" href="classwx_hyperlink_ctrl.html#a6081b5336124b2851bf1d33dd48b97f3">wxHyperlinkCtrl</a>
 </li>
 <li>SetNormalFont()
-: <a class="el" href="classwx_aui_notebook.html#aafff2a705c043066451ddec27d003cb4">wxAuiNotebook</a>
+: <a class="el" href="classwx_aui_tab_art.html#a19ed51e602d40f894d120bde65ae7ae3">wxAuiTabArt</a>
+, <a class="el" href="classwx_aui_notebook.html#aafff2a705c043066451ddec27d003cb4">wxAuiNotebook</a>
 , <a class="el" href="classwx_aui_tab_container.html#aef70d718f341e3e0a544028fe5988e2b">wxAuiTabContainer</a>
-, <a class="el" href="classwx_aui_tab_art.html#a19ed51e602d40f894d120bde65ae7ae3">wxAuiTabArt</a>
 , <a class="el" href="classwx_aui_default_tab_art.html#a184bf07d5a3ba8e7333a57822b332daa">wxAuiDefaultTabArt</a>
 , <a class="el" href="classwx_aui_simple_tab_art.html#a34599d5b478cba346e5d23ff21cf87d7">wxAuiSimpleTabArt</a>
 </li>
@@ -3049,18 +3067,17 @@
 : <a class="el" href="classwx_platform_info.html#a573b7a06315e62379186dfdd60ee6b86">wxPlatformInfo</a>
 </li>
 <li>SetOption()
-: <a class="el" href="classwx_system_options.html#abbde7fd57657d7cc3db0a91f9292b28c">wxSystemOptions</a>
-, <a class="el" href="classwx_image.html#a952ee065b17ee07a8cbee568486e01a4">wxImage</a>
+: <a class="el" href="classwx_image.html#a952ee065b17ee07a8cbee568486e01a4">wxImage</a>
 , <a class="el" href="classwx_system_options.html#aa04043bfa0ffee30aaf09f2e436f6208">wxSystemOptions</a>
 </li>
 <li>SetOptions()
 : <a class="el" href="classwx_rich_text_formatting_dialog.html#a52bbc7896044b95a8fbf794f34eff72a">wxRichTextFormattingDialog</a>
 </li>
 <li>SetOrientation()
-: <a class="el" href="classwx_scroll_event.html#acbe59c387a80ef7b98f9c0f2308e7ab5">wxScrollEvent</a>
+: <a class="el" href="classwx_sash_layout_window.html#ad086412930642863b94c1b533c270734">wxSashLayoutWindow</a>
 , <a class="el" href="classwx_print_data.html#afa9d7f64655a71497199e0ef2070d377">wxPrintData</a>
 , <a class="el" href="classwx_scroll_win_event.html#af78dd191ab94c6bc08b2905129eac9d8">wxScrollWinEvent</a>
-, <a class="el" href="classwx_sash_layout_window.html#ad086412930642863b94c1b533c270734">wxSashLayoutWindow</a>
+, <a class="el" href="classwx_scroll_event.html#acbe59c387a80ef7b98f9c0f2308e7ab5">wxScrollEvent</a>
 , <a class="el" href="classwx_query_layout_info_event.html#a91de3a17d98698f7423d73e13e55e0c2">wxQueryLayoutInfoEvent</a>
 , <a class="el" href="classwx_box_sizer.html#a62b873c88ed118bbf9497d53fd442ad9">wxBoxSizer</a>
 </li>
@@ -3086,8 +3103,8 @@
 : <a class="el" href="classwx_window.html#a9a3f9d8477aab1d9176cd66ee56e75d9">wxWindow</a>
 </li>
 <li>SetOwner()
-: <a class="el" href="classwx_data_view_renderer.html#a388da7afbbf86971c1e945255344666c">wxDataViewRenderer</a>
-, <a class="el" href="classwx_data_view_model_notifier.html#a5df378b4f9b65381095ecf78b7872e9a">wxDataViewModelNotifier</a>
+: <a class="el" href="classwx_data_view_model_notifier.html#a5df378b4f9b65381095ecf78b7872e9a">wxDataViewModelNotifier</a>
+, <a class="el" href="classwx_data_view_renderer.html#a388da7afbbf86971c1e945255344666c">wxDataViewRenderer</a>
 , <a class="el" href="classwx_file_system_watcher.html#a70156ba21bd8b6ee2753d2ee437dcbfe">wxFileSystemWatcher</a>
 , <a class="el" href="classwx_timer.html#aa3966b37329a4fad69ad384733eab27e">wxTimer</a>
 </li>
@@ -3104,9 +3121,10 @@
 : <a class="el" href="classwx_notebook.html#ad04a94e412e514319f187e7ec79e0815">wxNotebook</a>
 </li>
 <li>SetPage()
-: <a class="el" href="classwx_html_window.html#ac6d0335b1bb749b498598fc5a3b32703">wxHtmlWindow</a>
+: <a class="el" href="classwx_web_view.html#acaf31bd55bb607012ce054fc1b0aeab6">wxWebView</a>
+, <a class="el" href="classwx_html_window.html#ac6d0335b1bb749b498598fc5a3b32703">wxHtmlWindow</a>
 , <a class="el" href="classwx_ribbon_bar_event.html#abb0eb4fe0f83e8a1eebf83968ca4ed6f">wxRibbonBarEvent</a>
-, <a class="el" href="classwx_web_view.html#acaf31bd55bb607012ce054fc1b0aeab6">wxWebView</a>
+, <a class="el" href="classwx_web_view.html#ada9d443aea1d61ce18339c7328c54a67">wxWebView</a>
 </li>
 <li>SetPageBitmap()
 : <a class="el" href="classwx_aui_notebook.html#ac4c14ba864265f1202d8134462048292">wxAuiNotebook</a>
@@ -3127,6 +3145,9 @@
 , <a class="el" href="classwx_slider.html#ac8511076503048ba8566446c58b5900d">wxSlider</a>
 , <a class="el" href="classwx_wizard.html#af54b79bba58c1bdd6e4d389953131344">wxWizard</a>
 </li>
+<li>SetPageSource()
+: <a class="el" href="classwx_web_kit_ctrl.html#a86024aa9156c8397cdb7f34fc7e7595a">wxWebKitCtrl</a>
+</li>
 <li>SetPageSplitterLeft()
 : <a class="el" href="classwx_property_grid_manager.html#a8f0f7b25cd6febf992430491e8ecdeee">wxPropertyGridManager</a>
 </li>
@@ -3134,17 +3155,20 @@
 : <a class="el" href="classwx_property_grid_manager.html#a570a711217d963488b2061b095033f81">wxPropertyGridManager</a>
 </li>
 <li>SetPageText()
-: <a class="el" href="classwx_aui_notebook.html#a43f48e582eebf0c3991a49d15199e84e">wxAuiNotebook</a>
+: <a class="el" href="classwx_notebook.html#a4ce9b9ff43822b62560f27beaf0ada49">wxNotebook</a>
+, <a class="el" href="classwx_aui_notebook.html#a43f48e582eebf0c3991a49d15199e84e">wxAuiNotebook</a>
 , <a class="el" href="classwx_book_ctrl_base.html#aacc118888433ae50194cde356dbf2d50">wxBookCtrlBase</a>
-, <a class="el" href="classwx_notebook.html#a4ce9b9ff43822b62560f27beaf0ada49">wxNotebook</a>
+</li>
+<li>SetPageTitle()
+: <a class="el" href="classwx_web_kit_ctrl.html#ad19dc9dedb6ddb2b50a843b116b7538a">wxWebKitCtrl</a>
 </li>
 <li>SetPageToolTip()
 : <a class="el" href="classwx_aui_notebook.html#aed55320cf754f5f6b8fffa1240dd749b">wxAuiNotebook</a>
 </li>
 <li>SetPalette()
-: <a class="el" href="classwx_s_v_g_file_d_c.html#a56f9674ee5fff78f9f884586c7106bfc">wxSVGFileDC</a>
+: <a class="el" href="classwx_d_c.html#afc58b0f4653159e713377d38c84a120f">wxDC</a>
 , <a class="el" href="classwx_bitmap.html#a57d5e5389c7603ecb3edf822bc5eaf9c">wxBitmap</a>
-, <a class="el" href="classwx_d_c.html#afc58b0f4653159e713377d38c84a120f">wxDC</a>
+, <a class="el" href="classwx_s_v_g_file_d_c.html#a56f9674ee5fff78f9f884586c7106bfc">wxSVGFileDC</a>
 , <a class="el" href="classwx_image.html#acbf3a8b9f954b7da7d65adbb9cc9e026">wxImage</a>
 , <a class="el" href="classwx_window.html#aee57358435d6bd33f598c81354b47425">wxWindow</a>
 </li>
@@ -3158,8 +3182,8 @@
 : <a class="el" href="classwx_ribbon_panel_event.html#a93b3ff771f6b70a9cd64c7a7c522c665">wxRibbonPanelEvent</a>
 </li>
 <li>SetPaperId()
-: <a class="el" href="classwx_page_setup_dialog_data.html#afeddcd2351ca5a164a1100e5c9589a2c">wxPageSetupDialogData</a>
-, <a class="el" href="classwx_print_data.html#a463e3d74092b1067495bb4e687fd2c1a">wxPrintData</a>
+: <a class="el" href="classwx_print_data.html#a463e3d74092b1067495bb4e687fd2c1a">wxPrintData</a>
+, <a class="el" href="classwx_page_setup_dialog_data.html#afeddcd2351ca5a164a1100e5c9589a2c">wxPageSetupDialogData</a>
 </li>
 <li>SetPaperSize()
 : <a class="el" href="classwx_page_setup_dialog_data.html#ac6b8016ceefe62d0020098ed99f2ff17">wxPageSetupDialogData</a>
@@ -3174,20 +3198,20 @@
 : <a class="el" href="classwx_text_attr.html#adfa8e1c11e933576314546316d28e37d">wxTextAttr</a>
 </li>
 <li>SetParameters()
-: <a class="el" href="classwx_grid_cell_text_editor.html#ae60d252b96d85972d73d25cf12830dd1">wxGridCellTextEditor</a>
+: <a class="el" href="classwx_grid_cell_choice_editor.html#a16a3949337ceea767523ea0a9b4add81">wxGridCellChoiceEditor</a>
 , <a class="el" href="classwx_grid_cell_date_time_renderer.html#a15d677122c58b8aeb54184c79d4c75e3">wxGridCellDateTimeRenderer</a>
 , <a class="el" href="classwx_grid_cell_enum_renderer.html#ad6234911800ac4dfb349a780f1901387">wxGridCellEnumRenderer</a>
 , <a class="el" href="classwx_grid_cell_float_renderer.html#aa95d698f378dc182efd0e0760881bcc8">wxGridCellFloatRenderer</a>
-, <a class="el" href="classwx_grid_cell_choice_editor.html#a16a3949337ceea767523ea0a9b4add81">wxGridCellChoiceEditor</a>
+, <a class="el" href="classwx_grid_cell_text_editor.html#ae60d252b96d85972d73d25cf12830dd1">wxGridCellTextEditor</a>
 , <a class="el" href="classwx_grid_cell_float_editor.html#a5a2899d52880ffa98b6a368dc4fdcda3">wxGridCellFloatEditor</a>
 , <a class="el" href="classwx_grid_cell_number_editor.html#a82505b0510ae09f686ac7ede775bda86">wxGridCellNumberEditor</a>
 </li>
 <li>SetParent()
-: <a class="el" href="classwx_menu.html#a7873255a269c036348d6af33629d118b">wxMenu</a>
+: <a class="el" href="classwx_xml_node.html#aae5220ccbc45caa31296ba165dde3fbd">wxXmlNode</a>
 , <a class="el" href="classwx_html_cell.html#abd0726c3573d161c7db27f12705ec124">wxHtmlCell</a>
+, <a class="el" href="classwx_menu.html#a7873255a269c036348d6af33629d118b">wxMenu</a>
 , <a class="el" href="classwx_notification_message.html#a5b966d65b4c90b36c86fc80782cf8459">wxNotificationMessage</a>
 , <a class="el" href="classwx_rich_text_object.html#a20dfd3d8011aef58f658bf437e9ae7f2">wxRichTextObject</a>
-, <a class="el" href="classwx_xml_node.html#aae5220ccbc45caa31296ba165dde3fbd">wxXmlNode</a>
 </li>
 <li>SetParentalType()
 : <a class="el" href="classwx_p_g_property.html#af7e9a4c245025e118373a3c876c7904d">wxPGProperty</a>
@@ -3196,8 +3220,8 @@
 : <a class="el" href="classwx_xml_resource_handler.html#a1fa6e58387f7b76dcc0b6d6e6e075ca3">wxXmlResourceHandler</a>
 </li>
 <li>SetParentWindow()
-: <a class="el" href="classwx_help_controller_base.html#a8cb9ceb25ef38343812758131d4c464f">wxHelpControllerBase</a>
-, <a class="el" href="classwx_html_easy_printing.html#af788066cba7ec33fe89bb66475729500">wxHtmlEasyPrinting</a>
+: <a class="el" href="classwx_html_easy_printing.html#af788066cba7ec33fe89bb66475729500">wxHtmlEasyPrinting</a>
+, <a class="el" href="classwx_help_controller_base.html#a8cb9ceb25ef38343812758131d4c464f">wxHelpControllerBase</a>
 , <a class="el" href="classwx_rich_text_printing.html#a3090bf47d749f7faab31d72ced7fe759">wxRichTextPrinting</a>
 </li>
 <li>SetParser()
@@ -3218,14 +3242,14 @@
 : <a class="el" href="classwx_styled_text_ctrl.html#abab994f4de37a9d7c7286351577d19ea">wxStyledTextCtrl</a>
 </li>
 <li>SetPath()
-: <a class="el" href="classwx_file_ctrl.html#a588d1276adfe6ab5b53f41c7cf67a30d">wxFileCtrl</a>
+: <a class="el" href="classwx_file_config.html#ac2b05e8f651d7390e3c340e5c7feea0e">wxFileConfig</a>
+, <a class="el" href="classwx_file_picker_ctrl.html#aa18c0c1598d60bc6ef526f7749c1e156">wxFilePickerCtrl</a>
 , <a class="el" href="classwx_config_base.html#ad290d3fe7fad4f39a4bb2959db89b379">wxConfigBase</a>
 , <a class="el" href="classwx_generic_dir_ctrl.html#ac0e8bc480574ecf6fa0393bc38f20ecb">wxGenericDirCtrl</a>
 , <a class="el" href="classwx_dir_dialog.html#af16d4eceadfcb89ae79f7235dfccc488">wxDirDialog</a>
-, <a class="el" href="classwx_file_config.html#ac2b05e8f651d7390e3c340e5c7feea0e">wxFileConfig</a>
+, <a class="el" href="classwx_file_ctrl.html#a588d1276adfe6ab5b53f41c7cf67a30d">wxFileCtrl</a>
 , <a class="el" href="classwx_file_dialog.html#af81f0017c66440e2987648e5bc64f856">wxFileDialog</a>
 , <a class="el" href="classwx_file_name.html#a3a1269b6810aa55375da45d56f2ac3b9">wxFileName</a>
-, <a class="el" href="classwx_file_picker_ctrl.html#aa18c0c1598d60bc6ef526f7749c1e156">wxFilePickerCtrl</a>
 , <a class="el" href="classwx_dir_picker_ctrl.html#a0a861d00a0877c830bc6e77d6077b9a7">wxDirPickerCtrl</a>
 , <a class="el" href="classwx_file_dir_picker_event.html#a4bdc140322bb16344da7ecf51aa216ce">wxFileDirPickerEvent</a>
 </li>
@@ -3233,9 +3257,8 @@
 : <a class="el" href="classwx_thread_event.html#a4b9b438e229a0f53c97e6058cfc67959">wxThreadEvent</a>
 </li>
 <li>SetPen()
-: <a class="el" href="classwx_graphics_context.html#ac34d6320c2777fe2afcf8777868e37d3">wxGraphicsContext</a>
-, <a class="el" href="classwx_d_c.html#a0d229733fbc83c7e4c483c0714d090b2">wxDC</a>
-, <a class="el" href="classwx_graphics_context.html#acc15194eea4192f622d560bd33233cee">wxGraphicsContext</a>
+: <a class="el" href="classwx_d_c.html#a0d229733fbc83c7e4c483c0714d090b2">wxDC</a>
+, <a class="el" href="classwx_graphics_context.html#ac34d6320c2777fe2afcf8777868e37d3">wxGraphicsContext</a>
 </li>
 <li>SetPermissions()
 : <a class="el" href="classwx_file_name.html#ae1b6847990f5b41f5b53fb46a5e5fb79">wxFileName</a>
@@ -3283,26 +3306,26 @@
 : <a class="el" href="classwx_platform_info.html#ae3a93e4ad2948a54b9e3f9eb69bfc9fb">wxPlatformInfo</a>
 </li>
 <li>SetPos()
-: <a class="el" href="classwx_html_cell.html#a6cba35376a5280f83450c3993f517851">wxHtmlCell</a>
-, <a class="el" href="classwx_g_b_sizer_item.html#a16f4cfb3084129107896cdcb6ab6e0df">wxGBSizerItem</a>
+: <a class="el" href="classwx_g_b_sizer_item.html#a16f4cfb3084129107896cdcb6ab6e0df">wxGBSizerItem</a>
+, <a class="el" href="classwx_html_cell.html#a6cba35376a5280f83450c3993f517851">wxHtmlCell</a>
 </li>
 <li>SetPosition()
-: <a class="el" href="classwx_styled_text_event.html#af261b54ce46dde38624c8856eef14f33">wxStyledTextEvent</a>
-, <a class="el" href="classwx_rich_text_line.html#a894670ceec7cbc8efbc27e80da518cc8">wxRichTextLine</a>
-, <a class="el" href="classwx_help_event.html#aceef2981ed1c48fa1ba55cff9c185e81">wxHelpEvent</a>
+: <a class="el" href="classwx_context_menu_event.html#a24d0fdf2c831940a85b4e80e2c5d15a8">wxContextMenuEvent</a>
+, <a class="el" href="classwx_rich_text_object.html#ae7c9cff59495ff166cb72d4417d1f782">wxRichTextObject</a>
+, <a class="el" href="classwx_rect.html#a252234c32c36504805cb2bd9f2e3a59e">wxRect</a>
 , <a class="el" href="classwx_data_view_event.html#ab4ab7451fa21a879330110fa96107ab9">wxDataViewEvent</a>
 , <a class="el" href="classwx_scroll_win_event.html#ac4a9a862ce25c4e050a166a7f0e27709">wxScrollWinEvent</a>
-, <a class="el" href="classwx_context_menu_event.html#a24d0fdf2c831940a85b4e80e2c5d15a8">wxContextMenuEvent</a>
+, <a class="el" href="classwx_help_event.html#aceef2981ed1c48fa1ba55cff9c185e81">wxHelpEvent</a>
 , <a class="el" href="classwx_scroll_event.html#a89ec1c45caac5f2548ad7875124e5a6b">wxScrollEvent</a>
 , <a class="el" href="classwx_move_event.html#a4abd7f5e82edbc613cbddca16d54f4ce">wxMoveEvent</a>
-, <a class="el" href="classwx_rect.html#a252234c32c36504805cb2bd9f2e3a59e">wxRect</a>
 , <a class="el" href="classwx_graphics_gradient_stop.html#a5e56ab2a1b531a9e4fcc33d41b9399ce">wxGraphicsGradientStop</a>
 , <a class="el" href="classwx_mouse_state.html#a3af09115e9db255f820b54077da51cfc">wxMouseState</a>
 , <a class="el" href="classwx_text_attr_dimension.html#af7d8a11a1d8a2de5cdd9c8dcbb022c06">wxTextAttrDimension</a>
-, <a class="el" href="classwx_rich_text_object.html#ae7c9cff59495ff166cb72d4417d1f782">wxRichTextObject</a>
+, <a class="el" href="classwx_rich_text_line.html#a894670ceec7cbc8efbc27e80da518cc8">wxRichTextLine</a>
 , <a class="el" href="classwx_rich_text_action.html#a99c02912af7481bc145393f275d7e9ef">wxRichTextAction</a>
 , <a class="el" href="classwx_rich_text_event.html#a9ae047effe6eeeaa145fd535b5f96aa6">wxRichTextEvent</a>
 , <a class="el" href="classwx_spin_event.html#a85add17485df4a8b1ec0697b5cc0b026">wxSpinEvent</a>
+, <a class="el" href="classwx_styled_text_event.html#af261b54ce46dde38624c8856eef14f33">wxStyledTextEvent</a>
 , <a class="el" href="classwx_window.html#a81f23590239934fa10fded0566a65d8c">wxWindow</a>
 </li>
 <li>SetPositionCacheSize()
@@ -3328,8 +3351,8 @@
 : <a class="el" href="classwx_rich_text_printing.html#a04d2730e312fc798216d84b4a8ab261d">wxRichTextPrinting</a>
 </li>
 <li>SetPreviousHandler()
-: <a class="el" href="classwx_evt_handler.html#aff0d1836464be82e2ad723ad3a58eccc">wxEvtHandler</a>
-, <a class="el" href="classwx_window.html#a07f5f7ed3f78e0ef7b3dee3f4da81001">wxWindow</a>
+: <a class="el" href="classwx_window.html#a07f5f7ed3f78e0ef7b3dee3f4da81001">wxWindow</a>
+, <a class="el" href="classwx_evt_handler.html#aff0d1836464be82e2ad723ad3a58eccc">wxEvtHandler</a>
 </li>
 <li>SetPrintColourMode()
 : <a class="el" href="classwx_styled_text_ctrl.html#a8422f36721ddac36265458c447125cbb">wxStyledTextCtrl</a>
@@ -3338,9 +3361,9 @@
 : <a class="el" href="classwx_file_type_info.html#a6ed88ec73e856ac1e9000f4e3c2a81f6">wxFileTypeInfo</a>
 </li>
 <li>SetPrintData()
-: <a class="el" href="classwx_rich_text_printing.html#a0372c0d5a80271d4a95d2a2741a1517e">wxRichTextPrinting</a>
-, <a class="el" href="classwx_page_setup_dialog_data.html#a66d1bc76a519612e124044a594ac4afe">wxPageSetupDialogData</a>
+: <a class="el" href="classwx_page_setup_dialog_data.html#a66d1bc76a519612e124044a594ac4afe">wxPageSetupDialogData</a>
 , <a class="el" href="classwx_print_dialog_data.html#aa57f62ed8717568506167310a3951b2b">wxPrintDialogData</a>
+, <a class="el" href="classwx_rich_text_printing.html#a0372c0d5a80271d4a95d2a2741a1517e">wxRichTextPrinting</a>
 </li>
 <li>SetPrinterName()
 : <a class="el" href="classwx_print_data.html#a75fd42487b1bf58af1b1a1171f85d163">wxPrintData</a>
@@ -3368,15 +3391,15 @@
 : <a class="el" href="classwx_print_abort_dialog.html#aed4ba13c34a8a256eec1ff139b11a6f2">wxPrintAbortDialog</a>
 </li>
 <li>SetProperties()
-: <a class="el" href="classwx_rich_text_paragraph_layout_box.html#a701a9e4333dc76afc54cf633128dd619">wxRichTextParagraphLayoutBox</a>
+: <a class="el" href="classwx_rich_text_object.html#a13c33b7e80a60b1d76b320680983aa4b">wxRichTextObject</a>
 , <a class="el" href="classwx_rich_text_properties.html#afc781ad20c3a15b70adac8e70e5fe94f">wxRichTextProperties</a>
-, <a class="el" href="classwx_rich_text_object.html#a13c33b7e80a60b1d76b320680983aa4b">wxRichTextObject</a>
+, <a class="el" href="classwx_rich_text_paragraph_layout_box.html#a701a9e4333dc76afc54cf633128dd619">wxRichTextParagraphLayoutBox</a>
 , <a class="el" href="classwx_rich_text_ctrl.html#afb2499140d9ad1c0a02d2a53fa366657">wxRichTextCtrl</a>
 , <a class="el" href="classwx_rich_text_style_definition.html#ab6185fab170213619572cb08c0cd3aa9">wxRichTextStyleDefinition</a>
 , <a class="el" href="classwx_rich_text_style_sheet.html#a4ebf92dab03a9b87afe6408e7d1b9076">wxRichTextStyleSheet</a>
 </li>
 <li>SetProperty()
-: <a class="el" href="classwx_rich_text_properties.html#aed2c2654b0c97dd0d62a6d68547991be">wxRichTextProperties</a>
+: <a class="el" href="classwx_rich_text_properties.html#acf2c47e6321dc166961301bc0acfa2fa">wxRichTextProperties</a>
 , <a class="el" href="classwx_property_grid_event.html#a272ce7849a1f2c11aa22dfc354e89bf3">wxPropertyGridEvent</a>
 , <a class="el" href="classwx_rich_text_properties.html#acb8374d9dc04aa8eca6b1a2b85788665">wxRichTextProperties</a>
 , <a class="el" href="classwx_styled_text_ctrl.html#a503b51248a736de0aace8cac98cdd634">wxStyledTextCtrl</a>
@@ -3400,7 +3423,7 @@
 : <a class="el" href="classwx_property_grid_interface.html#a1a8b70c4e648dee652525c1bcb1d63e6">wxPropertyGridInterface</a>
 </li>
 <li>SetPropertyEditor()
-: <a class="el" href="classwx_property_grid_interface.html#a7155520a900a212c6ba48924a0398817">wxPropertyGridInterface</a>
+: <a class="el" href="classwx_property_grid_interface.html#aff961af9dd2787fb97f510ea5ce46407">wxPropertyGridInterface</a>
 </li>
 <li>SetPropertyHelpString()
 : <a class="el" href="classwx_property_grid_interface.html#a5793ea3ef9afa47fe2c1c5bf437dd583">wxPropertyGridInterface</a>
@@ -3427,10 +3450,10 @@
 : <a class="el" href="classwx_property_grid_interface.html#ad83fe8ad87751101316345a14133c45f">wxPropertyGridInterface</a>
 </li>
 <li>SetPropertyValue()
-: <a class="el" href="classwx_property_grid_interface.html#a51719a02370c475b2c61f32cd7b32ea0">wxPropertyGridInterface</a>
+: <a class="el" href="classwx_property_grid_interface.html#a2682d90e94b61601f6402bf930a98f1c">wxPropertyGridInterface</a>
 </li>
 <li>SetPropertyValues()
-: <a class="el" href="classwx_property_grid_interface.html#a85caa9196b0278e844df1af5f12c800b">wxPropertyGridInterface</a>
+: <a class="el" href="classwx_property_grid_interface.html#a59408c331ac19855ce3b55ff26f82a38">wxPropertyGridInterface</a>
 </li>
 <li>SetPropertyValueString()
 : <a class="el" href="classwx_property_grid_interface.html#a26e16b29e987c5f3b6782e80b23dc956">wxPropertyGridInterface</a>
@@ -3439,8 +3462,8 @@
 : <a class="el" href="classwx_property_grid_interface.html#ad0354321e04ed670c1d4904ef68f9ea0">wxPropertyGridInterface</a>
 </li>
 <li>SetProportion()
-: <a class="el" href="classwx_aui_tool_bar_item.html#ad92badddd1865abb55ae5ccb5bce2c07">wxAuiToolBarItem</a>
-, <a class="el" href="classwx_sizer_item.html#a7de372e08f991227d4105d24051d04a7">wxSizerItem</a>
+: <a class="el" href="classwx_sizer_item.html#a7de372e08f991227d4105d24051d04a7">wxSizerItem</a>
+, <a class="el" href="classwx_aui_tool_bar_item.html#ad92badddd1865abb55ae5ccb5bce2c07">wxAuiToolBarItem</a>
 </li>
 <li>SetProxy()
 : <a class="el" href="classwx_u_r_l.html#a79723a45665f2bbd71d5e1bbfcb2849f">wxURL</a>
@@ -3455,18 +3478,19 @@
 : <a class="el" href="classwx_tree_ctrl.html#a54a5d1e4cd35b5c693d0d701a04ff358">wxTreeCtrl</a>
 </li>
 <li>SetRange()
-: <a class="el" href="classwx_spin_button.html#a97ec0d9a2f90067fa359b5be9736275f">wxSpinButton</a>
-, <a class="el" href="classwx_rich_text_range.html#aca28357d0383d6ecf7df7310219a613b">wxRichTextRange</a>
+: <a class="el" href="classwx_generic_progress_dialog.html#af5f24bd05ef8b31dd1991bbc7533cb17">wxGenericProgressDialog</a>
+, <a class="el" href="classwx_slider.html#ac2eecc23851213793d4045e0470eb3de">wxSlider</a>
+, <a class="el" href="classwx_rich_text_line.html#ab0152b965de39a494f34ed78d40bd91b">wxRichTextLine</a>
 , <a class="el" href="classwx_date_picker_ctrl.html#a7a3bd4d450dbbed0c4f3c570e29ba223">wxDatePickerCtrl</a>
 , <a class="el" href="classwx_font_data.html#ac3d2f78a59cd50d5e3a045775a83fff5">wxFontData</a>
 , <a class="el" href="classwx_gauge.html#ad371fb5ea9d29d482baea51f97976123">wxGauge</a>
-, <a class="el" href="classwx_generic_progress_dialog.html#af5f24bd05ef8b31dd1991bbc7533cb17">wxGenericProgressDialog</a>
+, <a class="el" href="classwx_rich_text_range.html#aca28357d0383d6ecf7df7310219a613b">wxRichTextRange</a>
 , <a class="el" href="classwx_rich_text_selection.html#a94997c5b8f59856b202a8a3c078a5fb3">wxRichTextSelection</a>
 , <a class="el" href="classwx_rich_text_object.html#a16b84f91b15cdd1c89df64a9c4197fad">wxRichTextObject</a>
-, <a class="el" href="classwx_rich_text_line.html#ab0152b965de39a494f34ed78d40bd91b">wxRichTextLine</a>
+, <a class="el" href="classwx_rich_text_line.html#ad6a1c40edde96e02557efaae26fde25f">wxRichTextLine</a>
 , <a class="el" href="classwx_rich_text_action.html#aacf160af5b2f9e8930bb8d2147857549">wxRichTextAction</a>
 , <a class="el" href="classwx_rich_text_event.html#a98a815d779ffa3149fe0014e3b1fff5c">wxRichTextEvent</a>
-, <a class="el" href="classwx_slider.html#ac2eecc23851213793d4045e0470eb3de">wxSlider</a>
+, <a class="el" href="classwx_spin_button.html#a97ec0d9a2f90067fa359b5be9736275f">wxSpinButton</a>
 , <a class="el" href="classwx_spin_ctrl.html#ab2b5d966f0895c5cc4d54a9cfd1817dd">wxSpinCtrl</a>
 , <a class="el" href="classwx_spin_ctrl_double.html#a63291b5549b6d64cc1efbb39b3025345">wxSpinCtrlDouble</a>
 , <a class="el" href="classwx_num_validator.html#a20bd7a1545887952d883e3c870e6b6a8">wxNumValidator&lt; T &gt;</a>
@@ -3475,23 +3499,23 @@
 : <a class="el" href="classwx_rich_text_selection.html#a56a967ead8fce1c77c50f7948fcc1940">wxRichTextSelection</a>
 </li>
 <li>SetRatio()
-: <a class="el" href="classwx_sizer_item.html#ae761aa97de98f606d86419dbced0672d">wxSizerItem</a>
+: <a class="el" href="classwx_sizer_item.html#a0cc088cb6755dc0df5633aeae8d05fa5">wxSizerItem</a>
 </li>
 <li>SetRawControlDown()
 : <a class="el" href="classwx_keyboard_state.html#a3a200bfbfaa31597f791e5bd57b99db6">wxKeyboardState</a>
 </li>
 <li>SetReadOnly()
-: <a class="el" href="classwx_grid_cell_attr.html#af5c0bfc11a1d5e09557a00d3b54a163b">wxGridCellAttr</a>
+: <a class="el" href="classwx_styled_text_ctrl.html#a8e0234fe76281a6645798c47a34c2ecd">wxStyledTextCtrl</a>
+, <a class="el" href="classwx_grid_cell_attr.html#af5c0bfc11a1d5e09557a00d3b54a163b">wxGridCellAttr</a>
 , <a class="el" href="classwx_grid.html#a75a19910c37b2eb66ee598b2ceaeb34b">wxGrid</a>
-, <a class="el" href="classwx_styled_text_ctrl.html#a8e0234fe76281a6645798c47a34c2ecd">wxStyledTextCtrl</a>
 </li>
 <li>SetRecordDefaults()
 : <a class="el" href="classwx_config_base.html#a80bff71cc742251419ba499ce7b4da3c">wxConfigBase</a>
 </li>
 <li>SetRect()
-: <a class="el" href="classwx_aui_tab_container.html#a2b6d5c3d6758b1ddd0f01795a1d41603">wxAuiTabContainer</a>
+: <a class="el" href="classwx_size_event.html#aec71605403d6b11aa858d194fd486850">wxSizeEvent</a>
+, <a class="el" href="classwx_aui_tab_container.html#a2b6d5c3d6758b1ddd0f01795a1d41603">wxAuiTabContainer</a>
 , <a class="el" href="classwx_move_event.html#a8a497be8943285a6cbc031b466dda914">wxMoveEvent</a>
-, <a class="el" href="classwx_size_event.html#aec71605403d6b11aa858d194fd486850">wxSizeEvent</a>
 , <a class="el" href="classwx_calculate_layout_event.html#a471737747c444846393309de6e24eabc">wxCalculateLayoutEvent</a>
 </li>
 <li>SetRectangularSelectionAnchor()
@@ -3556,8 +3580,8 @@
 : <a class="el" href="classwx_dialog.html#a0d04ed85ac5cd271a61514d446340673">wxDialog</a>
 </li>
 <li>SetRGB()
-: <a class="el" href="classwx_colour.html#ac7d46c0479a74b63e67beba9c3f629c9">wxColour</a>
-, <a class="el" href="classwx_image.html#a17f90246727d089675e7f44a414280d1">wxImage</a>
+: <a class="el" href="classwx_image.html#a1c75932734bdc807c5a163e98a6e3077">wxImage</a>
+, <a class="el" href="classwx_colour.html#ac7d46c0479a74b63e67beba9c3f629c9">wxColour</a>
 </li>
 <li>SetRGBA()
 : <a class="el" href="classwx_colour.html#a940633aa9d78da10bf86cf6848364579">wxColour</a>
@@ -3569,13 +3593,13 @@
 : <a class="el" href="classwx_rich_text_paragraph_layout_box.html#ab1369ec5f46b7cfb81fd7b29d1633ea1">wxRichTextParagraphLayoutBox</a>
 , <a class="el" href="classwx_rich_text_style_organiser_dialog.html#a5b2c5b292d07559c307ceee81fa5ec1e">wxRichTextStyleOrganiserDialog</a>
 , <a class="el" href="classwx_rich_text_style_list_ctrl.html#a7295a01654c56bd16904f63049e36db4">wxRichTextStyleListCtrl</a>
-, <a class="el" href="classwx_rich_text_style_list_box.html#a6fb908c0041d4f1a420e56e1ef3e45e3">wxRichTextStyleListBox</a>
 , <a class="el" href="classwx_rich_text_style_combo_ctrl.html#ab0ecb9b79a44f418573100fb15240678">wxRichTextStyleComboCtrl</a>
+, <a class="el" href="classwx_rich_text_style_list_box.html#a6fb908c0041d4f1a420e56e1ef3e45e3">wxRichTextStyleListBox</a>
 </li>
 <li>SetRight()
-: <a class="el" href="classwx_rect2_d_double.html#a2a83d3a78b80625ff265260c92596867">wxRect2DDouble</a>
+: <a class="el" href="classwx_rect.html#abc3f50f43628a64c6689889b6e86876e">wxRect</a>
+, <a class="el" href="classwx_rect2_d_double.html#a2a83d3a78b80625ff265260c92596867">wxRect2DDouble</a>
 , <a class="el" href="classwx_rect2_d_int.html#a8aeb958a16ce14a9333c8f1061cae459">wxRect2DInt</a>
-, <a class="el" href="classwx_rect.html#abc3f50f43628a64c6689889b6e86876e">wxRect</a>
 </li>
 <li>SetRightBottom()
 : <a class="el" href="classwx_rect2_d_double.html#a7ccbfba6122d27032a642276e1db827c">wxRect2DDouble</a>
@@ -3591,8 +3615,8 @@
 : <a class="el" href="classwx_top_level_window.html#a98e95b1b10f44b80f9b29a03ab09a879">wxTopLevelWindow</a>
 </li>
 <li>SetRightTop()
-: <a class="el" href="classwx_rect2_d_int.html#aa22ff12eaa19a3e6a83d73f6de8047e7">wxRect2DInt</a>
-, <a class="el" href="classwx_rect2_d_double.html#a6ac7959d3b39b543eb4edb7252a7dfce">wxRect2DDouble</a>
+: <a class="el" href="classwx_rect2_d_double.html#a6ac7959d3b39b543eb4edb7252a7dfce">wxRect2DDouble</a>
+, <a class="el" href="classwx_rect2_d_int.html#aa22ff12eaa19a3e6a83d73f6de8047e7">wxRect2DInt</a>
 </li>
 <li>SetRoot()
 : <a class="el" href="classwx_xml_document.html#ac5b5e19c90e268ffe10d420797c29aec">wxXmlDocument</a>
@@ -3605,8 +3629,8 @@
 </li>
 <li>SetRowAttr()
 : <a class="el" href="classwx_grid_cell_attr_provider.html#afe30d6ea1164d0730d3f7ba447150735">wxGridCellAttrProvider</a>
-, <a class="el" href="classwx_grid.html#ac82a0059b9baa385f3143ef5f9504dfd">wxGrid</a>
 , <a class="el" href="classwx_grid_table_base.html#a8f1dc4a35497eeec27104943f0d7be11">wxGridTableBase</a>
+, <a class="el" href="classwx_grid.html#ac82a0059b9baa385f3143ef5f9504dfd">wxGrid</a>
 </li>
 <li>SetRowColumnCount()
 : <a class="el" href="classwx_var_h_v_scroll_helper.html#af59e2f7125a630b79245020ee3f7a2cb">wxVarHVScrollHelper</a>
@@ -3625,8 +3649,8 @@
 </li>
 <li>SetRowLabelValue()
 : <a class="el" href="classwx_grid_table_base.html#a8205840a49da8ab2147fa8081afb2de6">wxGridTableBase</a>
-, <a class="el" href="classwx_grid.html#ae67491f6e506a37dd45bc52e47a09fdc">wxGrid</a>
 , <a class="el" href="classwx_grid_string_table.html#af761fd6e62fbdb1051936bc212464bb5">wxGridStringTable</a>
+, <a class="el" href="classwx_grid.html#ae67491f6e506a37dd45bc52e47a09fdc">wxGrid</a>
 </li>
 <li>SetRowMinimalAcceptableHeight()
 : <a class="el" href="classwx_grid.html#a6be28cd73c4497e0d8c31cdac3968a0f">wxGrid</a>
@@ -3657,8 +3681,8 @@
 : <a class="el" href="classwx_splitter_window.html#a3e140b4e8e73ff55aaf3b055f007c269">wxSplitterWindow</a>
 </li>
 <li>SetSashPosition()
-: <a class="el" href="classwx_splitter_event.html#a477c99aaf92b0d7ab36d6e71c42f323a">wxSplitterEvent</a>
-, <a class="el" href="classwx_splitter_window.html#ac109c071995913871c8669cb05186f7a">wxSplitterWindow</a>
+: <a class="el" href="classwx_splitter_window.html#ac109c071995913871c8669cb05186f7a">wxSplitterWindow</a>
+, <a class="el" href="classwx_splitter_event.html#a477c99aaf92b0d7ab36d6e71c42f323a">wxSplitterEvent</a>
 </li>
 <li>SetSashVisible()
 : <a class="el" href="classwx_sash_window.html#a2d1c7d1912a7e0107501af0281d02cb3">wxSashWindow</a>
@@ -3667,9 +3691,9 @@
 : <a class="el" href="classwx_styled_text_ctrl.html#ab6d036ea6ab7a6389eca1d8d1fa19430">wxStyledTextCtrl</a>
 </li>
 <li>SetScale()
-: <a class="el" href="classwx_rich_text_ctrl.html#a226b26d3bc28eed7317e2fc6fcfba0c4">wxRichTextCtrl</a>
+: <a class="el" href="classwx_rich_text_buffer.html#ac6c6879e91cec5dc5d9b77e754020e9b">wxRichTextBuffer</a>
+, <a class="el" href="classwx_rich_text_ctrl.html#a226b26d3bc28eed7317e2fc6fcfba0c4">wxRichTextCtrl</a>
 , <a class="el" href="classwx_scrolled.html#a5c8829d39d00ce53901a8b1a67d5d780">wxScrolled&lt; T &gt;</a>
-, <a class="el" href="classwx_rich_text_buffer.html#ac6c6879e91cec5dc5d9b77e754020e9b">wxRichTextBuffer</a>
 </li>
 <li>SetScrollbar()
 : <a class="el" href="classwx_scroll_bar.html#ae69c239fd6af4ebcabf46efa9fc5092e">wxScrollBar</a>
@@ -3688,7 +3712,8 @@
 : <a class="el" href="classwx_scrolled.html#aa160351f31a0080784a00023947a06f6">wxScrolled&lt; T &gt;</a>
 </li>
 <li>SetScrollPos()
-: <a class="el" href="classwx_window.html#afbf4dc9064cf70cfe6884554b97a27bf">wxWindow</a>
+: <a class="el" href="classwx_web_kit_ctrl.html#abb9c78953b6b8563aa97405de552aedf">wxWebKitCtrl</a>
+, <a class="el" href="classwx_window.html#afbf4dc9064cf70cfe6884554b97a27bf">wxWindow</a>
 </li>
 <li>SetScrollRate()
 : <a class="el" href="classwx_scrolled.html#a76286e2efa55d0ba85d37106a44a9401">wxScrolled&lt; T &gt;</a>
@@ -3712,36 +3737,35 @@
 : <a class="el" href="classwx_styled_text_ctrl.html#a22825ff4a852af2798dffca897b3063f">wxStyledTextCtrl</a>
 </li>
 <li>SetSelectedFont()
-: <a class="el" href="classwx_aui_notebook.html#a46a80e69f7d52f5f10a44a1552117cf4">wxAuiNotebook</a>
-, <a class="el" href="classwx_aui_tab_container.html#ab39792790c320c22816e0d7373fad8cd">wxAuiTabContainer</a>
+: <a class="el" href="classwx_aui_tab_container.html#ab39792790c320c22816e0d7373fad8cd">wxAuiTabContainer</a>
 , <a class="el" href="classwx_aui_tab_art.html#a014a8a26a905e0ae56b5e04370c580e0">wxAuiTabArt</a>
 , <a class="el" href="classwx_aui_default_tab_art.html#af7cfc060974814e4f1b12122fa8f67fa">wxAuiDefaultTabArt</a>
-, <a class="el" href="classwx_aui_simple_tab_art.html#af552f2eafb0191033bc6b51eb545e495">wxAuiSimpleTabArt</a>
 , <a class="el" href="classwx_font_picker_ctrl.html#ada07e418ed99431e5012fb9409b729a7">wxFontPickerCtrl</a>
+, <a class="el" href="classwx_aui_simple_tab_art.html#af552f2eafb0191033bc6b51eb545e495">wxAuiSimpleTabArt</a>
+, <a class="el" href="classwx_aui_notebook.html#a46a80e69f7d52f5f10a44a1552117cf4">wxAuiNotebook</a>
 </li>
 <li>SetSelection()
 : <a class="el" href="classwx_aui_notebook.html#a39e9e72d5feacebdd49b8746e34f7c8c">wxAuiNotebook</a>
+, <a class="el" href="classwx_book_ctrl_base.html#a522ca472343a07a262de92348e3f2d2c">wxBookCtrlBase</a>
 , <a class="el" href="classwx_book_ctrl_event.html#a7afa201992c65fe827b905d8941b1b66">wxBookCtrlEvent</a>
 , <a class="el" href="classwx_single_choice_dialog.html#a66a263b54dfb4facb9a81624d49e34d0">wxSingleChoiceDialog</a>
 , <a class="el" href="classwx_choice.html#a10096ed787d493c701e9348f8e34440f">wxChoice</a>
-, <a class="el" href="classwx_combo_ctrl.html#a62f78126cae07f006685349851340b29">wxComboCtrl</a>
+, <a class="el" href="classwx_print_dialog_data.html#a97998396dbac49993890751e5e1012ad">wxPrintDialogData</a>
 , <a class="el" href="classwx_combo_box.html#a110d8b94ae2655ab28488b22843b47b1">wxComboBox</a>
-, <a class="el" href="classwx_html_rendering_info.html#ab102ce8d36ec824c6e891e9c6a7ff60d">wxHtmlRenderingInfo</a>
+, <a class="el" href="classwx_item_container_immutable.html#aea97d8ee51e7af5e06befd5f8c9d793b">wxItemContainerImmutable</a>
 , <a class="el" href="classwx_list_box.html#a65fd7fd5e3b8e7451b225b581ead70b1">wxListBox</a>
 , <a class="el" href="classwx_notebook.html#a140d1743bc93c3aff36fe2c9f1cb2bc8">wxNotebook</a>
 , <a class="el" href="classwx_property_grid.html#ad2e7aa1091f730d774860f55df81dee4">wxPropertyGrid</a>
-, <a class="el" href="classwx_radio_box.html#acdfb1a4331a5fc9b62d57f94b90f70c9">wxRadioBox</a>
 , <a class="el" href="classwx_ribbon_gallery.html#abb231950223effdf13e8f3f431a7a333">wxRibbonGallery</a>
 , <a class="el" href="classwx_rich_text_ctrl.html#a6c03432e13fb42c87df867f18252e10e">wxRichTextCtrl</a>
 , <a class="el" href="classwx_slider.html#a3477bd700151d3c04e42ae53311a18f0">wxSlider</a>
 , <a class="el" href="classwx_spin_ctrl.html#a2dbe44ee75161f54840339a2d340a6eb">wxSpinCtrl</a>
 , <a class="el" href="classwx_styled_text_ctrl.html#a93a0b8b0c54846b064f010ae999296d9">wxStyledTextCtrl</a>
-, <a class="el" href="classwx_v_list_box.html#aee1df263dbb96e49dbc44684fb7d9dad">wxVListBox</a>
 , <a class="el" href="classwx_text_entry.html#af7e298bc2a34bd646328f53efab766aa">wxTextEntry</a>
-, <a class="el" href="classwx_rich_text_ctrl.html#a5b6807c91b1714c76d3409d9af3a5010">wxRichTextCtrl</a>
-, <a class="el" href="classwx_item_container_immutable.html#aea97d8ee51e7af5e06befd5f8c9d793b">wxItemContainerImmutable</a>
-, <a class="el" href="classwx_print_dialog_data.html#a97998396dbac49993890751e5e1012ad">wxPrintDialogData</a>
-, <a class="el" href="classwx_book_ctrl_base.html#a522ca472343a07a262de92348e3f2d2c">wxBookCtrlBase</a>
+, <a class="el" href="classwx_v_list_box.html#aee1df263dbb96e49dbc44684fb7d9dad">wxVListBox</a>
+, <a class="el" href="classwx_radio_box.html#acdfb1a4331a5fc9b62d57f94b90f70c9">wxRadioBox</a>
+, <a class="el" href="classwx_combo_ctrl.html#a62f78126cae07f006685349851340b29">wxComboCtrl</a>
+, <a class="el" href="classwx_html_rendering_info.html#ab102ce8d36ec824c6e891e9c6a7ff60d">wxHtmlRenderingInfo</a>
 </li>
 <li>SetSelectionAnchor()
 : <a class="el" href="classwx_rich_text_ctrl.html#adc5abd524d85a221f8fbef8fbfab64e7">wxRichTextCtrl</a>
@@ -3750,8 +3774,8 @@
 : <a class="el" href="classwx_rich_text_ctrl.html#a47aec7eabccb5d8b7371673cefe7f9ff">wxRichTextCtrl</a>
 </li>
 <li>SetSelectionBackground()
-: <a class="el" href="classwx_v_list_box.html#aad25b40caedb9a864ab347d50e8c5e8b">wxVListBox</a>
-, <a class="el" href="classwx_grid.html#ae0fdd68c596ec67da406ee6a05d13d2e">wxGrid</a>
+: <a class="el" href="classwx_grid.html#ae0fdd68c596ec67da406ee6a05d13d2e">wxGrid</a>
+, <a class="el" href="classwx_v_list_box.html#aad25b40caedb9a864ab347d50e8c5e8b">wxVListBox</a>
 </li>
 <li>SetSelectionBackgroundColour()
 : <a class="el" href="classwx_property_grid.html#a3509c02317f851067925a75e2933f769">wxPropertyGrid</a>
@@ -3813,7 +3837,7 @@
 : <a class="el" href="classwx_gauge.html#a13bd279b2ca9827d280ec27b30f6de70">wxGauge</a>
 </li>
 <li>SetShape()
-: <a class="el" href="classwx_non_owned_window.html#a7f223eadbd72caea66efcb0b55e89613">wxNonOwnedWindow</a>
+: <a class="el" href="classwx_non_owned_window.html#aa3c3e3fe90bd1b20407262157a593de7">wxNonOwnedWindow</a>
 </li>
 <li>SetSheetStyle()
 : <a class="el" href="classwx_property_sheet_dialog.html#acdfd10705dfdc4517150e5e9e70b9f9a">wxPropertySheetDialog</a>
@@ -3842,8 +3866,8 @@
 : <a class="el" href="classwx_info_bar.html#a7a07a24280a4a3e64ab13db6c1106a44">wxInfoBar</a>
 </li>
 <li>SetShowOnFirstPage()
-: <a class="el" href="classwx_rich_text_printing.html#a217a0d752607e3f6b165a2bf7b7d008f">wxRichTextPrinting</a>
-, <a class="el" href="classwx_rich_text_header_footer_data.html#a323659e771343cbe65ad1f86b68ca840">wxRichTextHeaderFooterData</a>
+: <a class="el" href="classwx_rich_text_header_footer_data.html#a323659e771343cbe65ad1f86b68ca840">wxRichTextHeaderFooterData</a>
+, <a class="el" href="classwx_rich_text_printing.html#a217a0d752607e3f6b165a2bf7b7d008f">wxRichTextPrinting</a>
 </li>
 <li>SetShowToolTips()
 : <a class="el" href="classwx_rich_text_style_organiser_dialog.html#aa37ebf4ab0994377c498471e97d61e99">wxRichTextStyleOrganiserDialog</a>
@@ -3858,26 +3882,25 @@
 : <a class="el" href="classwx_list_ctrl.html#a20daa8d70dc41ba23d00bcf6a652ab28">wxListCtrl</a>
 </li>
 <li>SetSize()
-: <a class="el" href="classwx_window.html#a2ea9b25296d591aea4470c8fd99ff7cb">wxWindow</a>
-, <a class="el" href="classwx_grid_cell_editor.html#a76508cbb2989ce94aa3082f1a12e789f">wxGridCellEditor</a>
-, <a class="el" href="classwx_html_d_c_renderer.html#afa7a08a1a57cad6e0ae78a219fb608d1">wxHtmlDCRenderer</a>
-, <a class="el" href="classwx_caret.html#a0dd4f34b8e000a967701bb2821ed8bb2">wxCaret</a>
-, <a class="el" href="classwx_rich_text_line.html#ac25aa3ecc4b0044b2202d336d4dcda80">wxRichTextLine</a>
-, <a class="el" href="classwx_tar_entry.html#a4c6ea65856ecc69cb3a33753a7f35027">wxTarEntry</a>
-, <a class="el" href="classwx_archive_entry.html#ac5f34334ab1895a923354bd4da755364">wxArchiveEntry</a>
-, <a class="el" href="classwx_caret.html#afaed1930afff173d1a5ec005e6086509">wxCaret</a>
-, <a class="el" href="classwx_rect.html#a2e3502710b2987209bde881ac59521fc">wxRect</a>
-, <a class="el" href="classwx_text_box_attr.html#ae092d9f10edf4619fef5389dafc3dce6">wxTextBoxAttr</a>
-, <a class="el" href="classwx_window.html#a8e383bc6d5ca008965922a36c676aea0">wxWindow</a>
+: <a class="el" href="classwx_caret.html#afaed1930afff173d1a5ec005e6086509">wxCaret</a>
 , <a class="el" href="classwx_size_event.html#a10feb0885d50853a00bf302e1a1c6a22">wxSizeEvent</a>
+, <a class="el" href="classwx_text_box_attr.html#ae092d9f10edf4619fef5389dafc3dce6">wxTextBoxAttr</a>
+, <a class="el" href="classwx_archive_entry.html#ac5f34334ab1895a923354bd4da755364">wxArchiveEntry</a>
 , <a class="el" href="classwx_query_layout_info_event.html#a47ec467f4476fb22fccebb2ad7365bb4">wxQueryLayoutInfoEvent</a>
+, <a class="el" href="classwx_caret.html#a0dd4f34b8e000a967701bb2821ed8bb2">wxCaret</a>
+, <a class="el" href="classwx_grid_cell_editor.html#a76508cbb2989ce94aa3082f1a12e789f">wxGridCellEditor</a>
+, <a class="el" href="classwx_rich_text_line.html#ac25aa3ecc4b0044b2202d336d4dcda80">wxRichTextLine</a>
+, <a class="el" href="classwx_window.html#a030a928cd854de3def97c5720f14695b">wxWindow</a>
+, <a class="el" href="classwx_tar_entry.html#a4c6ea65856ecc69cb3a33753a7f35027">wxTarEntry</a>
+, <a class="el" href="classwx_html_d_c_renderer.html#afa7a08a1a57cad6e0ae78a219fb608d1">wxHtmlDCRenderer</a>
 , <a class="el" href="classwx_window.html#a180312d5ad4a4a5ad805b8d52d67a74e">wxWindow</a>
+, <a class="el" href="classwx_rect.html#a2e3502710b2987209bde881ac59521fc">wxRect</a>
+, <a class="el" href="classwx_window.html#a8e383bc6d5ca008965922a36c676aea0">wxWindow</a>
 </li>
 <li>SetSizeHints()
 : <a class="el" href="classwx_top_level_window.html#ac01a45e5d82e4e3be22a4841c1217e11">wxTopLevelWindow</a>
-, <a class="el" href="classwx_window.html#a307329dc3b10f5584aeb2cbce9293ffd">wxWindow</a>
-, <a class="el" href="classwx_sizer.html#abc460cd0e2bb3bde72142fdb434bc546">wxSizer</a>
 , <a class="el" href="classwx_window.html#ae813c640e1e2bc6014423247050846cf">wxWindow</a>
+, <a class="el" href="classwx_sizer.html#abc460cd0e2bb3bde72142fdb434bc546">wxSizer</a>
 , <a class="el" href="classwx_top_level_window.html#a4ddaae1bebf05a2bc474a192a5b30e42">wxTopLevelWindow</a>
 </li>
 <li>SetSizer()
@@ -3894,9 +3917,9 @@
 : <a class="el" href="classwx_ribbon_page.html#afa9dccf3781297876c760360f1c3f842">wxRibbonPage</a>
 </li>
 <li>SetSizingInfo()
-: <a class="el" href="classwx_aui_simple_tab_art.html#a4f0950f4ab1cd74a7d1fded8acce0273">wxAuiSimpleTabArt</a>
-, <a class="el" href="classwx_aui_tab_art.html#a22282354bc053c2e0db393b0001a0189">wxAuiTabArt</a>
+: <a class="el" href="classwx_aui_tab_art.html#a22282354bc053c2e0db393b0001a0189">wxAuiTabArt</a>
 , <a class="el" href="classwx_aui_default_tab_art.html#a0b8a2656b7307a6bf1be93009dec5e75">wxAuiDefaultTabArt</a>
+, <a class="el" href="classwx_aui_simple_tab_art.html#a4f0950f4ab1cd74a7d1fded8acce0273">wxAuiSimpleTabArt</a>
 </li>
 <li>SetSortable()
 : <a class="el" href="classwx_settable_header_column.html#afa46b4fd0a56898b3e2d5cc8e4401757">wxSettableHeaderColumn</a>
@@ -3911,8 +3934,8 @@
 : <a class="el" href="classwx_grid.html#a0139fd340f8c663e09ae670e2877598f">wxGrid</a>
 </li>
 <li>SetSortOrder()
-: <a class="el" href="classwx_header_column_simple.html#a0435ddb5c9945974193997e1ffd05954">wxHeaderColumnSimple</a>
-, <a class="el" href="classwx_settable_header_column.html#a360deabbdb9ede8c9e616d460f276124">wxSettableHeaderColumn</a>
+: <a class="el" href="classwx_settable_header_column.html#a360deabbdb9ede8c9e616d460f276124">wxSettableHeaderColumn</a>
+, <a class="el" href="classwx_header_column_simple.html#a0435ddb5c9945974193997e1ffd05954">wxHeaderColumnSimple</a>
 </li>
 <li>SetSpacer()
 : <a class="el" href="classwx_sizer_item.html#a83baa6835015e9ccd71ba290883db4f5">wxSizerItem</a>
@@ -3927,18 +3950,18 @@
 : <a class="el" href="classwx_splitter_window.html#a92c912e2e7b656c8f906aaff89e1a0ec">wxSplitterWindow</a>
 </li>
 <li>SetSplitterLeft()
-: <a class="el" href="classwx_property_grid.html#a67266e617ef6d4d25d36c06439cba40d">wxPropertyGrid</a>
-, <a class="el" href="classwx_property_grid_manager.html#ac69dcad0f3049e5d21209770a594213e">wxPropertyGridManager</a>
+: <a class="el" href="classwx_property_grid_manager.html#ac69dcad0f3049e5d21209770a594213e">wxPropertyGridManager</a>
+, <a class="el" href="classwx_property_grid.html#a67266e617ef6d4d25d36c06439cba40d">wxPropertyGrid</a>
 </li>
 <li>SetSplitterPosition()
-: <a class="el" href="classwx_property_grid_page.html#a487917dd83814af6d6023280b8589fec">wxPropertyGridPage</a>
+: <a class="el" href="classwx_property_grid.html#ae989700639a5d59dbb4657ee98331671">wxPropertyGrid</a>
+, <a class="el" href="classwx_property_grid_page.html#a487917dd83814af6d6023280b8589fec">wxPropertyGridPage</a>
 , <a class="el" href="classwx_property_grid_manager.html#a9552f800943bd0bb1e4d559a5d4414bf">wxPropertyGridManager</a>
-, <a class="el" href="classwx_property_grid.html#ae989700639a5d59dbb4657ee98331671">wxPropertyGrid</a>
 </li>
 <li>SetStandardFonts()
 : <a class="el" href="classwx_html_window.html#a746ac926326153fdccf38a5d36b6288d">wxHtmlWindow</a>
-, <a class="el" href="classwx_html_easy_printing.html#a663a594acc27f7479edbe2225375886b">wxHtmlEasyPrinting</a>
 , <a class="el" href="classwx_html_d_c_renderer.html#a277ee219b82244b3eecef42f4e67f14c">wxHtmlDCRenderer</a>
+, <a class="el" href="classwx_html_easy_printing.html#a663a594acc27f7479edbe2225375886b">wxHtmlEasyPrinting</a>
 </li>
 <li>SetStart()
 : <a class="el" href="classwx_rich_text_range.html#a66e240ddb04654355368b4db0ea663a4">wxRichTextRange</a>
@@ -3948,9 +3971,10 @@
 : <a class="el" href="classwx_graphics_gradient_stops.html#a510ae2bcdcec3b416c53fb577bf9494a">wxGraphicsGradientStops</a>
 </li>
 <li>SetState()
-: <a class="el" href="classwx_mouse_state.html#a59d981aa6726c5f7312b558159f25ced">wxMouseState</a>
-, <a class="el" href="classwx_aui_tool_bar_item.html#ae0888b9cfbe2bc3a102324c9d6b17dcf">wxAuiToolBarItem</a>
+: <a class="el" href="classwx_web_kit_state_changed_event.html#a9c083111f9eb6c54421be81cc14b359b">wxWebKitStateChangedEvent</a>
+, <a class="el" href="classwx_mouse_state.html#a59d981aa6726c5f7312b558159f25ced">wxMouseState</a>
 , <a class="el" href="classwx_list_item.html#a6194edc9db9f4f521e1873d5ae6f6a42">wxListItem</a>
+, <a class="el" href="classwx_aui_tool_bar_item.html#ae0888b9cfbe2bc3a102324c9d6b17dcf">wxAuiToolBarItem</a>
 </li>
 <li>SetStateImageList()
 : <a class="el" href="classwx_tree_ctrl.html#aabb789a3eaa97608659e50afbd7a46ff">wxTreeCtrl</a>
@@ -3971,8 +3995,8 @@
 : <a class="el" href="classwx_status_bar.html#a9b8d7edb05ff64d5feb1889f2e189537">wxStatusBar</a>
 </li>
 <li>SetStatusText()
-: <a class="el" href="classwx_status_bar.html#a1f0fd75cce7f3f8c89c0b2f8b9b88dd1">wxStatusBar</a>
-, <a class="el" href="classwx_frame.html#a0026c883df35e1d1f8818e229c41249f">wxFrame</a>
+: <a class="el" href="classwx_frame.html#a0026c883df35e1d1f8818e229c41249f">wxFrame</a>
+, <a class="el" href="classwx_status_bar.html#a1f0fd75cce7f3f8c89c0b2f8b9b88dd1">wxStatusBar</a>
 </li>
 <li>SetStatusWidths()
 : <a class="el" href="classwx_status_bar.html#a9abeb55a396c9ea4f0cea9fc06d124ee">wxStatusBar</a>
@@ -3995,14 +4019,14 @@
 : <a class="el" href="classwx_font.html#a074f14f7bea2d493d7ec14a65f76a3b7">wxFont</a>
 </li>
 <li>SetString()
-: <a class="el" href="classwx_string_tokenizer.html#acac18438a15dbe799d659f13a10187e9">wxStringTokenizer</a>
-, <a class="el" href="classwx_command_event.html#a06ca56ac6680fe3b3178d8abd913d450">wxCommandEvent</a>
+: <a class="el" href="classwx_radio_box.html#a95951516ebbf6d4ef78a110c0905777c">wxRadioBox</a>
 , <a class="el" href="classwx_combo_box.html#a4c8d4b39403b6c0ee14f30b0c1dd96b7">wxComboBox</a>
+, <a class="el" href="classwx_list_box.html#aa7167deecacd31c66134500d96681405">wxListBox</a>
+, <a class="el" href="classwx_string_tokenizer.html#acac18438a15dbe799d659f13a10187e9">wxStringTokenizer</a>
+, <a class="el" href="classwx_command_event.html#a06ca56ac6680fe3b3178d8abd913d450">wxCommandEvent</a>
 , <a class="el" href="classwx_item_container_immutable.html#a1daf356c330bac2d7a93c5b3de8fbabf">wxItemContainerImmutable</a>
 , <a class="el" href="classwx_choice.html#a0b5ca1f30a82f57849e8142d22e703eb">wxChoice</a>
 , <a class="el" href="classwx_thread_event.html#a72092085fc4e0837d8e56666cb45f4d3">wxThreadEvent</a>
-, <a class="el" href="classwx_list_box.html#aa7167deecacd31c66134500d96681405">wxListBox</a>
-, <a class="el" href="classwx_radio_box.html#a95951516ebbf6d4ef78a110c0905777c">wxRadioBox</a>
 </li>
 <li>SetStrings()
 : <a class="el" href="classwx_editable_list_box.html#a6162b1d0e5c4b39896f6628de70fceee">wxEditableListBox</a>
@@ -4019,25 +4043,24 @@
 : <a class="el" href="classwx_combo_popup.html#ad55221c409f2e1edbfcbf75719dc3864">wxComboPopup</a>
 </li>
 <li>SetStyle()
-: <a class="el" href="classwx_buffered_d_c.html#ae64d3425a6dd712da0f22f8ac2a4e8f7">wxBufferedDC</a>
-, <a class="el" href="classwx_pen.html#a741bccee5c10c6a24d22132f5c1ff2f7">wxPen</a>
+: <a class="el" href="classwx_text_attr_borders.html#af2fb8da1cc7efb16eb60701fa55ea99b">wxTextAttrBorders</a>
+, <a class="el" href="classwx_native_font_info.html#a0a48abd8fe40d93fcab9124fa5d3b7ac">wxNativeFontInfo</a>
+, <a class="el" href="classwx_rich_text_paragraph_layout_box.html#a5f9a633f68368d63e56b92f04fdf62f7">wxRichTextParagraphLayoutBox</a>
+, <a class="el" href="classwx_buffered_d_c.html#ae64d3425a6dd712da0f22f8ac2a4e8f7">wxBufferedDC</a>
+, <a class="el" href="classwx_num_validator.html#a2b8f78838d7430fc1b4a81d35971d23f">wxNumValidator&lt; T &gt;</a>
 , <a class="el" href="classwx_styled_text_ctrl.html#acd19cd142b2df3ef3e445e09eb12713a">wxStyledTextCtrl</a>
 , <a class="el" href="classwx_rich_text_ctrl.html#a63f20e9ce2057c2d4ffda9fea7bbfe44">wxRichTextCtrl</a>
-, <a class="el" href="classwx_rich_text_paragraph_layout_box.html#a599ecbc7d96efecdbc1ead396347abe8">wxRichTextParagraphLayoutBox</a>
-, <a class="el" href="classwx_num_validator.html#a2b8f78838d7430fc1b4a81d35971d23f">wxNumValidator&lt; T &gt;</a>
-, <a class="el" href="classwx_text_validator.html#a30d9deab4413db1039539dc7c062f9fa">wxTextValidator</a>
 , <a class="el" href="classwx_rich_text_formatting_dialog.html#a4f6df3d16fc3a7090d2f52c5a6aa4667">wxRichTextFormattingDialog</a>
-, <a class="el" href="classwx_native_font_info.html#a0a48abd8fe40d93fcab9124fa5d3b7ac">wxNativeFontInfo</a>
-, <a class="el" href="classwx_html_rendering_info.html#abb8aa12ea7d1baa40feb3ff3fe88abed">wxHtmlRenderingInfo</a>
-, <a class="el" href="classwx_rich_text_ctrl.html#a78964e258cffeb86d07992928e690c1c">wxRichTextCtrl</a>
+, <a class="el" href="classwx_rich_text_style_definition.html#a504d45fd917474caa259171778bb98ce">wxRichTextStyleDefinition</a>
+, <a class="el" href="classwx_rich_text_paragraph_layout_box.html#a599ecbc7d96efecdbc1ead396347abe8">wxRichTextParagraphLayoutBox</a>
+, <a class="el" href="classwx_pen.html#a741bccee5c10c6a24d22132f5c1ff2f7">wxPen</a>
 , <a class="el" href="classwx_brush.html#aaefe449c144d41f3c4ab48425b746282">wxBrush</a>
 , <a class="el" href="classwx_font.html#a1e2199aae978662fc4ceaa79be8a70b7">wxFont</a>
+, <a class="el" href="classwx_html_rendering_info.html#abb8aa12ea7d1baa40feb3ff3fe88abed">wxHtmlRenderingInfo</a>
 , <a class="el" href="classwx_text_attr_border.html#aedc2d3ca8b340438923c759cf9afe773">wxTextAttrBorder</a>
-, <a class="el" href="classwx_text_attr_borders.html#af2fb8da1cc7efb16eb60701fa55ea99b">wxTextAttrBorders</a>
-, <a class="el" href="classwx_rich_text_paragraph_layout_box.html#a5f9a633f68368d63e56b92f04fdf62f7">wxRichTextParagraphLayoutBox</a>
 , <a class="el" href="classwx_rich_text_ctrl.html#a019caef1a5e254ae3496e74de1c41fd4">wxRichTextCtrl</a>
-, <a class="el" href="classwx_rich_text_style_definition.html#a504d45fd917474caa259171778bb98ce">wxRichTextStyleDefinition</a>
 , <a class="el" href="classwx_text_ctrl.html#a0d972d3007e23ed9270d16b6bb326e80">wxTextCtrl</a>
+, <a class="el" href="classwx_text_validator.html#a30d9deab4413db1039539dc7c062f9fa">wxTextValidator</a>
 </li>
 <li>SetStyleBits()
 : <a class="el" href="classwx_styled_text_ctrl.html#a9d9f2fc0cc7f4f10e437139602f69b18">wxStyledTextCtrl</a>
@@ -4054,9 +4077,9 @@
 <li>SetStyleSheet()
 : <a class="el" href="classwx_rich_text_buffer.html#a9e370c0598144441fd388d101b611ce5">wxRichTextBuffer</a>
 , <a class="el" href="classwx_rich_text_style_list_box.html#af25c36fa1851cbb419898d444f67f41d">wxRichTextStyleListBox</a>
+, <a class="el" href="classwx_rich_text_ctrl.html#a75570a2d88256a5a03226189d19e8cf6">wxRichTextCtrl</a>
 , <a class="el" href="classwx_rich_text_style_organiser_dialog.html#adb311102d40cad4d9368d188760abaed">wxRichTextStyleOrganiserDialog</a>
 , <a class="el" href="classwx_rich_text_style_list_ctrl.html#af810da258bef91ae9f0a1e056ce8bac1">wxRichTextStyleListCtrl</a>
-, <a class="el" href="classwx_rich_text_ctrl.html#a75570a2d88256a5a03226189d19e8cf6">wxRichTextCtrl</a>
 , <a class="el" href="classwx_rich_text_style_combo_ctrl.html#a5707d8235380fb79eff95e23741e94d0">wxRichTextStyleComboCtrl</a>
 </li>
 <li>SetStyleSheetAndNotify()
@@ -4117,6 +4140,9 @@
 <li>SetTargetEnd()
 : <a class="el" href="classwx_styled_text_ctrl.html#a6945abe1ceba12c3aa69a13fc3ecd3bb">wxStyledTextCtrl</a>
 </li>
+<li>SetTargetName()
+: <a class="el" href="classwx_web_kit_new_window_event.html#a402beb6e5f94626e75b1afa7e402acd1">wxWebKitNewWindowEvent</a>
+</li>
 <li>SetTargetRect()
 : <a class="el" href="classwx_scrolled.html#aee90a87e1b3f7f0f70a89e085c0d9928">wxScrolled&lt; T &gt;</a>
 </li>
@@ -4124,33 +4150,33 @@
 : <a class="el" href="classwx_styled_text_ctrl.html#ab6dc546a539447d354bfbe60ac023021">wxStyledTextCtrl</a>
 </li>
 <li>SetTargetWindow()
-: <a class="el" href="classwx_scrolled.html#a117dc8edabb3e1250199eab089e4fa5b">wxScrolled&lt; T &gt;</a>
-, <a class="el" href="classwx_var_scroll_helper_base.html#af79bfa4aac18be344d5dbcf7932cf1f7">wxVarScrollHelperBase</a>
+: <a class="el" href="classwx_var_scroll_helper_base.html#af79bfa4aac18be344d5dbcf7932cf1f7">wxVarScrollHelperBase</a>
+, <a class="el" href="classwx_scrolled.html#a117dc8edabb3e1250199eab089e4fa5b">wxScrolled&lt; T &gt;</a>
 </li>
 <li>SetTechnology()
 : <a class="el" href="classwx_styled_text_ctrl.html#ada976c35b7d00207b6967825dda05358">wxStyledTextCtrl</a>
 </li>
 <li>SetTempDir()
-: <a class="el" href="classwx_html_help_data.html#a257f2986e455be6972518cf8ffd0bcf5">wxHtmlHelpData</a>
-, <a class="el" href="classwx_html_help_controller.html#a421864156aeebab1a1b62b6a02ae4e69">wxHtmlHelpController</a>
+: <a class="el" href="classwx_html_help_controller.html#a421864156aeebab1a1b62b6a02ae4e69">wxHtmlHelpController</a>
+, <a class="el" href="classwx_html_help_data.html#a257f2986e455be6972518cf8ffd0bcf5">wxHtmlHelpData</a>
 , <a class="el" href="classwx_rich_text_h_t_m_l_handler.html#a4f1331be53b57fa7542a84a0a01b2b3d">wxRichTextHTMLHandler</a>
 </li>
 <li>SetTemporaryImageLocations()
 : <a class="el" href="classwx_rich_text_h_t_m_l_handler.html#a9f6f547aca9c78f1bfa5503965ab67d5">wxRichTextHTMLHandler</a>
 </li>
 <li>SetText()
-: <a class="el" href="classwx_list_item.html#aa3c69c9507833b6081edc280df17d6e0">wxListItem</a>
-, <a class="el" href="classwx_combo_ctrl.html#a738267959dcf2b73430bd310173ebedb">wxComboCtrl</a>
-, <a class="el" href="classwx_data_view_icon_text.html#a506b582c8fd74deff82806efa898813d">wxDataViewIconText</a>
-, <a class="el" href="classwx_rich_text_header_footer_data.html#a87e72f2958b7985082624d1f12402671">wxRichTextHeaderFooterData</a>
-, <a class="el" href="classwx_p_g_cell.html#a31e284841d67f24055f75a8685ff1f54">wxPGCell</a>
+: <a class="el" href="classwx_update_u_i_event.html#a157efca52b0a423836610d115b4f69f7">wxUpdateUIEvent</a>
+, <a class="el" href="classwx_styled_text_ctrl.html#a404eb5101b0c1602f29dec04ef6e4394">wxStyledTextCtrl</a>
+, <a class="el" href="classwx_styled_text_event.html#a0e2f8c57dde6dafbb54bb5bf067b373d">wxStyledTextEvent</a>
+, <a class="el" href="classwx_menu_item.html#a742aa5bb0d3faa020e7b3bd66e336499">wxMenuItem</a>
 , <a class="el" href="classwx_rich_text_plain_text.html#a52a0b8373c9eadbe7060b5efe2792452">wxRichTextPlainText</a>
 , <a class="el" href="classwx_banner_window.html#aa2dcae1c87dbf15486f34042cae575f6">wxBannerWindow</a>
 , <a class="el" href="classwx_text_data_object.html#ac6754f3ad536bd0fa99928604ec48e7a">wxTextDataObject</a>
-, <a class="el" href="classwx_update_u_i_event.html#a157efca52b0a423836610d115b4f69f7">wxUpdateUIEvent</a>
-, <a class="el" href="classwx_menu_item.html#a742aa5bb0d3faa020e7b3bd66e336499">wxMenuItem</a>
-, <a class="el" href="classwx_styled_text_ctrl.html#a404eb5101b0c1602f29dec04ef6e4394">wxStyledTextCtrl</a>
-, <a class="el" href="classwx_styled_text_event.html#a0e2f8c57dde6dafbb54bb5bf067b373d">wxStyledTextEvent</a>
+, <a class="el" href="classwx_data_view_icon_text.html#a506b582c8fd74deff82806efa898813d">wxDataViewIconText</a>
+, <a class="el" href="classwx_combo_ctrl.html#a738267959dcf2b73430bd310173ebedb">wxComboCtrl</a>
+, <a class="el" href="classwx_list_item.html#aa3c69c9507833b6081edc280df17d6e0">wxListItem</a>
+, <a class="el" href="classwx_p_g_cell.html#a31e284841d67f24055f75a8685ff1f54">wxPGCell</a>
+, <a class="el" href="classwx_rich_text_header_footer_data.html#a87e72f2958b7985082624d1f12402671">wxRichTextHeaderFooterData</a>
 </li>
 <li>SetTextBackground()
 : <a class="el" href="classwx_d_c.html#a3ed22bd0a0b835d4d085261bb022766b">wxDC</a>
@@ -4159,16 +4185,16 @@
 : <a class="el" href="classwx_rich_text_attr.html#a0580fa8935bbabd67ecf56d273344ce3">wxRichTextAttr</a>
 </li>
 <li>SetTextColour()
-: <a class="el" href="classwx_rich_text_field_type_standard.html#ac9534c9aa9e9686a7694dfc5078fc05b">wxRichTextFieldTypeStandard</a>
-, <a class="el" href="classwx_list_item_attr.html#a8412b96168424fd27a3fe32d9deae343">wxListItemAttr</a>
-, <a class="el" href="classwx_text_attr.html#ae3d74ce2e7057146911eb0360d451082">wxTextAttr</a>
+: <a class="el" href="classwx_rich_text_header_footer_data.html#a73ea3c8ea3a07969930d1ee26d81afe9">wxRichTextHeaderFooterData</a>
+, <a class="el" href="classwx_p_g_property.html#a8d34f624ad2f38300741c3caa0929629">wxPGProperty</a>
+, <a class="el" href="classwx_list_item.html#a9e971c1815de2f34e6ef132ea71e457a">wxListItem</a>
 , <a class="el" href="classwx_menu_item.html#a695b5f2f1c2325ec01dba5cdd83dd3b5">wxMenuItem</a>
 , <a class="el" href="classwx_list_ctrl.html#af3e129f2ac6412c8bd602f286b95300f">wxListCtrl</a>
-, <a class="el" href="classwx_grid_cell_attr.html#a19b6fe93b5fd949c201fa38284eef603">wxGridCellAttr</a>
 , <a class="el" href="classwx_calendar_date_attr.html#a89f88fc34b15f0d466d1cdfc4e30440d">wxCalendarDateAttr</a>
-, <a class="el" href="classwx_list_item.html#a9e971c1815de2f34e6ef132ea71e457a">wxListItem</a>
-, <a class="el" href="classwx_p_g_property.html#a8d34f624ad2f38300741c3caa0929629">wxPGProperty</a>
-, <a class="el" href="classwx_rich_text_header_footer_data.html#a73ea3c8ea3a07969930d1ee26d81afe9">wxRichTextHeaderFooterData</a>
+, <a class="el" href="classwx_grid_cell_attr.html#a19b6fe93b5fd949c201fa38284eef603">wxGridCellAttr</a>
+, <a class="el" href="classwx_list_item_attr.html#a8412b96168424fd27a3fe32d9deae343">wxListItemAttr</a>
+, <a class="el" href="classwx_rich_text_field_type_standard.html#ac9534c9aa9e9686a7694dfc5078fc05b">wxRichTextFieldTypeStandard</a>
+, <a class="el" href="classwx_text_attr.html#ae3d74ce2e7057146911eb0360d451082">wxTextAttr</a>
 </li>
 <li>SetTextCtrl()
 : <a class="el" href="classwx_picker_base.html#a06f3f7837fa1ac0cc0a860e591e0b34a">wxPickerBase</a>
@@ -4198,14 +4224,14 @@
 : <a class="el" href="classwx_combo_ctrl.html#ae38353a81954d02af302ba103e984cb7">wxComboCtrl</a>
 </li>
 <li>SetTextOrientation()
-: <a class="el" href="classwx_aui_tool_bar_art.html#a23e41b790de5e9e8809a2bd59a0f76b1">wxAuiToolBarArt</a>
-, <a class="el" href="classwx_aui_default_tool_bar_art.html#a3ead4a3a13472903396c65be33a7035a">wxAuiDefaultToolBarArt</a>
+: <a class="el" href="classwx_aui_default_tool_bar_art.html#a3ead4a3a13472903396c65be33a7035a">wxAuiDefaultToolBarArt</a>
+, <a class="el" href="classwx_aui_tool_bar_art.html#a23e41b790de5e9e8809a2bd59a0f76b1">wxAuiToolBarArt</a>
 </li>
 <li>SetTextRaw()
 : <a class="el" href="classwx_styled_text_ctrl.html#a393c04f71bc68ec711a82232d440d4bc">wxStyledTextCtrl</a>
 </li>
 <li>SetTextValidator()
-: <a class="el" href="classwx_text_entry_dialog.html#a77259d5d40a8e6529d3b11a1f2354f4c">wxTextEntryDialog</a>
+: <a class="el" href="classwx_text_entry_dialog.html#a6ced03c03673b4d74b64596825d3a5a3">wxTextEntryDialog</a>
 </li>
 <li>SetTextValue()
 : <a class="el" href="classwx_data_view_list_ctrl.html#afd747df820204b181026519827ed6234">wxDataViewListCtrl</a>
@@ -4232,15 +4258,15 @@
 : <a class="el" href="classwx_time_picker_ctrl.html#a361ddb73bd005759c1f9acff7433d098">wxTimePickerCtrl</a>
 </li>
 <li>SetTimeout()
-: <a class="el" href="classwx_socket_base.html#ac24247e3f866154825c14de46a911e50">wxSocketBase</a>
-, <a class="el" href="classwx_rich_tool_tip.html#a9a35b1014b4ce263a639e16252617e4b">wxRichToolTip</a>
+: <a class="el" href="classwx_rich_tool_tip.html#a9a35b1014b4ce263a639e16252617e4b">wxRichToolTip</a>
+, <a class="el" href="classwx_socket_base.html#ac24247e3f866154825c14de46a911e50">wxSocketBase</a>
 </li>
 <li>SetTimes()
 : <a class="el" href="classwx_file_name.html#af95c9e026b116d04d92f08146bc61bcd">wxFileName</a>
 </li>
 <li>SetTimestamp()
-: <a class="el" href="classwx_event.html#ad4380dff3144a986cb960473051a1d8d">wxEvent</a>
-, <a class="el" href="classwx_log.html#a9d0193f89e127de5cc996a32d75cf5c0">wxLog</a>
+: <a class="el" href="classwx_log.html#a9d0193f89e127de5cc996a32d75cf5c0">wxLog</a>
+, <a class="el" href="classwx_event.html#ad4380dff3144a986cb960473051a1d8d">wxEvent</a>
 </li>
 <li>SetTip()
 : <a class="el" href="classwx_tool_tip.html#af398833cd15ef69ef8d82fc5b41edea0">wxToolTip</a>
@@ -4252,22 +4278,23 @@
 : <a class="el" href="classwx_tip_window.html#ac70d4d8ef1082c316f9b1a1a978c93d1">wxTipWindow</a>
 </li>
 <li>SetTitle()
-: <a class="el" href="classwx_settable_header_column.html#aa660fcc904edf557aaf68937aba1589f">wxSettableHeaderColumn</a>
+: <a class="el" href="classwx_rich_text_printing.html#afee2bc6c46cda70ce5300f7c08dfa4b6">wxRichTextPrinting</a>
 , <a class="el" href="classwx_top_level_window.html#afb944376c19d735a8251654ee4ac276f">wxTopLevelWindow</a>
-, <a class="el" href="classwx_header_column_simple.html#abd3ff067a6cd780281671a4a17453203">wxHeaderColumnSimple</a>
-, <a class="el" href="classwx_html_book_record.html#af88f23b61629b983757c7fd86a58b808">wxHtmlBookRecord</a>
-, <a class="el" href="classwx_document.html#abceab99f5677bc4ae3f12ce3756635a4">wxDocument</a>
-, <a class="el" href="classwx_menu.html#aa8b3117231c244d4952a641fb3e9a272">wxMenu</a>
 , <a class="el" href="classwx_notification_message.html#a7654f8e0764ac66c5dcf58b057453045">wxNotificationMessage</a>
-, <a class="el" href="classwx_rich_text_printing.html#afee2bc6c46cda70ce5300f7c08dfa4b6">wxRichTextPrinting</a>
+, <a class="el" href="classwx_web_kit_ctrl.html#a7a38e6b174899cd5ddffd8e30c4e6cd4">wxWebKitCtrl</a>
+, <a class="el" href="classwx_menu.html#aa8b3117231c244d4952a641fb3e9a272">wxMenu</a>
+, <a class="el" href="classwx_header_column_simple.html#abd3ff067a6cd780281671a4a17453203">wxHeaderColumnSimple</a>
+, <a class="el" href="classwx_document.html#abceab99f5677bc4ae3f12ce3756635a4">wxDocument</a>
+, <a class="el" href="classwx_settable_header_column.html#aa660fcc904edf557aaf68937aba1589f">wxSettableHeaderColumn</a>
+, <a class="el" href="classwx_html_book_record.html#af88f23b61629b983757c7fd86a58b808">wxHtmlBookRecord</a>
 </li>
 <li>SetTitleFont()
 : <a class="el" href="classwx_rich_tool_tip.html#a3268339723ba6bf65c0eb3809b9914eb">wxRichToolTip</a>
 </li>
 <li>SetTitleFormat()
-: <a class="el" href="classwx_html_help_controller.html#a2c97aabce8c085d01813d0fb1dec9dff">wxHtmlHelpController</a>
-, <a class="el" href="classwx_html_help_dialog.html#a02020ca6537f334286b53d321ec2ddf9">wxHtmlHelpDialog</a>
+: <a class="el" href="classwx_html_help_dialog.html#a02020ca6537f334286b53d321ec2ddf9">wxHtmlHelpDialog</a>
 , <a class="el" href="classwx_html_help_frame.html#aaeff54300bfe79b63c219dad49f907d7">wxHtmlHelpFrame</a>
+, <a class="el" href="classwx_html_help_controller.html#a2c97aabce8c085d01813d0fb1dec9dff">wxHtmlHelpController</a>
 </li>
 <li>SetTmpDefaultItem()
 : <a class="el" href="classwx_top_level_window.html#a03d21174f2a9a527d6483c7562339167">wxTopLevelWindow</a>
@@ -4303,15 +4330,15 @@
 : <a class="el" href="classwx_aui_tool_bar.html#aa0f6836fba72e2efb71fd2e2f0b49ca6">wxAuiToolBar</a>
 </li>
 <li>SetToolBitmapSize()
-: <a class="el" href="classwx_tool_bar.html#a57398893cb553fad90ffa7cd18cb1882">wxToolBar</a>
-, <a class="el" href="classwx_aui_tool_bar.html#a37b0fa681c545356f92529e3822c2196">wxAuiToolBar</a>
+: <a class="el" href="classwx_aui_tool_bar.html#a37b0fa681c545356f92529e3822c2196">wxAuiToolBar</a>
+, <a class="el" href="classwx_tool_bar.html#a57398893cb553fad90ffa7cd18cb1882">wxToolBar</a>
 </li>
 <li>SetToolBorderPadding()
 : <a class="el" href="classwx_aui_tool_bar.html#a2353ed7f2d5ad4d4d467bcd7e0b1c2e9">wxAuiToolBar</a>
 </li>
 <li>SetToolClientData()
-: <a class="el" href="classwx_tool_bar.html#a4e3c80eeecb4723c9d4f090caab5151f">wxToolBar</a>
-, <a class="el" href="classwx_ribbon_tool_bar.html#ad5363115a1418b54a162afebc4ce48d3">wxRibbonToolBar</a>
+: <a class="el" href="classwx_ribbon_tool_bar.html#ad5363115a1418b54a162afebc4ce48d3">wxRibbonToolBar</a>
+, <a class="el" href="classwx_tool_bar.html#a4e3c80eeecb4723c9d4f090caab5151f">wxToolBar</a>
 </li>
 <li>SetToolDisabledBitmap()
 : <a class="el" href="classwx_ribbon_tool_bar.html#a04078695e62582b815a08044d27665f5">wxRibbonToolBar</a>
@@ -4334,8 +4361,8 @@
 , <a class="el" href="classwx_tool_bar.html#abaf8db63f2bc75e0de67280b7e83711d">wxToolBar</a>
 </li>
 <li>SetToolNormalBitmap()
-: <a class="el" href="classwx_ribbon_tool_bar.html#a6529d00831bdbebba8a073d968d33804">wxRibbonToolBar</a>
-, <a class="el" href="classwx_tool_bar.html#a46b05975759ab8dc745908210ce17fcc">wxToolBar</a>
+: <a class="el" href="classwx_tool_bar.html#a46b05975759ab8dc745908210ce17fcc">wxToolBar</a>
+, <a class="el" href="classwx_ribbon_tool_bar.html#a6529d00831bdbebba8a073d968d33804">wxRibbonToolBar</a>
 </li>
 <li>SetToolPacking()
 : <a class="el" href="classwx_aui_tool_bar.html#a4ac5428359024383b4442ffc1400fff0">wxAuiToolBar</a>
@@ -4345,12 +4372,12 @@
 : <a class="el" href="classwx_aui_tool_bar.html#a84af2b9ba00df3c15f5cb17ab614ced6">wxAuiToolBar</a>
 </li>
 <li>SetToolSeparation()
-: <a class="el" href="classwx_aui_tool_bar.html#ac3df9ac118b4aa80dcc3c3636a586ff8">wxAuiToolBar</a>
-, <a class="el" href="classwx_tool_bar.html#a163c9bfdd0f9f30707688bf498ab788c">wxToolBar</a>
+: <a class="el" href="classwx_tool_bar.html#a163c9bfdd0f9f30707688bf498ab788c">wxToolBar</a>
+, <a class="el" href="classwx_aui_tool_bar.html#ac3df9ac118b4aa80dcc3c3636a586ff8">wxAuiToolBar</a>
 </li>
 <li>SetToolShortHelp()
-: <a class="el" href="classwx_tool_bar.html#a28ad34823b70faeae9a64c6152b8fcd1">wxToolBar</a>
-, <a class="el" href="classwx_aui_tool_bar.html#a1ef4d39eb212d278035cac5d33ff0de9">wxAuiToolBar</a>
+: <a class="el" href="classwx_aui_tool_bar.html#a1ef4d39eb212d278035cac5d33ff0de9">wxAuiToolBar</a>
+, <a class="el" href="classwx_tool_bar.html#a28ad34823b70faeae9a64c6152b8fcd1">wxToolBar</a>
 </li>
 <li>SetToolSticky()
 : <a class="el" href="classwx_aui_tool_bar.html#abc663a1dffc17c521f47a93347084111">wxAuiToolBar</a>
@@ -4363,8 +4390,8 @@
 , <a class="el" href="classwx_tree_event.html#aa7e87d07fb9292ee3d72b857485bf342">wxTreeEvent</a>
 </li>
 <li>SetTop()
-: <a class="el" href="classwx_rect2_d_int.html#a17fd9eca90ff62211e95222b765b1481">wxRect2DInt</a>
-, <a class="el" href="classwx_rect.html#afaa648c7f822e3504d858e292b889a3d">wxRect</a>
+: <a class="el" href="classwx_rect.html#afaa648c7f822e3504d858e292b889a3d">wxRect</a>
+, <a class="el" href="classwx_rect2_d_int.html#a17fd9eca90ff62211e95222b765b1481">wxRect2DInt</a>
 , <a class="el" href="classwx_rect2_d_double.html#a065ddf876413b773f5edb0ffe7ba9478">wxRect2DDouble</a>
 </li>
 <li>SetToPage()
@@ -4414,11 +4441,11 @@
 : <a class="el" href="classwx_styled_text_ctrl.html#a905908a4ba6cb09a938c42e8b1b58142">wxStyledTextCtrl</a>
 </li>
 <li>SetType()
-: <a class="el" href="classwx_bitmap_handler.html#ac88850ce5ac8b4c5893fac8bce635f03">wxBitmapHandler</a>
-, <a class="el" href="classwx_rich_text_file_handler.html#ac27e7b08fda35574f23db8b33b6febf3">wxRichTextFileHandler</a>
+: <a class="el" href="classwx_data_format.html#a9400041e82a194b015bdf9d90805f701">wxDataFormat</a>
 , <a class="el" href="classwx_image.html#ab4a6c25da79e4f2473246108951906e6">wxImage</a>
+, <a class="el" href="classwx_rich_text_file_handler.html#ac27e7b08fda35574f23db8b33b6febf3">wxRichTextFileHandler</a>
 , <a class="el" href="classwx_xml_node.html#a691b60bdae2c594d403f4374ac672221">wxXmlNode</a>
-, <a class="el" href="classwx_data_format.html#a9400041e82a194b015bdf9d90805f701">wxDataFormat</a>
+, <a class="el" href="classwx_bitmap_handler.html#ac88850ce5ac8b4c5893fac8bce635f03">wxBitmapHandler</a>
 </li>
 <li>SetTypeFlag()
 : <a class="el" href="classwx_tar_entry.html#a439d96d58b3e3db4ff02679b46eb057c">wxTarEntry</a>
@@ -4427,8 +4454,8 @@
 : <a class="el" href="classwx_file_config.html#a709b9d8592d746ca7a0d80abdf20ce95">wxFileConfig</a>
 </li>
 <li>SetUnderlined()
-: <a class="el" href="classwx_font.html#a2a8a3a71090bfa4ed957dfd1ffcc524c">wxFont</a>
-, <a class="el" href="classwx_native_font_info.html#a945abb6c70aee5256168c3de05968661">wxNativeFontInfo</a>
+: <a class="el" href="classwx_native_font_info.html#a945abb6c70aee5256168c3de05968661">wxNativeFontInfo</a>
+, <a class="el" href="classwx_font.html#a2a8a3a71090bfa4ed957dfd1ffcc524c">wxFont</a>
 </li>
 <li>SetUndoAccelerator()
 : <a class="el" href="classwx_command_processor.html#a258a7fd2a1250220e119849eafe55934">wxCommandProcessor</a>
@@ -4464,10 +4491,13 @@
 : <a class="el" href="classwx_xml_resource_handler.html#a20415a720e259e8cc138f38718b8831b">wxXmlResourceHandler</a>
 </li>
 <li>SetURL()
-: <a class="el" href="classwx_text_attr.html#aad62bd5f3d6f1b9ea78360f06947a8c5">wxTextAttr</a>
-, <a class="el" href="classwx_u_r_l.html#afd25de2271b473acf331ab56412a3a99">wxURL</a>
+: <a class="el" href="classwx_web_kit_before_load_event.html#a03a496b4f669b27afc6227d90e6b19e7">wxWebKitBeforeLoadEvent</a>
 , <a class="el" href="classwx_hyperlink_ctrl.html#a1cdaf835c456f8395d1574d5d73ec988">wxHyperlinkCtrl</a>
+, <a class="el" href="classwx_u_r_l.html#afd25de2271b473acf331ab56412a3a99">wxURL</a>
+, <a class="el" href="classwx_web_kit_state_changed_event.html#abedacff51de94e065f86a1b2887c8f74">wxWebKitStateChangedEvent</a>
+, <a class="el" href="classwx_web_kit_new_window_event.html#abe5d83b9895e951cddc93c71bef8989f">wxWebKitNewWindowEvent</a>
 , <a class="el" href="classwx_hyperlink_event.html#a49a363a38d5fede85e6e3b17694694ce">wxHyperlinkEvent</a>
+, <a class="el" href="classwx_text_attr.html#aad62bd5f3d6f1b9ea78360f06947a8c5">wxTextAttr</a>
 , <a class="el" href="classwx_u_r_l_data_object.html#a6eb3ac7f0aea65eb54d005b91181bed2">wxURLDataObject</a>
 </li>
 <li>SetURLCursor()
@@ -4483,8 +4513,8 @@
 : <a class="el" href="classwx_grid.html#a1a5872a6e126933b0bf2582716279a41">wxGrid</a>
 </li>
 <li>SetUser()
-: <a class="el" href="classwx_f_t_p.html#aa98a9516aacb33260942d5f65e4189ae">wxFTP</a>
-, <a class="el" href="classwx_protocol.html#ab1f11044077ce6755e17eab0b0b461a1">wxProtocol</a>
+: <a class="el" href="classwx_protocol.html#ab1f11044077ce6755e17eab0b0b461a1">wxProtocol</a>
+, <a class="el" href="classwx_f_t_p.html#aa98a9516aacb33260942d5f65e4189ae">wxFTP</a>
 </li>
 <li>SetUserData()
 : <a class="el" href="classwx_aui_tool_bar_item.html#a77146f32f5db099e9ed0dd0d4923f8b9">wxAuiToolBarItem</a>
@@ -4509,52 +4539,53 @@
 : <a class="el" href="classwx_text_attr_dimension.html#a2fe0ade6fa515aae824f4fa23452ae59">wxTextAttrDimension</a>
 </li>
 <li>SetValidationFailureBehavior()
-: <a class="el" href="classwx_property_grid_event.html#af0e3f38f5f6ba53f734aeff32c13a3b7">wxPropertyGridEvent</a>
-, <a class="el" href="classwx_property_grid_interface.html#ade72c97a047aa409dc7429010f640bb6">wxPropertyGridInterface</a>
+: <a class="el" href="classwx_property_grid_interface.html#ade72c97a047aa409dc7429010f640bb6">wxPropertyGridInterface</a>
+, <a class="el" href="classwx_property_grid_event.html#af0e3f38f5f6ba53f734aeff32c13a3b7">wxPropertyGridEvent</a>
 </li>
 <li>SetValidationFailureMessage()
 : <a class="el" href="classwx_property_grid_event.html#a3e8036ea8f867f0d94548165bc2914cf">wxPropertyGridEvent</a>
 </li>
 <li>SetValidator()
-: <a class="el" href="classwx_p_g_property.html#a9eb7d1f243c6fb993b3563c241b2ef4a">wxPGProperty</a>
+: <a class="el" href="classwx_grid_cell_text_editor.html#a9e0ccc09b868705df951369b4cdb4b42">wxGridCellTextEditor</a>
 , <a class="el" href="classwx_window.html#a00066c70049a7be3ce6b648d206e6432">wxWindow</a>
-, <a class="el" href="classwx_grid_cell_text_editor.html#a9e0ccc09b868705df951369b4cdb4b42">wxGridCellTextEditor</a>
+, <a class="el" href="classwx_p_g_property.html#a9eb7d1f243c6fb993b3563c241b2ef4a">wxPGProperty</a>
 </li>
 <li>SetValue()
-: <a class="el" href="classwx_individual_layout_constraint.html#a6abf56b3412b780996d14558fc1b289e">wxIndividualLayoutConstraint</a>
-, <a class="el" href="classwx_combo_box.html#aa784b34330fee87b27cbe64bf0ce41b6">wxComboBox</a>
-, <a class="el" href="classwx_grid_table_base.html#a81959e0a329f006de970c5cc82d99ba2">wxGridTableBase</a>
-, <a class="el" href="classwx_gauge.html#a10d32bc2c4c4bb6c45041a0728f601dd">wxGauge</a>
-, <a class="el" href="classwx_data_view_renderer.html#ac4494f39d056c1b0976481647b24117f">wxDataViewRenderer</a>
-, <a class="el" href="classwx_data_view_event.html#a59db8632419879f0e51d94b32b5ff914">wxDataViewEvent</a>
-, <a class="el" href="classwx_grid_string_table.html#ab450d0e50a153a0fe8a60c418fdd1256">wxGridStringTable</a>
-, <a class="el" href="classwx_variant_data_currency.html#a2cf5306df49138de2c582baf35629d9f">wxVariantDataCurrency</a>
-, <a class="el" href="classwx_variant_data_error_code.html#a15158d606e9289e1da2d6a1094aed64f">wxVariantDataErrorCode</a>
-, <a class="el" href="classwx_date_picker_ctrl.html#a421e1db72e2e88c0613aab3d7438dc70">wxDatePickerCtrl</a>
-, <a class="el" href="classwx_p_g_property.html#aa8e771a01a93fe94f87a449f430afa79">wxPGProperty</a>
-, <a class="el" href="classwx_text_attr_dimension.html#a02e81616cc51e4d1193adaf0f41d5f54">wxTextAttrDimension</a>
-, <a class="el" href="classwx_spin_button.html#ab45e4a9bffcc5e6bc542148d1dd587d4">wxSpinButton</a>
+: <a class="el" href="classwx_spin_ctrl_double.html#a923aef4c509e78b0feba00e8cb181cab">wxSpinCtrlDouble</a>
 , <a class="el" href="classwx_data_view_model.html#a136dbef49beb09df1ffe5aa884a9c022">wxDataViewModel</a>
-, <a class="el" href="classwx_toggle_button.html#ab75d4ad3bbbbf5a827c5aed373ff26db">wxToggleButton</a>
+, <a class="el" href="classwx_xml_attribute.html#aacaabe946d15d81090a6b6b10381c933">wxXmlAttribute</a>
+, <a class="el" href="classwx_gauge.html#a10d32bc2c4c4bb6c45041a0728f601dd">wxGauge</a>
+, <a class="el" href="classwx_grid_table_base.html#a81959e0a329f006de970c5cc82d99ba2">wxGridTableBase</a>
+, <a class="el" href="classwx_grid_string_table.html#ab450d0e50a153a0fe8a60c418fdd1256">wxGridStringTable</a>
+, <a class="el" href="classwx_data_view_renderer.html#ac4494f39d056c1b0976481647b24117f">wxDataViewRenderer</a>
 , <a class="el" href="classwx_reg_key.html#a2f7b85a0eb027682d69fcbd860eac54b">wxRegKey</a>
+, <a class="el" href="classwx_text_attr_dimension.html#a99578325fff198646648b3f7b558815e">wxTextAttrDimension</a>
+, <a class="el" href="classwx_slider.html#a8c9839893e1569bef990dd84567ea541">wxSlider</a>
+, <a class="el" href="classwx_spin_ctrl.html#a1e60208c58820d18cd5b5df3bf91d414">wxSpinCtrl</a>
 , <a class="el" href="classwx_check_box.html#a6b19d59054f3f038ffaa279bf99552fe">wxCheckBox</a>
-, <a class="el" href="classwx_combo_ctrl.html#a4202edbc9fc83623c658a83fe4c6d7be">wxComboCtrl</a>
+, <a class="el" href="classwx_text_entry.html#a90f876b2dd83ba5c97ba0c193b386e9f">wxTextEntry</a>
+, <a class="el" href="classwx_combo_box.html#aa784b34330fee87b27cbe64bf0ce41b6">wxComboBox</a>
+, <a class="el" href="classwx_date_picker_ctrl.html#a421e1db72e2e88c0613aab3d7438dc70">wxDatePickerCtrl</a>
+, <a class="el" href="classwx_variant_data_safe_array.html#ae6857c97e708a18b6e9c482dfacd46dc">wxVariantDataSafeArray</a>
+, <a class="el" href="classwx_variant_data_error_code.html#a15158d606e9289e1da2d6a1094aed64f">wxVariantDataErrorCode</a>
+, <a class="el" href="classwx_variant_data_currency.html#a2cf5306df49138de2c582baf35629d9f">wxVariantDataCurrency</a>
+, <a class="el" href="classwx_p_g_property.html#aa8e771a01a93fe94f87a449f430afa79">wxPGProperty</a>
+, <a class="el" href="classwx_data_view_event.html#a59db8632419879f0e51d94b32b5ff914">wxDataViewEvent</a>
+, <a class="el" href="classwx_toggle_button.html#ab75d4ad3bbbbf5a827c5aed373ff26db">wxToggleButton</a>
 , <a class="el" href="classwx_reg_key.html#a12bfa3628e634e739f1b97906a2db665">wxRegKey</a>
 , <a class="el" href="classwx_text_attr_dimension.html#ad4028aba41235b274bd1332d97b716e3">wxTextAttrDimension</a>
-, <a class="el" href="classwx_text_entry.html#a90f876b2dd83ba5c97ba0c193b386e9f">wxTextEntry</a>
-, <a class="el" href="classwx_data_view_list_ctrl.html#afa48329e396067530253546a847bf83a">wxDataViewListCtrl</a>
-, <a class="el" href="classwx_variant_data_safe_array.html#ae6857c97e708a18b6e9c482dfacd46dc">wxVariantDataSafeArray</a>
-, <a class="el" href="classwx_slider.html#a8c9839893e1569bef990dd84567ea541">wxSlider</a>
-, <a class="el" href="classwx_rich_text_ctrl.html#ada03843f597b86f4a33ee4bee9beb089">wxRichTextCtrl</a>
+, <a class="el" href="classwx_spin_button.html#ab45e4a9bffcc5e6bc542148d1dd587d4">wxSpinButton</a>
 , <a class="el" href="classwx_text_attr_dimension.html#a91985d03ba4e51255d9727f5a4bf9ce4">wxTextAttrDimension</a>
-, <a class="el" href="classwx_spin_ctrl_double.html#a923aef4c509e78b0feba00e8cb181cab">wxSpinCtrlDouble</a>
-, <a class="el" href="classwx_spin_ctrl.html#a523f4c9064dfc399bc7dae67d5d6da59">wxSpinCtrl</a>
-, <a class="el" href="classwx_text_entry_dialog.html#a50a247a73ac092ffc46fd2a526f8d376">wxTextEntryDialog</a>
-, <a class="el" href="classwx_spin_double_event.html#a895122565354163e3160e0f9085032d0">wxSpinDoubleEvent</a>
-, <a class="el" href="classwx_text_attr_dimension.html#a99578325fff198646648b3f7b558815e">wxTextAttrDimension</a>
+, <a class="el" href="classwx_rich_text_ctrl.html#ada03843f597b86f4a33ee4bee9beb089">wxRichTextCtrl</a>
 , <a class="el" href="classwx_spin_ctrl_double.html#a276b7ef27c55592b9ac894444d2653ec">wxSpinCtrlDouble</a>
+, <a class="el" href="classwx_spin_ctrl.html#a523f4c9064dfc399bc7dae67d5d6da59">wxSpinCtrl</a>
+, <a class="el" href="classwx_spin_double_event.html#a895122565354163e3160e0f9085032d0">wxSpinDoubleEvent</a>
+, <a class="el" href="classwx_text_entry_dialog.html#a50a247a73ac092ffc46fd2a526f8d376">wxTextEntryDialog</a>
+, <a class="el" href="classwx_text_attr_dimension.html#a02e81616cc51e4d1193adaf0f41d5f54">wxTextAttrDimension</a>
+, <a class="el" href="classwx_combo_ctrl.html#a4202edbc9fc83623c658a83fe4c6d7be">wxComboCtrl</a>
 , <a class="el" href="classwx_radio_button.html#ac234464fbe7554b79dda8e1d025fe50b">wxRadioButton</a>
-, <a class="el" href="classwx_xml_attribute.html#aacaabe946d15d81090a6b6b10381c933">wxXmlAttribute</a>
+, <a class="el" href="classwx_individual_layout_constraint.html#a6abf56b3412b780996d14558fc1b289e">wxIndividualLayoutConstraint</a>
+, <a class="el" href="classwx_data_view_list_ctrl.html#afa48329e396067530253546a847bf83a">wxDataViewListCtrl</a>
 , <a class="el" href="classwx_time_picker_ctrl.html#aa1369853e4cc0f71191ddbca1e1e39a1">wxTimePickerCtrl</a>
 , <a class="el" href="classwx_bitmap_toggle_button.html#a58beb938aa3bab2231169fad0db30547">wxBitmapToggleButton</a>
 </li>
@@ -4571,8 +4602,8 @@
 : <a class="el" href="classwx_grid_table_base.html#ae035a347dd02d16182e37e866b5c2632">wxGridTableBase</a>
 </li>
 <li>SetValueByRow()
-: <a class="el" href="classwx_data_view_list_model.html#af0cf3adc92a3e62e62cfa2acfd11f227">wxDataViewListModel</a>
-, <a class="el" href="classwx_data_view_list_store.html#ad53046bd137084ee1418afa43f02f006">wxDataViewListStore</a>
+: <a class="el" href="classwx_data_view_list_store.html#ad53046bd137084ee1418afa43f02f006">wxDataViewListStore</a>
+, <a class="el" href="classwx_data_view_list_model.html#af0cf3adc92a3e62e62cfa2acfd11f227">wxDataViewListModel</a>
 </li>
 <li>SetValueByUser()
 : <a class="el" href="classwx_combo_ctrl.html#aaa42a7fdfb9061e4901086abcc7120e7">wxComboCtrl</a>
@@ -4597,12 +4628,12 @@
 , <a class="el" href="classwx_p_g_property.html#a4e55506bbc49f0b7d447df71a00f2df6">wxPGProperty</a>
 </li>
 <li>SetVectorAngle()
-: <a class="el" href="classwx_point2_d_int.html#a04fa04ea31187f652f4bbfc287c6f642">wxPoint2DInt</a>
-, <a class="el" href="classwx_point2_d_double.html#a81611c1fd268719540b40ccf803057c0">wxPoint2DDouble</a>
+: <a class="el" href="classwx_point2_d_double.html#a81611c1fd268719540b40ccf803057c0">wxPoint2DDouble</a>
+, <a class="el" href="classwx_point2_d_int.html#a04fa04ea31187f652f4bbfc287c6f642">wxPoint2DInt</a>
 </li>
 <li>SetVectorLength()
-: <a class="el" href="classwx_point2_d_int.html#a5edc211b6db475704e3f58eec701dbfc">wxPoint2DInt</a>
-, <a class="el" href="classwx_point2_d_double.html#afaba09e9e341a1dd08e4c1a717d9e220">wxPoint2DDouble</a>
+: <a class="el" href="classwx_point2_d_double.html#afaba09e9e341a1dd08e4c1a717d9e220">wxPoint2DDouble</a>
+, <a class="el" href="classwx_point2_d_int.html#a5edc211b6db475704e3f58eec701dbfc">wxPoint2DInt</a>
 </li>
 <li>SetVendorDisplayName()
 : <a class="el" href="classwx_app_console.html#a5ad4d1e383bc2fbb2d1c12f118140d4a">wxAppConsole</a>
@@ -4614,8 +4645,8 @@
 : <a class="el" href="classwx_log.html#a854c6f60a72ef046b4f54953287534e6">wxLog</a>
 </li>
 <li>SetVersion()
-: <a class="el" href="classwx_xml_document.html#a84705a38b23e60aa5bb4faa509ada74b">wxXmlDocument</a>
-, <a class="el" href="classwx_about_dialog_info.html#aac5029cab6b04b34dbf8cd6b66fff251">wxAboutDialogInfo</a>
+: <a class="el" href="classwx_about_dialog_info.html#aac5029cab6b04b34dbf8cd6b66fff251">wxAboutDialogInfo</a>
+, <a class="el" href="classwx_xml_document.html#a84705a38b23e60aa5bb4faa509ada74b">wxXmlDocument</a>
 </li>
 <li>SetVerticalAlignment()
 : <a class="el" href="classwx_text_box_attr.html#ae19a6a740a8be8ad9ae08fc7090d4f0e">wxTextBoxAttr</a>
@@ -4633,9 +4664,9 @@
 : <a class="el" href="classwx_grid_sizer.html#a89c28d0796cead886b0e2218178125f0">wxGridSizer</a>
 </li>
 <li>SetView()
-: <a class="el" href="classwx_doc_m_d_i_child_frame.html#a03d3f6e99f7d5c3f37f12d464cc777fd">wxDocMDIChildFrame</a>
+: <a class="el" href="classwx_doc_child_frame.html#ad3869ba4314b1b27afcce8b0d5df29f8">wxDocChildFrame</a>
 , <a class="el" href="classwx_grid_table_base.html#a7dfac01d7b0655d3b41d350e2f322f60">wxGridTableBase</a>
-, <a class="el" href="classwx_doc_child_frame.html#ad3869ba4314b1b27afcce8b0d5df29f8">wxDocChildFrame</a>
+, <a class="el" href="classwx_doc_m_d_i_child_frame.html#a03d3f6e99f7d5c3f37f12d464cc777fd">wxDocMDIChildFrame</a>
 </li>
 <li>SetViewEOL()
 : <a class="el" href="classwx_styled_text_ctrl.html#abcdd147640044f0b589ad41e01de3b69">wxStyledTextCtrl</a>
@@ -4672,8 +4703,8 @@
 : <a class="el" href="classwx_hyperlink_ctrl.html#add059ac942622177ae7870d341a11054">wxHyperlinkCtrl</a>
 </li>
 <li>SetVolume()
-: <a class="el" href="classwx_file_name.html#a0c8e256bd978ab9d0cc3c640758b2e2f">wxFileName</a>
-, <a class="el" href="classwx_media_ctrl.html#a4451b025e1b08a7500f45d35a13bad2c">wxMediaCtrl</a>
+: <a class="el" href="classwx_media_ctrl.html#a4451b025e1b08a7500f45d35a13bad2c">wxMediaCtrl</a>
+, <a class="el" href="classwx_file_name.html#a0c8e256bd978ab9d0cc3c640758b2e2f">wxFileName</a>
 </li>
 <li>SetVScrollBar()
 : <a class="el" href="classwx_styled_text_ctrl.html#a44acbd82ce7e4c351a6f7dec387769e1">wxStyledTextCtrl</a>
@@ -4691,8 +4722,8 @@
 : <a class="el" href="classwx_date_span.html#a9ee73c50b3dd688c59a78e8e6f9a1e05">wxDateSpan</a>
 </li>
 <li>SetWeight()
-: <a class="el" href="classwx_native_font_info.html#a2e8b45edaee68cbf8eb022180bc70e18">wxNativeFontInfo</a>
-, <a class="el" href="classwx_font.html#a63c3c48f10dd64bfdca812f4526cb7eb">wxFont</a>
+: <a class="el" href="classwx_font.html#a63c3c48f10dd64bfdca812f4526cb7eb">wxFont</a>
+, <a class="el" href="classwx_native_font_info.html#a2e8b45edaee68cbf8eb022180bc70e18">wxNativeFontInfo</a>
 </li>
 <li>SetWellKnownHost()
 : <a class="el" href="classwx_dial_up_manager.html#a5feb6ba7f390d50be7eae85920a2230e">wxDialUpManager</a>
@@ -4710,37 +4741,37 @@
 : <a class="el" href="classwx_styled_text_ctrl.html#ab58a13a90a65b2870dc7918aaf1c9f64">wxStyledTextCtrl</a>
 </li>
 <li>SetWidth()
-: <a class="el" href="classwx_text_attr_border.html#aafe481f9f4c1ffefc805dc07cecc6f34">wxTextAttrBorder</a>
-, <a class="el" href="classwx_size.html#a41d149df3805e7bca1d39eda9e035920">wxSize</a>
+: <a class="el" href="classwx_header_column_simple.html#ab7fe07a7131383d838693d189c4219c2">wxHeaderColumnSimple</a>
+, <a class="el" href="classwx_rect.html#a653179ac2e602486ecef4f5266b6878b">wxRect</a>
+, <a class="el" href="classwx_pen.html#ad390a7361cd737fcb176db622f5ad039">wxPen</a>
+, <a class="el" href="classwx_grid_cell_float_renderer.html#ab8cfe22849be2893627f169868062c2b">wxGridCellFloatRenderer</a>
+, <a class="el" href="classwx_list_item.html#abd2490fdc76ee4bdfdc8d7450f36f680">wxListItem</a>
+, <a class="el" href="classwx_settable_header_column.html#aac89bf5d893ccf57c3e50e3d1acbebea">wxSettableHeaderColumn</a>
+, <a class="el" href="classwx_text_attr_border.html#aafe481f9f4c1ffefc805dc07cecc6f34">wxTextAttrBorder</a>
+, <a class="el" href="classwx_text_attr_borders.html#a190292c2118246894e3c353bdc579f10">wxTextAttrBorders</a>
+, <a class="el" href="classwx_text_attr_size.html#a4b07f2edf172b032b7451f88f1bdaaa2">wxTextAttrSize</a>
 , <a class="el" href="classwx_header_ctrl_event.html#a71bcd3bfaf4d89e586b5bc5bde1820ae">wxHeaderCtrlEvent</a>
 , <a class="el" href="classwx_text_attr_size.html#aa448fdd1ac7a6935d8abbc02c8c5dda0">wxTextAttrSize</a>
-, <a class="el" href="classwx_settable_header_column.html#aac89bf5d893ccf57c3e50e3d1acbebea">wxSettableHeaderColumn</a>
-, <a class="el" href="classwx_grid_cell_float_renderer.html#ab8cfe22849be2893627f169868062c2b">wxGridCellFloatRenderer</a>
-, <a class="el" href="classwx_text_attr_border.html#aa417cf53a784809a79d2ee5764461db6">wxTextAttrBorder</a>
-, <a class="el" href="classwx_text_attr_size.html#a4b07f2edf172b032b7451f88f1bdaaa2">wxTextAttrSize</a>
 , <a class="el" href="classwx_bitmap.html#a82c54a43db80f31c9ff70b0e18a1d972">wxBitmap</a>
-, <a class="el" href="classwx_text_attr_borders.html#a190292c2118246894e3c353bdc579f10">wxTextAttrBorders</a>
-, <a class="el" href="classwx_rect.html#a653179ac2e602486ecef4f5266b6878b">wxRect</a>
-, <a class="el" href="classwx_icon.html#add437e80330ad01742421d2b1d66e2d5">wxIcon</a>
-, <a class="el" href="classwx_pen.html#ad390a7361cd737fcb176db622f5ad039">wxPen</a>
-, <a class="el" href="classwx_list_item.html#abd2490fdc76ee4bdfdc8d7450f36f680">wxListItem</a>
-, <a class="el" href="classwx_header_column_simple.html#ab7fe07a7131383d838693d189c4219c2">wxHeaderColumnSimple</a>
-, <a class="el" href="classwx_text_attr_borders.html#a17a89b5b2d0d000490fa2c4d788efbec">wxTextAttrBorders</a>
 , <a class="el" href="classwx_text_attr_size.html#a2a63a228a326a2aeed776ea391b252aa">wxTextAttrSize</a>
+, <a class="el" href="classwx_text_attr_border.html#aa417cf53a784809a79d2ee5764461db6">wxTextAttrBorder</a>
+, <a class="el" href="classwx_size.html#a41d149df3805e7bca1d39eda9e035920">wxSize</a>
+, <a class="el" href="classwx_icon.html#add437e80330ad01742421d2b1d66e2d5">wxIcon</a>
+, <a class="el" href="classwx_text_attr_borders.html#a17a89b5b2d0d000490fa2c4d788efbec">wxTextAttrBorders</a>
 </li>
 <li>SetWidthFloat()
-: <a class="el" href="classwx_html_container_cell.html#a0413dfd03c409f6ccc17ebb2cfbe8756">wxHtmlContainerCell</a>
+: <a class="el" href="classwx_html_container_cell.html#a3b8c0d42641fa5324d67188920f9a5ec">wxHtmlContainerCell</a>
 </li>
 <li>SetWildcard()
-: <a class="el" href="classwx_file_dialog.html#aeb0137b721770bb390043b77cf2c09ff">wxFileDialog</a>
-, <a class="el" href="classwx_file_ctrl.html#a7599cc5356e0d0f2b851374d591d9aeb">wxFileCtrl</a>
+: <a class="el" href="classwx_file_ctrl.html#a7599cc5356e0d0f2b851374d591d9aeb">wxFileCtrl</a>
+, <a class="el" href="classwx_file_dialog.html#aeb0137b721770bb390043b77cf2c09ff">wxFileDialog</a>
 </li>
 <li>SetWindow()
-: <a class="el" href="classwx_aui_tool_bar_item.html#a719c375c0f8417624e235187d4daa3d6">wxAuiToolBarItem</a>
-, <a class="el" href="classwx_accessible.html#a84ba079b14a4f39a4535271efa67796c">wxAccessible</a>
+: <a class="el" href="classwx_accessible.html#a84ba079b14a4f39a4535271efa67796c">wxAccessible</a>
+, <a class="el" href="classwx_validator.html#acf2179bcc4b256bc71e01f8a12f6da58">wxValidator</a>
+, <a class="el" href="classwx_aui_tool_bar_item.html#a719c375c0f8417624e235187d4daa3d6">wxAuiToolBarItem</a>
 , <a class="el" href="classwx_focus_event.html#a0761d1e6d4d6e987ad4e2a8ee9e63f32">wxFocusEvent</a>
 , <a class="el" href="classwx_sizer_item.html#a9a310e236fa40720fe17a7d08ae4a1a6">wxSizerItem</a>
-, <a class="el" href="classwx_validator.html#acf2179bcc4b256bc71e01f8a12f6da58">wxValidator</a>
 </li>
 <li>SetWindowChange()
 : <a class="el" href="classwx_navigation_key_event.html#a355fccd120e343b6ebea4c75b39f098f">wxNavigationKeyEvent</a>
@@ -4754,8 +4785,8 @@
 </li>
 <li>SetWindowStyleFlag()
 : <a class="el" href="classwx_aui_tool_bar.html#aa37acd160c70ea5ab90782709c6ae4fa">wxAuiToolBar</a>
-, <a class="el" href="classwx_list_ctrl.html#ae719fa247088c1f5e3b6bd7de2cfcc39">wxListCtrl</a>
 , <a class="el" href="classwx_window.html#aee2cf342f80523432e7f2299d299451b">wxWindow</a>
+, <a class="el" href="classwx_list_ctrl.html#ae719fa247088c1f5e3b6bd7de2cfcc39">wxListCtrl</a>
 </li>
 <li>SetWindowVariant()
 : <a class="el" href="classwx_window.html#acd955418c336e73b3e32cadf1ca46e29">wxWindow</a>
@@ -4783,8 +4814,8 @@
 </li>
 <li>SetX()
 : <a class="el" href="classwx_mouse_state.html#a095c9989c4fc607295683882f9d94efa">wxMouseState</a>
-, <a class="el" href="classwx_styled_text_event.html#a802dc603e8ab1ff7f82d57d393558836">wxStyledTextEvent</a>
 , <a class="el" href="classwx_rect.html#a878bff0acba1bb8183db8d1e5d4c4d53">wxRect</a>
+, <a class="el" href="classwx_styled_text_event.html#a802dc603e8ab1ff7f82d57d393558836">wxStyledTextEvent</a>
 </li>
 <li>SetXCaretPolicy()
 : <a class="el" href="classwx_styled_text_ctrl.html#a675c4a537ad6f35101057a745ded1c66">wxStyledTextCtrl</a>
@@ -4793,9 +4824,9 @@
 : <a class="el" href="classwx_styled_text_ctrl.html#af0366b19a354f80f12fc73b9ecd10024">wxStyledTextCtrl</a>
 </li>
 <li>SetY()
-: <a class="el" href="classwx_rect.html#a55b3573519cf8748d3ec1af9c10cd94d">wxRect</a>
+: <a class="el" href="classwx_styled_text_event.html#a66bd9e86614d08a09681407f55592055">wxStyledTextEvent</a>
 , <a class="el" href="classwx_mouse_state.html#ad67621bb4a134ec32c0a5419474714e4">wxMouseState</a>
-, <a class="el" href="classwx_styled_text_event.html#a66bd9e86614d08a09681407f55592055">wxStyledTextEvent</a>
+, <a class="el" href="classwx_rect.html#a55b3573519cf8748d3ec1af9c10cd94d">wxRect</a>
 </li>
 <li>SetYCaretPolicy()
 : <a class="el" href="classwx_styled_text_ctrl.html#ab0105eadf06fb58b01eec70d1c5b3f2d">wxStyledTextCtrl</a>
@@ -4813,9 +4844,9 @@
 : <a class="el" href="classwx_message_dialog.html#aa23b25ebf18bf0915d438cc13b55cb23">wxMessageDialog</a>
 </li>
 <li>SetZoom()
-: <a class="el" href="classwx_styled_text_ctrl.html#a689b6d6fd77a45f2759d24165234c092">wxStyledTextCtrl</a>
+: <a class="el" href="classwx_print_preview.html#aa0916c3ad7a39737e8c8b851db508c24">wxPrintPreview</a>
+, <a class="el" href="classwx_styled_text_ctrl.html#a689b6d6fd77a45f2759d24165234c092">wxStyledTextCtrl</a>
 , <a class="el" href="classwx_web_view.html#ac52c3534e64a822ab48551f41d052397">wxWebView</a>
-, <a class="el" href="classwx_print_preview.html#aa0916c3ad7a39737e8c8b851db508c24">wxPrintPreview</a>
 </li>
 <li>SetZoomControl()
 : <a class="el" href="classwx_preview_control_bar.html#abf3e712e1f23ee5dc510d93c7a7b5e2c">wxPreviewControlBar</a>
@@ -4827,8 +4858,8 @@
 : <a class="el" href="classwx_sizer_flags.html#a18a157863932cf61f0b0ec01b5877fa6">wxSizerFlags</a>
 </li>
 <li>ShiftDown()
-: <a class="el" href="classwx_keyboard_state.html#a63b9ec3a2f30011471a7036853fc38f3">wxKeyboardState</a>
-, <a class="el" href="classwx_grid_range_select_event.html#aeb2d01a3a74fd0ff19dfb5d63bfc4c15">wxGridRangeSelectEvent</a>
+: <a class="el" href="classwx_grid_range_select_event.html#aeb2d01a3a74fd0ff19dfb5d63bfc4c15">wxGridRangeSelectEvent</a>
+, <a class="el" href="classwx_keyboard_state.html#a63b9ec3a2f30011471a7036853fc38f3">wxKeyboardState</a>
 , <a class="el" href="classwx_grid_event.html#afcab958cd61c666f6a5d379e4e4f2b58">wxGridEvent</a>
 , <a class="el" href="classwx_grid_size_event.html#ad0409a36885f7f0cf218139b7696b9b6">wxGridSizeEvent</a>
 </li>
@@ -4855,24 +4886,23 @@
 : <a class="el" href="classwx_event.html#ad265ef226445cb6b72a2697dd9d3b406">wxEvent</a>
 </li>
 <li>Show()
-: <a class="el" href="classwx_sizer.html#a65289f40a39fb31512f93d8d7f63720e">wxSizer</a>
-, <a class="el" href="classwx_radio_box.html#a1ad6078e61378f77034b3a93d6d7b0d6">wxRadioBox</a>
-, <a class="el" href="classwx_debug_report_preview_std.html#a5b6ea5f83145afd8904fe2af5d19074b">wxDebugReportPreviewStd</a>
-, <a class="el" href="classwx_caret.html#a5112409bd3a83148f364c4b08086fe28">wxCaret</a>
-, <a class="el" href="classwx_dialog.html#ae8e5fa98d473b812b8d1c2f163b65c67">wxDialog</a>
-, <a class="el" href="classwx_drag_image.html#a53ba3036e7cf017d32a548e95d9072e3">wxDragImage</a>
+: <a class="el" href="classwx_caret.html#a5112409bd3a83148f364c4b08086fe28">wxCaret</a>
+, <a class="el" href="classwx_preferences_editor.html#a626cdcd775e6e1150901d64b63c34819">wxPreferencesEditor</a>
 , <a class="el" href="classwx_update_u_i_event.html#a9269df1c4a3345267dc3d7ef8ee8423c">wxUpdateUIEvent</a>
-, <a class="el" href="classwx_log_window.html#abf62cbce32f19a763439c4fcf0500aae">wxLogWindow</a>
+, <a class="el" href="classwx_sizer.html#a65289f40a39fb31512f93d8d7f63720e">wxSizer</a>
 , <a class="el" href="classwx_debug_report_preview.html#a713eb7e9ed71174e57753c08eb4e4ee7">wxDebugReportPreview</a>
+, <a class="el" href="classwx_drag_image.html#a53ba3036e7cf017d32a548e95d9072e3">wxDragImage</a>
+, <a class="el" href="classwx_dialog.html#ae8e5fa98d473b812b8d1c2f163b65c67">wxDialog</a>
+, <a class="el" href="classwx_grid_cell_editor.html#a1e69e1dac634ac0f24a5478002a9c576">wxGridCellEditor</a>
+, <a class="el" href="classwx_notification_message.html#ac08556aaa081b3c39281dc261449a4bc">wxNotificationMessage</a>
+, <a class="el" href="classwx_debug_report_preview_std.html#a5b6ea5f83145afd8904fe2af5d19074b">wxDebugReportPreviewStd</a>
 , <a class="el" href="classwx_sizer.html#afb6638468fe2253d1870b4d387c57a0b">wxSizer</a>
 , <a class="el" href="classwx_window.html#a7fbc92ce240a8d4f6956b6e0276ef07f">wxWindow</a>
-, <a class="el" href="classwx_preferences_editor.html#a626cdcd775e6e1150901d64b63c34819">wxPreferencesEditor</a>
-, <a class="el" href="classwx_notification_message.html#ac08556aaa081b3c39281dc261449a4bc">wxNotificationMessage</a>
+, <a class="el" href="classwx_radio_box.html#a1ad6078e61378f77034b3a93d6d7b0d6">wxRadioBox</a>
 , <a class="el" href="classwx_sizer_item.html#a62baa1d528dabc001472de5b70786ac3">wxSizerItem</a>
 , <a class="el" href="classwx_rich_text_object.html#a7346bc1dc24479957ff322969094377a">wxRichTextObject</a>
 , <a class="el" href="classwx_aui_pane_info.html#ab3c95aa58786dfb3f722e9ba6b8f3b0c">wxAuiPaneInfo</a>
-, <a class="el" href="classwx_grid_cell_editor.html#a1e69e1dac634ac0f24a5478002a9c576">wxGridCellEditor</a>
-, <a class="el" href="classwx_sizer.html#a15f781b11cbe978d6fbc0b62f32bc3b4">wxSizer</a>
+, <a class="el" href="classwx_log_window.html#abf62cbce32f19a763439c4fcf0500aae">wxLogWindow</a>
 </li>
 <li>ShowAssertDialog()
 : <a class="el" href="classwx_app_traits.html#aa78351c01a20e5b1f4bd50283b4ddfbb">wxAppTraits</a>
@@ -4906,9 +4936,9 @@
 </li>
 <li>ShowDropDown()
 : <a class="el" href="classwx_aui_default_tool_bar_art.html#a26fb0cb3cb3b2df01b397b82a3b0803c">wxAuiDefaultToolBarArt</a>
+, <a class="el" href="classwx_aui_simple_tab_art.html#a4f9c41e4cae01c752ac3ec0b022c39d1">wxAuiSimpleTabArt</a>
 , <a class="el" href="classwx_aui_tool_bar_art.html#a41d2759cfb04004c750fc05f105f8770">wxAuiToolBarArt</a>
 , <a class="el" href="classwx_aui_default_tab_art.html#a3112e0d6ff9027d175c9aa35c59491cf">wxAuiDefaultTabArt</a>
-, <a class="el" href="classwx_aui_simple_tab_art.html#a4f9c41e4cae01c752ac3ec0b022c39d1">wxAuiSimpleTabArt</a>
 </li>
 <li>ShowExpanded()
 : <a class="el" href="classwx_ribbon_panel.html#ae1f79f3ee31a69930202a2bcf9e0fee2">wxRibbonPanel</a>
@@ -4947,17 +4977,17 @@
 </li>
 <li>ShowModal()
 : <a class="el" href="classwx_page_setup_dialog.html#a13e348ffb64ffc8aea34fe8ea268ef6a">wxPageSetupDialog</a>
-, <a class="el" href="classwx_file_dialog.html#a04943e4abb27a197a110898d40ddb4f0">wxFileDialog</a>
-, <a class="el" href="classwx_print_dialog.html#a770301243187c009fd3e6086a98c63c4">wxPrintDialog</a>
-, <a class="el" href="classwx_message_dialog.html#a28e6cea6fb3857df6cc9b103e06dbadf">wxMessageDialog</a>
-, <a class="el" href="classwx_multi_choice_dialog.html#a563ed5633d90460d08fd3d7a76d73534">wxMultiChoiceDialog</a>
-, <a class="el" href="classwx_dialog.html#a6e078c3d0653f75ad3c34a37c0b54637">wxDialog</a>
-, <a class="el" href="classwx_font_dialog.html#a26f48c5b589f8bc45ec542599546f69a">wxFontDialog</a>
-, <a class="el" href="classwx_rich_message_dialog.html#a3d34a8f0e44933109fae02c81df5cf34">wxRichMessageDialog</a>
-, <a class="el" href="classwx_text_entry_dialog.html#a47e2fdd56ac9034b2720bc74e89fbf82">wxTextEntryDialog</a>
 , <a class="el" href="classwx_dir_dialog.html#a037ba48268fd2632d47369ad80c84da5">wxDirDialog</a>
-, <a class="el" href="classwx_single_choice_dialog.html#afa4e6462970ed338dfcbc121d9adeb8d">wxSingleChoiceDialog</a>
+, <a class="el" href="classwx_multi_choice_dialog.html#a563ed5633d90460d08fd3d7a76d73534">wxMultiChoiceDialog</a>
+, <a class="el" href="classwx_print_dialog.html#a770301243187c009fd3e6086a98c63c4">wxPrintDialog</a>
+, <a class="el" href="classwx_file_dialog.html#a04943e4abb27a197a110898d40ddb4f0">wxFileDialog</a>
+, <a class="el" href="classwx_rich_message_dialog.html#a3d34a8f0e44933109fae02c81df5cf34">wxRichMessageDialog</a>
+, <a class="el" href="classwx_font_dialog.html#a26f48c5b589f8bc45ec542599546f69a">wxFontDialog</a>
 , <a class="el" href="classwx_colour_dialog.html#a06684af732f3a6e60be6a016b96f9c9e">wxColourDialog</a>
+, <a class="el" href="classwx_dialog.html#a6e078c3d0653f75ad3c34a37c0b54637">wxDialog</a>
+, <a class="el" href="classwx_message_dialog.html#a28e6cea6fb3857df6cc9b103e06dbadf">wxMessageDialog</a>
+, <a class="el" href="classwx_single_choice_dialog.html#afa4e6462970ed338dfcbc121d9adeb8d">wxSingleChoiceDialog</a>
+, <a class="el" href="classwx_text_entry_dialog.html#a47e2fdd56ac9034b2720bc74e89fbf82">wxTextEntryDialog</a>
 </li>
 <li>ShowNewPage()
 : <a class="el" href="classwx_simplebook.html#a50847ce0be324127f8531ea92090768a">wxSimplebook</a>
@@ -4975,9 +5005,9 @@
 : <a class="el" href="classwx_combo_ctrl.html#ae87a04c471bfcac5ab0d370ac9edddbc">wxComboCtrl</a>
 </li>
 <li>ShowPosition()
-: <a class="el" href="classwx_rich_text_ctrl.html#aa3f215548716e6cec608f3c3624d763f">wxRichTextCtrl</a>
-, <a class="el" href="classwx_styled_text_ctrl.html#a6a458124a712a1ff1d810f5e7d767f3a">wxStyledTextCtrl</a>
+: <a class="el" href="classwx_styled_text_ctrl.html#a6a458124a712a1ff1d810f5e7d767f3a">wxStyledTextCtrl</a>
 , <a class="el" href="classwx_text_ctrl.html#ad4044ce304755d06fcbe5bd432b56783">wxTextCtrl</a>
+, <a class="el" href="classwx_rich_text_ctrl.html#aa3f215548716e6cec608f3c3624d763f">wxRichTextCtrl</a>
 </li>
 <li>ShowPropertyError()
 : <a class="el" href="classwx_property_grid.html#a7b0f2d8866f2931762aaabe88bf7d85e">wxPropertyGrid</a>
@@ -5009,14 +5039,12 @@
 <li>ShowWithoutActivating()
 : <a class="el" href="classwx_top_level_window.html#a03e526f505716568318d601318527bd0">wxTopLevelWindow</a>
 </li>
-<li>Shrink()
-: <a class="el" href="classwx_array_3_01_t_01_4.html#a6184a5915ad4878c39282be949f2e20b">wxArray&lt; T &gt;</a>
-</li>
 <li>shrink()
 : <a class="el" href="classwx_char_type_buffer.html#a1e50c5137c9e9aa45aa2008a9b6fb63e">wxCharTypeBuffer&lt; T &gt;</a>
 </li>
 <li>Shrink()
-: <a class="el" href="classwx_array_string.html#a598a1eba111e3c25ef760dcdcc0c7678">wxArrayString</a>
+: <a class="el" href="classwx_array_3_01_t_01_4.html#a6184a5915ad4878c39282be949f2e20b">wxArray&lt; T &gt;</a>
+, <a class="el" href="classwx_array_string.html#a598a1eba111e3c25ef760dcdcc0c7678">wxArrayString</a>
 , <a class="el" href="classwx_string.html#ae81a1f0b72aa33325f922aa50579de59">wxString</a>
 </li>
 <li>Shutdown()
@@ -5029,15 +5057,17 @@
 : <a class="el" href="classwx_condition.html#a9fa920a093abdadb19f40db82fbaedd4">wxCondition</a>
 </li>
 <li>size()
-: <a class="el" href="classwx_hash_map.html#a83b1ef9d30a009732055bd2ad26c27b1">wxHashMap</a>
-, <a class="el" href="classwx_stack_3_01_t_01_4.html#a3d5dea33634dc3b27e1d4cd23af43fe4">wxStack&lt; T &gt;</a>
-, <a class="el" href="classwx_hash_set.html#a31c570890219139fafc7b8b62c29db8a">wxHashSet</a>
+: <a class="el" href="classwx_hash_set.html#a31c570890219139fafc7b8b62c29db8a">wxHashSet</a>
 , <a class="el" href="classwx_list_3_01_t_01_4.html#aae3afa0cf1e567490c2c890859a0d02d">wxList&lt; T &gt;</a>
-, <a class="el" href="classwx_string.html#aba423303c6e0580605269827e4744761">wxString</a>
+, <a class="el" href="classwx_hash_map.html#a83b1ef9d30a009732055bd2ad26c27b1">wxHashMap</a>
 , <a class="el" href="classwx_vector_3_01_t_01_4.html#af24b9e8fb0e0a2d2aa97b390287c1329">wxVector&lt; T &gt;</a>
 </li>
 <li>Size()
 : <a class="el" href="classwx_image.html#a8c3ef171a27cdb93a315eb78cf7b0377">wxImage</a>
+</li>
+<li>size()
+: <a class="el" href="classwx_string.html#aba423303c6e0580605269827e4744761">wxString</a>
+, <a class="el" href="classwx_stack_3_01_t_01_4.html#a3d5dea33634dc3b27e1d4cd23af43fe4">wxStack&lt; T &gt;</a>
 </li>
 <li>SizeWindows()
 : <a class="el" href="classwx_sash_window.html#a16fbe99915095c56e42f40c81319ab62">wxSashWindow</a>
@@ -5058,24 +5088,25 @@
 : <a class="el" href="classwx_sock_address.html#af7705f9c496b8d539c8f1a9cbd82f4ba">wxSockAddress</a>
 </li>
 <li>Sort()
-: <a class="el" href="classwx_property_grid_interface.html#a68c73043fc89e18169207c0cee737852">wxPropertyGridInterface</a>
-, <a class="el" href="classwx_array_3_01_t_01_4.html#ae45b012bef8ed8980310b17edd37a9c7">wxArray&lt; T &gt;</a>
-, <a class="el" href="classwx_sorted_array_string.html#abecc9015c35ee342e594c5fa9f76a927">wxSortedArrayString</a>
-, <a class="el" href="classwx_array_string.html#af10a5c5c81001638f5a2b6dceaa74810">wxArrayString</a>
-, <a class="el" href="classwx_sorted_array_string.html#a0661fc0625d585d1bca263da7a14f608">wxSortedArrayString</a>
+: <a class="el" href="classwx_sorted_array_string.html#a0661fc0625d585d1bca263da7a14f608">wxSortedArrayString</a>
+, <a class="el" href="classwx_array_string.html#a0403ae7f8702fdc5c21b700053e7af0c">wxArrayString</a>
+, <a class="el" href="classwx_property_grid_interface.html#a68c73043fc89e18169207c0cee737852">wxPropertyGridInterface</a>
 , <a class="el" href="classwx_list_3_01_t_01_4.html#ad3defd443865ca9acc9e71bf8a6d7405">wxList&lt; T &gt;</a>
+, <a class="el" href="classwx_array_3_01_t_01_4.html#ae45b012bef8ed8980310b17edd37a9c7">wxArray&lt; T &gt;</a>
+, <a class="el" href="classwx_array_string.html#af10a5c5c81001638f5a2b6dceaa74810">wxArrayString</a>
+, <a class="el" href="classwx_sorted_array_string.html#abecc9015c35ee342e594c5fa9f76a927">wxSortedArrayString</a>
 </li>
 <li>SortChildren()
-: <a class="el" href="classwx_property_grid_interface.html#a5e99b4ebcbdc6ee1c59d8284df0bfa8f">wxPropertyGridInterface</a>
-, <a class="el" href="classwx_tree_ctrl.html#aa59a3c3081b78ffe644fee0a4bcd1ca3">wxTreeCtrl</a>
+: <a class="el" href="classwx_tree_ctrl.html#aa59a3c3081b78ffe644fee0a4bcd1ca3">wxTreeCtrl</a>
+, <a class="el" href="classwx_property_grid_interface.html#a5e99b4ebcbdc6ee1c59d8284df0bfa8f">wxPropertyGridInterface</a>
 </li>
 <li>SortItems()
 : <a class="el" href="classwx_list_ctrl.html#a5a36fae3701f7df7021362b0330f9640">wxListCtrl</a>
 </li>
 <li>Split()
 : <a class="el" href="classwx_aui_notebook.html#af87725d1dacec2e4091988d11c887db7">wxAuiNotebook</a>
-, <a class="el" href="classwx_rich_text_object.html#a4fdd1d084816f375a467dbd555693d77">wxRichTextObject</a>
 , <a class="el" href="classwx_rich_text_plain_text.html#ad8556e2ea87015027000c426bf399910">wxRichTextPlainText</a>
+, <a class="el" href="classwx_rich_text_object.html#a4fdd1d084816f375a467dbd555693d77">wxRichTextObject</a>
 </li>
 <li>SplitAt()
 : <a class="el" href="classwx_rich_text_paragraph.html#a4716ed34fbf502b0f3443383116007dc">wxRichTextParagraph</a>
@@ -5093,26 +5124,26 @@
 : <a class="el" href="classwx_file_name.html#a66a0a31c3113875d46d2058135339fea">wxFileName</a>
 </li>
 <li>Start()
-: <a class="el" href="classwx_timer.html#a8df981f7075786811598828af1d294ac">wxTimer</a>
-, <a class="el" href="classwx_text_completer.html#a041c2f6544f3071f45a944f7ebc743f5">wxTextCompleter</a>
+: <a class="el" href="classwx_text_completer.html#a041c2f6544f3071f45a944f7ebc743f5">wxTextCompleter</a>
 , <a class="el" href="classwx_stop_watch.html#a8c0825d3efd859547b47761e57089b5f">wxStopWatch</a>
+, <a class="el" href="classwx_timer.html#a8df981f7075786811598828af1d294ac">wxTimer</a>
 , <a class="el" href="classwx_timer_runner.html#ac2688370ab5fd68adfc7902d45447a5f">wxTimerRunner</a>
 </li>
 <li>StartAdvise()
-: <a class="el" href="classwx_t_c_p_connection.html#a2bc425519ddda572c7dbf292f525fd43">wxTCPConnection</a>
+: <a class="el" href="classwx_connection.html#a28a3851ff97bf155727c8a0ccc478c5b">wxConnection</a>
+, <a class="el" href="classwx_t_c_p_connection.html#a2bc425519ddda572c7dbf292f525fd43">wxTCPConnection</a>
 , <a class="el" href="classwx_d_d_e_connection.html#ab9dceec1d2398c7ec0f33cc1ff305bf6">wxDDEConnection</a>
-, <a class="el" href="classwx_connection.html#a28a3851ff97bf155727c8a0ccc478c5b">wxConnection</a>
 </li>
 <li>StartDoc()
-: <a class="el" href="classwx_graphics_context.html#aafa1fe3a6e692dde741505e0bf1c90c8">wxGraphicsContext</a>
-, <a class="el" href="classwx_s_v_g_file_d_c.html#afc23fca3c1919a917ba4fa4ea1a47bd6">wxSVGFileDC</a>
+: <a class="el" href="classwx_s_v_g_file_d_c.html#afc23fca3c1919a917ba4fa4ea1a47bd6">wxSVGFileDC</a>
+, <a class="el" href="classwx_graphics_context.html#aafa1fe3a6e692dde741505e0bf1c90c8">wxGraphicsContext</a>
 , <a class="el" href="classwx_d_c.html#ad6572581c9d31dc349b6a7462426856c">wxDC</a>
 </li>
 <li>StartDrag()
 : <a class="el" href="classwx_data_view_custom_renderer.html#a36d6d5c64097bb48f67a712ddb7f97bf">wxDataViewCustomRenderer</a>
 </li>
 <li>StartDrawingOnTop()
-: <a class="el" href="classwx_screen_d_c.html#a261ded9137e3b10e972952cad6402655">wxScreenDC</a>
+: <a class="el" href="classwx_screen_d_c.html#af9cdb834dfbdbbe0c0caea14d7724a67">wxScreenDC</a>
 </li>
 <li>StartEditing()
 : <a class="el" href="classwx_data_view_renderer.html#a2d5d351f5dff1194d0db45d5feb38a90">wxDataViewRenderer</a>
@@ -5140,10 +5171,11 @@
 : <a class="el" href="classwx_string.html#a627b084ee8088734e1b28ee23d67f7bb">wxString</a>
 </li>
 <li>Stop()
-: <a class="el" href="classwx_timer.html#a74c499ddd20b00376ff99f08fb96a3d0">wxTimer</a>
+: <a class="el" href="classwx_media_ctrl.html#ad596db9b674e926ec8a1bad97159eb47">wxMediaCtrl</a>
 , <a class="el" href="classwx_sound.html#a0999a172494bdd3e73b6e3420e9e4637">wxSound</a>
 , <a class="el" href="classwx_animation_ctrl.html#aa7849c5941a6d8b6143c6c5dec6118a8">wxAnimationCtrl</a>
-, <a class="el" href="classwx_media_ctrl.html#ad596db9b674e926ec8a1bad97159eb47">wxMediaCtrl</a>
+, <a class="el" href="classwx_web_kit_ctrl.html#a3aff6fd2c75b84fec19a3c0433e7c459">wxWebKitCtrl</a>
+, <a class="el" href="classwx_timer.html#a74c499ddd20b00376ff99f08fb96a3d0">wxTimer</a>
 , <a class="el" href="classwx_web_view.html#a9ca553e7dfd399222d4f89364c5f3a2f">wxWebView</a>
 </li>
 <li>StopAdvise()
@@ -5195,7 +5227,7 @@
 : <a class="el" href="classwx_graphics_context.html#a871e2e9ed868df0b1acbbfd4822479a2">wxGraphicsContext</a>
 </li>
 <li>StrokeLines()
-: <a class="el" href="classwx_graphics_context.html#a08055b131515a6fb39868ad7c2bf25fd">wxGraphicsContext</a>
+: <a class="el" href="classwx_graphics_context.html#acfb6d98806247a5d06b5b2f5f57972ac">wxGraphicsContext</a>
 </li>
 <li>StrokePath()
 : <a class="el" href="classwx_graphics_context.html#a4f7f8f768e84dcdf50493f0e7ef0c00a">wxGraphicsContext</a>
@@ -5336,17 +5368,16 @@
 : <a class="el" href="classwx_string.html#a74da2de05c10aa806a4b0264be1f906f">wxString</a>
 </li>
 <li>Subtract()
-: <a class="el" href="classwx_date_span.html#a571533e12adae46a92b646663238472e">wxDateSpan</a>
-, <a class="el" href="classwx_date_time.html#ad2975130454759c7b198e14de10d2655">wxDateTime</a>
-, <a class="el" href="classwx_region.html#a569a77247771375b06dc159a739b79b8">wxRegion</a>
-, <a class="el" href="classwx_date_time.html#a99bfe3957c206d71cd4d980b10b400a1">wxDateTime</a>
-, <a class="el" href="classwx_region.html#ac1ed0ca194bc1e9a46d32581a16203e4">wxRegion</a>
+: <a class="el" href="classwx_region.html#ac1ed0ca194bc1e9a46d32581a16203e4">wxRegion</a>
 , <a class="el" href="classwx_date_time.html#afb1be3e9505496ec939897ec892fe694">wxDateTime</a>
+, <a class="el" href="classwx_time_span.html#a79c63c002e37303eb4ec735193802bb7">wxTimeSpan</a>
+, <a class="el" href="classwx_date_span.html#a178b607c7ab3c58e0d57590d1af12aa2">wxDateSpan</a>
+, <a class="el" href="classwx_date_time.html#a99bfe3957c206d71cd4d980b10b400a1">wxDateTime</a>
 , <a class="el" href="classwx_time_span.html#a37c606300f4c95ebdc5675173187be8c">wxTimeSpan</a>
 , <a class="el" href="classwx_date_time.html#a0c983954508addf59aa40c75eac4beea">wxDateTime</a>
-, <a class="el" href="classwx_date_span.html#a178b607c7ab3c58e0d57590d1af12aa2">wxDateSpan</a>
+, <a class="el" href="classwx_region.html#a569a77247771375b06dc159a739b79b8">wxRegion</a>
 , <a class="el" href="classwx_date_time.html#a9bb9c12d2fa47e67b6f9975f5cb8d750">wxDateTime</a>
-, <a class="el" href="classwx_time_span.html#a79c63c002e37303eb4ec735193802bb7">wxTimeSpan</a>
+, <a class="el" href="classwx_date_span.html#a571533e12adae46a92b646663238472e">wxDateSpan</a>
 </li>
 <li>SuppressBellOnError()
 : <a class="el" href="classwx_validator.html#a810c6c099c730a13b88f04d46ebe720e">wxValidator</a>
@@ -5363,16 +5394,16 @@
 </li>
 <li>swap()
 : <a class="el" href="classwx_string.html#a11a06a7638bdfe254ff07f5e1fb073b0">wxString</a>
-, <a class="el" href="classwx_scoped_ptr.html#a79d42258949a19d90c021dce70dd61c7">wxScopedPtr</a>
+, <a class="el" href="classwx_vector_3_01_t_01_4.html#a637549cb7d4ff507a6a867430e0c033a">wxVector&lt; T &gt;</a>
 , <a class="el" href="classwx_scoped_ptr_3_01_t_01_4.html#af05ebf95340ac2cafeabb284efca7e83">wxScopedPtr&lt; T &gt;</a>
-, <a class="el" href="classwx_scoped_array.html#ac7f6ea16c7b21dcd2d53f5c3048f1061">wxScopedArray&lt; T &gt;</a>
+, <a class="el" href="classwx_scoped_array.html#a1c2383aef679994454f4cd5f4faf8ad3">wxScopedArray&lt; T &gt;</a>
 </li>
 <li>Swap()
 : <a class="el" href="classwx_rich_text_range.html#acbf6c258c79b1a2c2f56437bce7bed8b">wxRichTextRange</a>
 </li>
 <li>swap()
-: <a class="el" href="classwx_vector_3_01_t_01_4.html#a637549cb7d4ff507a6a867430e0c033a">wxVector&lt; T &gt;</a>
-, <a class="el" href="classwx_scoped_array.html#a1c2383aef679994454f4cd5f4faf8ad3">wxScopedArray&lt; T &gt;</a>
+: <a class="el" href="classwx_scoped_ptr.html#a79d42258949a19d90c021dce70dd61c7">wxScopedPtr</a>
+, <a class="el" href="classwx_scoped_array.html#ac7f6ea16c7b21dcd2d53f5c3048f1061">wxScopedArray&lt; T &gt;</a>
 </li>
 <li>SwapBuffers()
 : <a class="el" href="classwx_g_l_canvas.html#a7286a7382972dfa4b323c292cb3a8a18">wxGLCanvas</a>
@@ -5387,7 +5418,7 @@
 : <a class="el" href="classwx_sash_event.html#a809b13cd8e7f6a293ffc7afe739e1c4a">wxSashEvent</a>
 </li>
 <li>wxSashLayoutWindow()
-: <a class="el" href="classwx_sash_layout_window.html#a842e094abe06cbd25f645c32d24b5a3e">wxSashLayoutWindow</a>
+: <a class="el" href="classwx_sash_layout_window.html#a1c8bff48c9191b36d0fc197eb9a1ca46">wxSashLayoutWindow</a>
 </li>
 <li>wxSashWindow()
 : <a class="el" href="classwx_sash_window.html#a49c7b9a829ab48237bbe479e5011f297">wxSashWindow</a>
@@ -5399,8 +5430,8 @@
 : <a class="el" href="classwx_scoped_char_type_buffer.html#a2cb195b3dfcb060d07a4e77ecd3d2ae6">wxScopedCharTypeBuffer&lt; T &gt;</a>
 </li>
 <li>wxScopedPtr()
-: <a class="el" href="classwx_scoped_ptr_3_01_t_01_4.html#a737056fbe3a7e54f628b7d5a43ee5281">wxScopedPtr&lt; T &gt;</a>
-, <a class="el" href="classwx_scoped_ptr.html#a30fbfa2b44f99f62320b744b113144d8">wxScopedPtr</a>
+: <a class="el" href="classwx_scoped_ptr.html#a30fbfa2b44f99f62320b744b113144d8">wxScopedPtr</a>
+, <a class="el" href="classwx_scoped_ptr_3_01_t_01_4.html#a737056fbe3a7e54f628b7d5a43ee5281">wxScopedPtr&lt; T &gt;</a>
 </li>
 <li>wxScopedTiedPtr()
 : <a class="el" href="classwx_scoped_tied_ptr.html#a2dc579447d98ab3eac0cf92d6fbca18a">wxScopedTiedPtr</a>
@@ -5409,7 +5440,7 @@
 : <a class="el" href="classwx_screen_d_c.html#a05147c9296ea7012f345f0803f52c020">wxScreenDC</a>
 </li>
 <li>wxScrollBar()
-: <a class="el" href="classwx_scroll_bar.html#a5914fbd50ef3b1d841d72d51d73cf9f4">wxScrollBar</a>
+: <a class="el" href="classwx_scroll_bar.html#a8c38e80a7c369efa77ed166f01d6d86c">wxScrollBar</a>
 </li>
 <li>wxScrolled()
 : <a class="el" href="classwx_scrolled.html#a01d0ecb5daa59ebb7a0806f16b7ac267">wxScrolled&lt; T &gt;</a>
@@ -5439,10 +5470,10 @@
 : <a class="el" href="classwx_show_event.html#a67164260c2e02eb6809192fe50cc5d1c">wxShowEvent</a>
 </li>
 <li>wxSimplebook()
-: <a class="el" href="classwx_simplebook.html#a7912157673b19a8ee7b9f02e4523dab9">wxSimplebook</a>
+: <a class="el" href="classwx_simplebook.html#a819e3cd45f3ae703dc9b2d89b504fe50">wxSimplebook</a>
 </li>
 <li>wxSimpleHtmlListBox()
-: <a class="el" href="classwx_simple_html_list_box.html#af1ca6cea6a59786dcdae00eb7f862f3e">wxSimpleHtmlListBox</a>
+: <a class="el" href="classwx_simple_html_list_box.html#a80dafda1b8a8d8bca60a21070f56e25e">wxSimpleHtmlListBox</a>
 </li>
 <li>wxSingleChoiceDialog()
 : <a class="el" href="classwx_single_choice_dialog.html#a1c287a30d03c90bbaf14cc94265620f9">wxSingleChoiceDialog</a>
@@ -5451,7 +5482,7 @@
 : <a class="el" href="classwx_single_instance_checker.html#ab5a56ad3ace10afc97d1c1608e40ef0c">wxSingleInstanceChecker</a>
 </li>
 <li>wxSize()
-: <a class="el" href="classwx_size.html#a89bbb1a42ad12573ff42809221e243a7">wxSize</a>
+: <a class="el" href="classwx_size.html#aaa5ee9cd2943878582267508255c5bc8">wxSize</a>
 </li>
 <li>wxSizeEvent()
 : <a class="el" href="classwx_size_event.html#acce432b5d8aa28bd845022fa44a868cc">wxSizeEvent</a>
@@ -5463,13 +5494,13 @@
 : <a class="el" href="classwx_sizer_flags.html#a2fe0499abe5461a2b8b4fe5fa2c054d4">wxSizerFlags</a>
 </li>
 <li>wxSizerItem()
-: <a class="el" href="classwx_sizer_item.html#aaefc97a23300b948bab559e4e89638b1">wxSizerItem</a>
+: <a class="el" href="classwx_sizer_item.html#af321a97190675a193212131d5f11523f">wxSizerItem</a>
 </li>
 <li>wxSizerXmlHandler()
 : <a class="el" href="classwx_sizer_xml_handler.html#ab7667feb76333caaa690ee53cfd82608">wxSizerXmlHandler</a>
 </li>
 <li>wxSlider()
-: <a class="el" href="classwx_slider.html#a891b43da8ecd9709fdac3ccadc23903f">wxSlider</a>
+: <a class="el" href="classwx_slider.html#a2173af74dec187f971f43ff76ce5fda4">wxSlider</a>
 </li>
 <li>wxSockAddress()
 : <a class="el" href="classwx_sock_address.html#ab7c5bcfc57e08179f08e982acfc25c46">wxSockAddress</a>
@@ -5499,19 +5530,19 @@
 : <a class="el" href="classwx_sorted_array_string.html#a749e5ba32eca259199472427eb29199f">wxSortedArrayString</a>
 </li>
 <li>wxSound()
-: <a class="el" href="classwx_sound.html#a4600f58647b99e6c43a2875031b47f04">wxSound</a>
+: <a class="el" href="classwx_sound.html#a4be271de3f10b93320059d8775d04741">wxSound</a>
 </li>
 <li>wxSpinButton()
-: <a class="el" href="classwx_spin_button.html#aa4eba752e564f360bcc58b3f54ccc513">wxSpinButton</a>
+: <a class="el" href="classwx_spin_button.html#a3b586bd26f28c503a5e313c85c64ec67">wxSpinButton</a>
 </li>
 <li>wxSpinCtrl()
-: <a class="el" href="classwx_spin_ctrl.html#ae14fbff54acea597904bdf583fa13c0f">wxSpinCtrl</a>
+: <a class="el" href="classwx_spin_ctrl.html#ac5defa94e938dd00380f551502c20a4e">wxSpinCtrl</a>
 </li>
 <li>wxSpinCtrlDouble()
 : <a class="el" href="classwx_spin_ctrl_double.html#afd85d7da42e6e994e653af5d2efce0bd">wxSpinCtrlDouble</a>
 </li>
 <li>wxSpinDoubleEvent()
-: <a class="el" href="classwx_spin_double_event.html#a3f832ccd7986dc22fa53409f1590fd7c">wxSpinDoubleEvent</a>
+: <a class="el" href="classwx_spin_double_event.html#a53a641a6232fe880ca13fad00d136b62">wxSpinDoubleEvent</a>
 </li>
 <li>wxSpinEvent()
 : <a class="el" href="classwx_spin_event.html#a6520e7e20c089c6582bc5a59a5e43b67">wxSpinEvent</a>
@@ -5526,10 +5557,10 @@
 : <a class="el" href="structwx_splitter_render_params.html#a4c414f73d747660e97fd458001c46eaf">wxSplitterRenderParams</a>
 </li>
 <li>wxSplitterWindow()
-: <a class="el" href="classwx_splitter_window.html#a311c33909f1164ccdf9a11f5be45ecdc">wxSplitterWindow</a>
+: <a class="el" href="classwx_splitter_window.html#aeefa297444ad5b968f3105af012c987e">wxSplitterWindow</a>
 </li>
 <li>wxStack()
-: <a class="el" href="classwx_stack_3_01_t_01_4.html#ac62fcaaf6d6e262db2f1198a15192ad1">wxStack&lt; T &gt;</a>
+: <a class="el" href="classwx_stack_3_01_t_01_4.html#a2515802c779c95d0b9178bc46c7c1582">wxStack&lt; T &gt;</a>
 </li>
 <li>wxStackWalker()
 : <a class="el" href="classwx_stack_walker.html#ab4d72a86c8635c0b0dd7e956999d63fa">wxStackWalker</a>
@@ -5544,7 +5575,7 @@
 : <a class="el" href="classwx_static_box.html#aa96250d5fbd5864d041ef878def4e474">wxStaticBox</a>
 </li>
 <li>wxStaticBoxSizer()
-: <a class="el" href="classwx_static_box_sizer.html#a8c2af376122e1093b95331ec1dd17ba5">wxStaticBoxSizer</a>
+: <a class="el" href="classwx_static_box_sizer.html#a9f69e687c1c78bf70295ce5a72934412">wxStaticBoxSizer</a>
 </li>
 <li>wxStaticLine()
 : <a class="el" href="classwx_static_line.html#a0b3436879b2193445a34bad6e2fc5086">wxStaticLine</a>
@@ -5553,7 +5584,7 @@
 : <a class="el" href="classwx_static_text.html#a726ca095a252614428459748e18320fb">wxStaticText</a>
 </li>
 <li>wxStatusBar()
-: <a class="el" href="classwx_status_bar.html#a0518ffafb51b3e050df1a0477cd9e0c8">wxStatusBar</a>
+: <a class="el" href="classwx_status_bar.html#a0d828fb14054ba93ad3579b65c995943">wxStatusBar</a>
 </li>
 <li>wxStatusBarPane()
 : <a class="el" href="classwx_status_bar_pane.html#a09de0e3d124479f91b27048845ef6761">wxStatusBarPane</a>
@@ -5583,13 +5614,13 @@
 : <a class="el" href="classwx_stream_base.html#a2bdb01f1ccd34d551d3cfc848054bf1e">wxStreamBase</a>
 </li>
 <li>wxStreamBuffer()
-: <a class="el" href="classwx_stream_buffer.html#a68ea8280a0649f0cf522a572a1a60824">wxStreamBuffer</a>
+: <a class="el" href="classwx_stream_buffer.html#a57afda8e5aec964e93453324afb4cd4c">wxStreamBuffer</a>
 </li>
 <li>wxStreamToTextRedirector()
 : <a class="el" href="classwx_stream_to_text_redirector.html#aaf6717267c8638d0ade7fe5ae143cae0">wxStreamToTextRedirector</a>
 </li>
 <li>wxString()
-: <a class="el" href="classwx_string.html#a6fdc82f6b7412bc8617a9194580024ae">wxString</a>
+: <a class="el" href="classwx_string.html#a18eac98263a8ecc3d565b9e6627a14b9">wxString</a>
 </li>
 <li>wxStringBuffer()
 : <a class="el" href="classwx_string_buffer.html#abcb53ccbb849af669bb51402ea57d7c8">wxStringBuffer</a>
@@ -5607,10 +5638,10 @@
 : <a class="el" href="classwx_string_output_stream.html#a0b1996d3edc55de7ae94441f5a4b680d">wxStringOutputStream</a>
 </li>
 <li>wxStringTokenizer()
-: <a class="el" href="classwx_string_tokenizer.html#a59aa6a8673730d97a235c9a77ee93866">wxStringTokenizer</a>
+: <a class="el" href="classwx_string_tokenizer.html#a44fd704314604082b029f8b0e19411dd">wxStringTokenizer</a>
 </li>
 <li>wxStyledTextCtrl()
-: <a class="el" href="classwx_styled_text_ctrl.html#a012c578bfab78963f4bb0202af4b85d0">wxStyledTextCtrl</a>
+: <a class="el" href="classwx_styled_text_ctrl.html#a0a55567d3331ee6cb8271d183be7a737">wxStyledTextCtrl</a>
 </li>
 <li>wxStyledTextEvent()
 : <a class="el" href="classwx_styled_text_event.html#a8279354e8ff8c26b6a6edf43e920ffb6">wxStyledTextEvent</a>
@@ -5635,7 +5666,7 @@
 
 <address class="footer">
 	<small>
-		Generated on Sat Dec 28 2013 01:32:19 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Tue Sep 9 2014 15:03:37 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

@@ -2266,6 +2266,9 @@ class AuiTabCtrl(wx.PyControl, AuiTabContainer):
                     tab_button = self._tab_close_buttons[mouse_tab]
                     self._drag_image = TabDragImage(self, page, tab_button.cur_state, self._art)
 
+                    if self.HasCapture():
+                        self.ReleaseMouse()
+                        
                     if self._agwFlags & AUI_NB_TAB_FLOAT:
                         self._drag_image.BeginDrag(wx.Point(0,0), self, fullScreen=True)
                     else:

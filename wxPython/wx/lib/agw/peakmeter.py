@@ -2,14 +2,12 @@
 # PEAKMETERCTRL wxPython IMPLEMENTATION
 #
 # Andrea Gavana, @ 07 October 2008
-# Latest Revision: 14 Mar 2012, 21.00 GMT
+# Latest Revision: 31 Jul 2014, 21.00 GMT
 #
 #
 # TODO List
 #
-# 1) Falloff effect for vertical bands;
-#
-# 2) Possibly some nicer drawing of bands and leds (using GraphicsContext).
+# 1) Possibly some nicer drawing of bands and leds (using GraphicsContext).
 #
 #
 # For all kind of problems, requests of enhancements and bug reports, please
@@ -20,6 +18,9 @@
 #
 # Or, obviously, to the wxPython mailing list!!!
 #
+#
+# Changes made by Mike Stover:
+#    Inverted Vertical style added
 #
 # End Of Comments
 # --------------------------------------------------------------------------------- #
@@ -136,12 +137,13 @@ Window Styles
 
 This class supports the following window styles:
 
-================= =========== ==================================================
-Window Styles     Hex Value   Description
-================= =========== ==================================================
-``PM_HORIZONTAL``         0x0 Shows horizontal bands in :class:`PeakMeterCtrl`.
-``PM_VERTICAL``           0x1 Shows vertical bands in :class:`PeakMeterCtrl`.
-================= =========== ==================================================
+======================== =========== ========================================================
+Window Styles            Hex Value   Description
+======================== =========== ========================================================
+``PM_HORIZONTAL``            0x0     Shows horizontal bands in :class:`PeakMeterCtrl`.
+``PM_VERTICAL``              0x1     Shows vertical bands in :class:`PeakMeterCtrl`.
+``PM_VERTICAL_INVERTED``     0x2     Shows inverted vertical bands in :class:`PeakMeterCtrl`.
+======================== =========== ========================================================
 
 
 Events Processing
@@ -155,7 +157,7 @@ License And Version
 
 :class:`PeakMeterCtrl` is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 14 Mar 2012, 21.00 GMT
+Latest Revision: Andrea Gavana @ 31 Jul 2014, 21.00 GMT
 
 Version 0.3
 
@@ -168,6 +170,8 @@ PM_HORIZONTAL = 0
 """ Shows horizontal bands in :class:`PeakMeterCtrl`. """
 PM_VERTICAL = 1
 """ Shows vertical bands in :class:`PeakMeterCtrl`. """
+PM_VERTICAL_INVERTED = 2
+""" Shows inverted vertical bands in :class:`PeakMeterCtrl`. """
 
 # Some useful constants...
 BAND_DEFAULT = 8
@@ -301,12 +305,13 @@ class PeakMeterCtrl(wx.PyControl):
         :param `style`: the underlying :class:`PyControl` window style;
         :param `agwStyle`: the AGW-specific window style, which can be one of the following bits:
 
-         ================= =========== ==================================================
-         Window Styles     Hex Value   Description
-         ================= =========== ==================================================
-         ``PM_HORIZONTAL``         0x0 Shows horizontal bands in :class:`PeakMeterCtrl`.
-         ``PM_VERTICAL``           0x1 Shows vertical bands in :class:`PeakMeterCtrl`.
-         ================= =========== ==================================================
+         ======================== =========== ========================================================
+         Window Styles            Hex Value   Description
+         ======================== =========== ========================================================
+         ``PM_HORIZONTAL``            0x0     Shows horizontal bands in :class:`PeakMeterCtrl`.
+         ``PM_VERTICAL``              0x1     Shows vertical bands in :class:`PeakMeterCtrl`.
+         ``PM_VERTICAL_INVERTED``     0x2     Shows inverted vertical bands in :class:`PeakMeterCtrl`.
+         ======================== =========== ========================================================
         
         """
 
@@ -356,12 +361,13 @@ class PeakMeterCtrl(wx.PyControl):
         :param `agwStyle`: the AGW-specific window style. This can be a combination of the
          following bits:
 
-         ================= =========== ==================================================
-         Window Styles     Hex Value   Description
-         ================= =========== ==================================================
-         ``PM_HORIZONTAL``         0x0 Shows horizontal bands in :class:`PeakMeterCtrl`.
-         ``PM_VERTICAL``           0x1 Shows vertical bands in :class:`PeakMeterCtrl`.
-         ================= =========== ==================================================
+        ======================== =========== ========================================================
+        Window Styles            Hex Value   Description
+        ======================== =========== ========================================================
+        ``PM_HORIZONTAL``            0x0     Shows horizontal bands in :class:`PeakMeterCtrl`.
+        ``PM_VERTICAL``              0x1     Shows vertical bands in :class:`PeakMeterCtrl`.
+        ``PM_VERTICAL_INVERTED``     0x2     Shows inverted vertical bands in :class:`PeakMeterCtrl`.
+        ======================== =========== ========================================================
 
         """
 
@@ -671,6 +677,8 @@ class PeakMeterCtrl(wx.PyControl):
         
         if self.GetAGWWindowStyleFlag() & PM_VERTICAL:
             self.DrawVertBand(dc, rc)
+        elif self.GetAGWWindowStyleFlag() & PM_VERTICAL_INVERTED:
+            self.DrawVertBandInverted(dc, rc)
         else:
             self.DrawHorzBand(dc, rc)
 
@@ -736,6 +744,7 @@ class PeakMeterCtrl(wx.PyControl):
         
             self._value = self._meterData[vert]._value
             horzLimit = self._value*horzBands/self._maxValue
+            rectPrev = wx.Rect(*rectBand)
 
             for horz in xrange(horzBands):
             
@@ -770,6 +779,20 @@ class PeakMeterCtrl(wx.PyControl):
                 rectBand.Inflate(0, yDecal)
                 rectBand.OffsetXY(size.x, 0)
             
+            # Draw falloff effect (Seems to be working now.)
+            if self._showFalloff:
+                oldPen = dc.GetPen()            
+                pen = wx.Pen(DarkenColour(self._clrBackground, FALL_INCREASEBY))
+                maxWidth = size.x*horzBands
+                points = [wx.Point() for i in xrange(2)]
+                points[0].y = rectPrev.GetTopRight().y - yDecal
+                points[0].x = rectPrev.GetBottomLeft().x + self._meterData[vert]._falloff*maxWidth/self._maxValue
+                points[1].y = rectPrev.GetBottomLeft().y + yDecal
+                points[1].x = points[0].x
+                dc.SetPen(pen)
+                dc.DrawLinePoint(points[0], points[1])
+                dc.SetPen(oldPen)
+
             # Move to Next Vertical band
             rectBand.OffsetXY(-size.x*horzBands, size.y)
 
@@ -853,3 +876,82 @@ class PeakMeterCtrl(wx.PyControl):
             # Move to Next Horizontal band
             rectBand.OffsetXY(size.x, size.y*vertBands)
         
+
+    def DrawVertBandInverted(self, dc, rect):
+        """
+        Draws vertical bands inverted.
+
+        :param `dc`: an instance of :class:`DC`;
+        :param `rect`: the vertical bands client rectangle.
+        """
+
+        vertBands = (self._ledBands > 1 and [self._ledBands] or [self._maxValue*BAND_PERCENT/100])[0]
+        minVertLimit = self._minValue*vertBands/self._maxValue
+        medVertLimit = self._medValue*vertBands/self._maxValue
+        maxVertLimit = vertBands
+
+        size = wx.Size(rect.width/self._numBands, rect.height/vertBands)
+        rectBand = wx.RectPS(rect.GetTopLeft(), size)
+        
+        # Draw band from top?
+        rectBand.OffsetXY(0, 0)
+        xDecal = (self._numBands > 1 and [1] or [0])[0]
+        yDecal = (self._ledBands > 1 and [1] or [0])[0]
+
+        for horz in xrange(self._numBands):
+        
+            self._value = self._meterData[horz]._value
+            vertLimit = self._value*vertBands/self._maxValue
+            rectPrev = wx.Rect(*rectBand)
+
+            for vert in xrange(vertBands):
+            
+                rectBand.Deflate(xDecal, 0)
+
+                # Find colour based on range value
+                colourRect = self._clrBackground
+                if self._showGrid:
+                    colourRect = DarkenColour(self._clrBackground, GRID_INCREASEBY)
+
+                # Draw grid line (level) bar
+                if self._showGrid and (vert == minVertLimit or vert == (vertBands-1)):
+                
+                    points = [wx.Point() for i in xrange(2)]
+                    points[0].x = rectBand.GetTopLeft().x - xDecal
+                    points[0].y = rectBand.GetTopLeft().y + (rectBand.height >> 1)
+                    points[1].x = rectBand.GetBottomRight().x + xDecal
+                    points[1].y = points[0].y
+                    dc.DrawLinePoint(points[0], points[1])
+                
+                if vert < vertLimit:
+                
+                    if InRange(vert, 0, minVertLimit-1):
+                        colourRect = self._clrNormal
+                    elif InRange(vert, minVertLimit, medVertLimit-1):
+                        colourRect = self._clrMedium
+                    elif InRange(vert, medVertLimit, maxVertLimit):
+                        colourRect = self._clrHigh
+                
+                dc.SetBrush(wx.Brush(colourRect))
+                dc.DrawRectangleRect(rectBand)
+
+                rectBand.Inflate(xDecal, 0)
+                rectBand.OffsetXY(0, size.y)
+            
+            # Draw falloff effect
+            if self._showFalloff:
+
+                oldPen = dc.GetPen()            
+                pen = wx.Pen(DarkenColour(self._clrBackground, FALL_INCREASEBY))
+                maxHeight = -size.y*vertBands
+                points = [wx.Point() for i in xrange(2)]
+                points[0].x = rectPrev.GetBottomLeft().x + xDecal
+                points[0].y = rectPrev.GetTopRight().y - self._meterData[horz]._falloff*maxHeight/self._maxValue
+                points[1].x = rectPrev.GetTopRight().x - xDecal
+                points[1].y = points[0].y
+                dc.SetPen(pen)
+                dc.DrawLinePoint(points[0], points[1])
+                dc.SetPen(oldPen)
+            
+            # Move to Next Horizontal band
+            rectBand.OffsetXY(size.x, -size.y*vertBands)

@@ -1,4 +1,4 @@
-'''
+"""
 Taken from wxPython wiki at http://wiki.wxpython.org/ModelViewController/.
 Used to verify that the wx.lib.pubsub can be replaced by pubsub v3 if message
 protocol set to "arg1" (as long as only main API functions are used such as
@@ -13,7 +13,7 @@ Notes:
 
 :copyright: Copyright since 2006 by Oliver Schoenborn, all rights reserved.
 :license: BSD, see LICENSE.txt for details.
-'''
+"""
 
 import wx
 

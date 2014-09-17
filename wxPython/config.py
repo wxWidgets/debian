@@ -22,6 +22,7 @@
 
 import sys, os, glob, fnmatch, tempfile
 import subprocess
+import re
 
 EGGing = 'bdist_egg' in sys.argv or 'egg_info' in sys.argv
 if not EGGing:
@@ -956,6 +957,7 @@ if os.name == 'nt' and  COMPILER == 'msvc':
 
                 ('SWIG_TYPE_TABLE', WXPYTHON_TYPE_TABLE),
                 ('SWIG_PYTHON_OUTPUT_TUPLE', None),
+                ('SWIG_PYTHON_SILENT_MEMLEAK', None),
                 ('WXP_USE_THREAD', '1'),
                 ('ISOLATION_AWARE_ENABLED', None),
                 ]
@@ -1010,6 +1012,7 @@ elif os.name == 'posix' or COMPILER == 'mingw32':
     includes = ['include', 'src']
     defines = [('SWIG_TYPE_TABLE', WXPYTHON_TYPE_TABLE),
                ('SWIG_PYTHON_OUTPUT_TUPLE', None),
+               ('SWIG_PYTHON_SILENT_MEMLEAK', None),
                ('WXP_USE_THREAD', '1'),
                ]
     if UNDEF_NDEBUG:
@@ -1059,10 +1062,9 @@ elif os.name == 'posix' or COMPILER == 'mingw32':
         libs = ['stdc++']
         NO_SCRIPTS = 1
         if ARCH != "":
-            cflags.append("-arch")
-            cflags.append(ARCH)
-            lflags.append("-arch")
-            lflags.append(ARCH)
+            splitArch = "-arch " + re.sub(","," -arch ",ARCH)
+            cflags.extend(splitArch.split(' '))
+            lflags.extend(splitArch.split(' '))
 
         if not os.environ.get('CC') or not os.environ.get('CXX'):
             os.environ["CXX"] = getWxConfigValue('--cxx')

@@ -1638,10 +1638,10 @@ bool wxGtkDataViewModelNotifier::ItemDeleted( const wxDataViewItem &parent, cons
     gtk_tree_path_append_index( path, index );
 #endif
 
+    m_internal->ItemDeleted( parent, item );
+
     gtk_tree_model_row_deleted(
         GTK_TREE_MODEL(wxgtk_model), path );
-
-    m_internal->ItemDeleted( parent, item );
 
     // Did we remove the last child, causing 'parent' to become a leaf?
     if ( !m_wx_model->IsContainer(parent) )
@@ -4441,6 +4441,16 @@ gtk_dataview_button_press_callback( GtkWidget *WXUNUSED(widget),
             &cell_y
         );
 
+        // If the right click is on an item that isn't selected, select it, as is
+        // commonly done. Do not do it if the item under mouse is already selected,
+        // because it could be a part of multi-item selection.
+        GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(dv->GtkGetTreeView()));
+        if ( !gtk_tree_selection_path_is_selected(selection, path) )
+        {
+            gtk_tree_selection_unselect_all(selection);
+            gtk_tree_selection_select_path(selection, path);
+        }
+
         wxDataViewEvent event( wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, dv->GetId() );
         if (path)
             event.SetItem(dv->GTKPathToItem(path));
@@ -4598,6 +4608,9 @@ void wxDataViewCtrl::OnInternalIdle()
 {
     wxWindow::OnInternalIdle();
 
+    if ( !m_internal )
+        return;
+
     m_internal->OnInternalIdle();
 
     unsigned int cols = GetColumnCount();
@@ -4629,18 +4642,21 @@ bool wxDataViewCtrl::AssociateModel( wxDataViewModel *model )
     bool fixed = (((GetWindowStyle() & wxDV_VARIABLE_LINE_HEIGHT) == 0) || (model->IsVirtualListModel()));
     gtk_tree_view_set_fixed_height_mode( GTK_TREE_VIEW(m_treeview), fixed );
 
-    m_internal = new wxDataViewCtrlInternal( this, model );
+    if ( model )
+        m_internal = new wxDataViewCtrlInternal( this, model );
 
     return true;
 }
 
 bool wxDataViewCtrl::EnableDragSource( const wxDataFormat &format )
 {
+    wxCHECK_MSG( m_internal, false, "model must be associated before calling EnableDragSource" );
     return m_internal->EnableDragSource( format );
 }
 
 bool wxDataViewCtrl::EnableDropTarget( const wxDataFormat &format )
 {
+    wxCHECK_MSG( m_internal, false, "model must be associated before calling EnableDragTarget" );
     return m_internal->EnableDropTarget( format );
 }
 
@@ -4769,6 +4785,7 @@ int wxDataViewCtrl::GetColumnPosition( const wxDataViewColumn *column ) const
 
 wxDataViewColumn *wxDataViewCtrl::GetSortingColumn() const
 {
+    wxCHECK_MSG( m_internal, NULL, "model must be associated before calling GetSortingColumn" );
     return m_internal->GetDataViewSortColumn();
 }
 
@@ -4782,6 +4799,8 @@ void wxDataViewCtrl::Expand( const wxDataViewItem & item )
 
 void wxDataViewCtrl::Collapse( const wxDataViewItem & item )
 {
+    wxCHECK_RET( m_internal, "model must be associated before calling Collapse" );
+
     GtkTreeIter iter;
     iter.user_data = item.GetID();
     wxGtkTreePath path(m_internal->get_path( &iter ));
@@ -4790,6 +4809,8 @@ void wxDataViewCtrl::Collapse( const wxDataViewItem & item )
 
 bool wxDataViewCtrl::IsExpanded( const wxDataViewItem & item ) const
 {
+    wxCHECK_MSG( m_internal, false, "model must be associated before calling IsExpanded" );
+
     GtkTreeIter iter;
     iter.user_data = item.GetID();
     wxGtkTreePath path(m_internal->get_path( &iter ));
@@ -4801,7 +4822,7 @@ wxDataViewItem wxDataViewCtrl::DoGetCurrentItem() const
     // The tree doesn't have any current item if it hadn't been created yet but
     // it's arguably not an error to call this function in this case so just
     // return an invalid item without asserting.
-    if ( !m_treeview )
+    if ( !m_treeview || !m_internal )
         return wxDataViewItem();
 
     wxGtkTreePath path;
@@ -4814,6 +4835,7 @@ void wxDataViewCtrl::DoSetCurrentItem(const wxDataViewItem& item)
 {
     wxCHECK_RET( m_treeview,
                  "Current item can't be set before creating the control." );
+    wxCHECK_RET( m_internal, "model must be associated before setting current item" );
 
     // We need to make sure the model knows about this item or the path would
     // be invalid and gtk_tree_view_set_cursor() would silently do nothing.
@@ -4849,7 +4871,8 @@ wxDataViewColumn *wxDataViewCtrl::GetCurrentColumn() const
 void wxDataViewCtrl::EditItem(const wxDataViewItem& item, const wxDataViewColumn *column)
 {
     wxCHECK_RET( m_treeview,
-                 "Current item can't be set before creating the control." );
+                 "item can't be edited before creating the control." );
+    wxCHECK_RET( m_internal, "model must be associated before editing an item" );
     wxCHECK_RET( item.IsOk(), "invalid item" );
     wxCHECK_RET( column, "no column provided" );
 
@@ -4882,6 +4905,8 @@ int wxDataViewCtrl::GetSelectedItemsCount() const
 
 int wxDataViewCtrl::GetSelections( wxDataViewItemArray & sel ) const
 {
+    wxCHECK_MSG( m_internal, 0, "model must be associated before calling GetSelections" );
+
     sel.Clear();
 
     GtkTreeSelection *selection = gtk_tree_view_get_selection( GTK_TREE_VIEW(m_treeview) );
@@ -4911,6 +4936,8 @@ int wxDataViewCtrl::GetSelections( wxDataViewItemArray & sel ) const
 
 void wxDataViewCtrl::SetSelections( const wxDataViewItemArray & sel )
 {
+    wxCHECK_RET( m_internal, "model must be associated before calling SetSelections" );
+
     GtkDisableSelectionEvents();
 
     GtkTreeSelection *selection = gtk_tree_view_get_selection( GTK_TREE_VIEW(m_treeview) );
@@ -4942,6 +4969,8 @@ void wxDataViewCtrl::SetSelections( const wxDataViewItemArray & sel )
 
 void wxDataViewCtrl::Select( const wxDataViewItem & item )
 {
+    wxCHECK_RET( m_internal, "model must be associated before calling Select" );
+
     ExpandAncestors(item);
 
     GtkDisableSelectionEvents();
@@ -4958,6 +4987,8 @@ void wxDataViewCtrl::Select( const wxDataViewItem & item )
 
 void wxDataViewCtrl::Unselect( const wxDataViewItem & item )
 {
+    wxCHECK_RET( m_internal, "model must be associated before calling Unselect" );
+
     GtkDisableSelectionEvents();
 
     GtkTreeSelection *selection = gtk_tree_view_get_selection( GTK_TREE_VIEW(m_treeview) );
@@ -4972,6 +5003,8 @@ void wxDataViewCtrl::Unselect( const wxDataViewItem & item )
 
 bool wxDataViewCtrl::IsSelected( const wxDataViewItem & item ) const
 {
+    wxCHECK_MSG( m_internal, false, "model must be associated before calling IsSelected" );
+
     GtkTreeSelection *selection = gtk_tree_view_get_selection( GTK_TREE_VIEW(m_treeview) );
 
     GtkTreeIter iter;
@@ -5006,6 +5039,8 @@ void wxDataViewCtrl::UnselectAll()
 void wxDataViewCtrl::EnsureVisible(const wxDataViewItem& item,
                                    const wxDataViewColumn *WXUNUSED(column))
 {
+    wxCHECK_RET( m_internal, "model must be associated before calling EnsureVisible" );
+
     m_ensureVisibleDefered = item;
     ExpandAncestors(item);
 
@@ -5019,6 +5054,8 @@ void wxDataViewCtrl::HitTest(const wxPoint& point,
                              wxDataViewItem& item,
                              wxDataViewColumn *& column) const
 {
+    wxCHECK_RET( m_internal, "model must be associated before calling HitTest" );
+
     // gtk_tree_view_get_dest_row_at_pos() is the right one. But it does not tell the column.
     // gtk_tree_view_get_path_at_pos() is the wrong function. It doesn't mind the header but returns column.
     // See http://mail.gnome.org/archives/gtkmm-list/2005-January/msg00080.html

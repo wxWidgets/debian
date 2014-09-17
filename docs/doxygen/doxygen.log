@@ -1,3 +1,3 @@
-/home/robind/projects/wx/2.9/wx/docs/doxygen/mainpages/manual.h:28: warning: \subpage command has no label
-/home/robind/projects/wx/2.9/wx/docs/doxygen/mainpages/introduction.h:119: warning: explicit link request to 'wxwidgets' could not be resolved
+/home/robind/projects/wx/git/wx/docs/doxygen/mainpages/manual.h:28: warning: \subpage command has no label
+/home/robind/projects/wx/git/wx/docs/doxygen/mainpages/introduction.h:119: warning: explicit link request to 'wxwidgets' could not be resolved
 error: failed to run html help compiler on index.hhp

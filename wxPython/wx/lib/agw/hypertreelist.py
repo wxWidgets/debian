@@ -3,7 +3,7 @@
 # Inspired By And Heavily Based On wx.gizmos.TreeListCtrl.
 #
 # Andrea Gavana, @ 08 May 2006
-# Latest Revision: 25 Aug 2012, 10.00 GMT
+# Latest Revision: 30 Jul 2014, 21.00 GMT
 #
 #
 # TODO List
@@ -261,7 +261,7 @@ License And Version
 
 :class:`HyperTreeList` is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 25 Aug 2012, 10.00 GMT
+Latest Revision: Andrea Gavana @ 30 Jul 2014, 21.00 GMT
 
 Version 1.3
 
@@ -330,6 +330,8 @@ TR_EDIT_LABELS = wx.TR_EDIT_LABELS                             # can edit item l
 """ Use this style if you wish the user to be able to edit labels in the tree control. """
 TR_ROW_LINES = wx.TR_ROW_LINES                                 # put border around items
 """ Use this style to draw a contrasting border between displayed rows. """
+TR_COLUMN_LINES = 0x1000                                       # put border between columns
+""" Use this style to draw a contrasting border between displayed columns. """
 TR_HIDE_ROOT = wx.TR_HIDE_ROOT                                 # don't display root node
 """ Use this style to suppress the display of the root node, effectively causing the first-level nodes to appear as a series of root nodes. """
 TR_FULL_ROW_HIGHLIGHT = wx.TR_FULL_ROW_HIGHLIGHT               # highlight full horz space
@@ -353,6 +355,14 @@ TR_VIRTUAL = 0x100000
 # --------------------------------------------------------------------------
 TR_NO_HEADER = 0x40000
 """ Use this style to hide the columns header. """
+# --------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------
+# Additional HyperTreeList style autosize the columns based on the widest
+# width between column header and cells content
+# --------------------------------------------------------------------------
+LIST_AUTOSIZE_CONTENT_OR_HEADER = -3
 # --------------------------------------------------------------------------
 
 
@@ -1337,10 +1347,9 @@ class TreeListItem(GenericTreeItem):
         """
 
         for child in self._children:
-            if tree:
-                tree.SendDeleteEvent(child)
-
             child.DeleteChildren(tree)
+            if tree:
+                tree.Delete(child)
             
             if child == tree._selectItem:
                 tree._selectItem = None
@@ -2341,7 +2350,7 @@ class TreeListMainWindow(CustomTreeCtrl):
 # operations
 # ----------------------------------------------------------------------------
 
-    def DoInsertItem(self, parent, previous, text, ct_type=0, wnd=None, image=-1, selImage=-1, data=None):
+    def DoInsertItem(self, parent, previous, text, ct_type=0, wnd=None, image=-1, selImage=-1, data=None, separator=False):
         """
         Actually inserts an item in the tree.
 
@@ -2358,6 +2367,8 @@ class TreeListMainWindow(CustomTreeCtrl):
          use for the item in selected state; if `image` > -1 and `selImage` is -1, the
          same image is used for both selected and unselected items;
         :param `data`: associate the given Python object `data` with the item.
+        :param `separator`: unused at the moment, this parameter is present to comply with
+         :meth:`CustomTreeCtrl.DoInsertItem() <lib.agw.customtreectrl.CustomTreeCtrl.DoInsertItem>` changed API.
         """
         
         self._dirty = True # do this first so stuff below doesn't cause flicker
@@ -2517,10 +2528,13 @@ class TreeListMainWindow(CustomTreeCtrl):
         if self._anchor:
 
             self._dirty = True
+
+            self._anchor.DeleteChildren(self)
+            self.Delete(self._anchor)
+
             self.SendDeleteEvent(self._anchor)
             self._current = None
             self._selectItem = None
-            self._anchor.DeleteChildren(self)
             del self._anchor
             self._anchor = None
 
@@ -3644,7 +3658,8 @@ class TreeListMainWindow(CustomTreeCtrl):
             if self._lastOnSame:
                 if item == self._current and self._curColumn != -1 and \
                    self._owner.GetHeaderWindow().IsColumnEditable(self._curColumn) and \
-                   flags & (wx.TREE_HITTEST_ONITEMLABEL | wx.TREE_HITTEST_ONITEMCOLUMN):
+                   flags & (wx.TREE_HITTEST_ONITEMLABEL | wx.TREE_HITTEST_ONITEMCOLUMN) and \
+                   ((self._editCtrl != None and column != self._editCtrl.column()) or self._editCtrl is None):
                     self._editTimer.Start(_EDIT_TIMER_TICKS, wx.TIMER_ONE_SHOT)
                 
                 self._lastOnSame = False
@@ -4389,7 +4404,18 @@ class HyperTreeList(wx.PyControl):
         elif width == wx.LIST_AUTOSIZE:
         
             width = self._main_win.GetBestColumnWidth(column)
-        
+
+        elif width == LIST_AUTOSIZE_CONTENT_OR_HEADER:
+
+            width1 = self._main_win.GetBestColumnWidth(column)
+            font = self._header_win.GetFont()
+            dc = wx.ClientDC(self._header_win)
+            width2, dummy, dummy = dc.GetMultiLineTextExtent(self._header_win.GetColumnText(column))
+ 
+            width2 += 2*_EXTRA_WIDTH + _MARGIN
+            width = max(width1, width2)
+
+
         self._header_win.SetColumnWidth(column, width)
         self._header_win.Refresh()
 

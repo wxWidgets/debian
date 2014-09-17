@@ -96,7 +96,6 @@ class _MouseEvent(wx.PyCommandEvent):
 
 ## fixme: This should probably be re-factored into a class
 _testBitmap = None
-_testDC = None
 
 def _cycleidxs(indexcount, maxvalue, step):
 
@@ -107,24 +106,18 @@ def _cycleidxs(indexcount, maxvalue, step):
         """Return True if the color comes back from the bitmap identically."""
         if len(color) < 3:
             return True
-        global _testBitmap, _testDC
-        B = _testBitmap
-        if not mac:
-            dc = _testDC
-        if not B:
-            B = _testBitmap = wx.EmptyBitmap(1, 1)
-            if not mac:
-                dc = _testDC = wx.MemoryDC()
-        if mac:
-            dc = wx.MemoryDC()
-        dc.SelectObject(B)
+        global _testBitmap
+        dc = wx.MemoryDC()
+        if not _testBitmap:
+            _testBitmap = wx.EmptyBitmap(1, 1)
+        dc.SelectObject(_testBitmap)
         dc.SetBackground(wx.BLACK_BRUSH)
         dc.Clear()
         dc.SetPen(wx.Pen(wx.Colour(*color), 4))
         dc.DrawPoint(0,0)
-        if mac:
-            del dc
-            pdata = wx.AlphaPixelData(B)
+        if mac: # NOTE: can the Mac not jsut use the DC?
+            del dc # Mac can't work with bitmap when selected into a DC.
+            pdata = wx.AlphaPixelData(_testBitmap)
             pacc = pdata.GetPixels()
             pacc.MoveTo(pdata, 0, 0)
             outcolor = pacc.Get()[:3]
@@ -141,6 +134,7 @@ def _cycleidxs(indexcount, maxvalue, step):
                 if not colormatch(color):
                     continue
                 yield color
+
 def _colorGenerator():
 
     """
@@ -1901,6 +1895,10 @@ class Bitmap(TextObjectMixin, DrawObject, ):
         (self.Width, self.Height) = self.Bitmap.GetWidth(), self.Bitmap.GetHeight()
         self.ShiftFun = self.ShiftFunDict[Position]
 
+        # no need for a line width with bitmaps
+        self.MinHitLineWidth = 0
+        self.HitLineWidth = 0
+
     def _Draw(self, dc , WorldToPixel, ScaleWorldToPixel, HTdc=None):
         XY = WorldToPixel(self.XY)
         XY = self.ShiftFun(XY[0], XY[1], self.Width, self.Height)
@@ -1934,7 +1932,8 @@ class ScaledBitmap(TextObjectMixin, DrawObject, ):
                  XY,
                  Height,
                  Position = 'tl',
-                 InForeground = False):
+                 InForeground = False,
+                 Quality='normal'):
 
         DrawObject.__init__(self,InForeground)
 
@@ -1951,6 +1950,31 @@ class ScaledBitmap(TextObjectMixin, DrawObject, ):
         self.CalcBoundingBox()
         self.ScaledBitmap = None
         self.ScaledHeight = None
+        self.Quality = Quality
+
+        # no need for a line width with bitmaps
+        self.MinHitLineWidth = 0
+        self.HitLineWidth = 0
+
+
+    @property 
+    def Quality(self):
+        if self._scale_quality == wx.IMAGE_QUALITY_NORMAL:
+            return 'normal'
+        elif self._scale_quality == wx.IMAGE_QUALITY_HIGH:
+            return 'high'
+        else:
+            raise ValueError('the _scale_quality attribute should only be set to wx.IMAGE_QUALITY_NORMAL or wx.IMAGE_QUALITY_HIGH')
+
+    @Quality.setter
+    def Quality(self, qual):
+        if qual.lower() == 'normal':
+            self._scale_quality = wx.IMAGE_QUALITY_NORMAL
+        elif qual.lower() == 'high':
+            self._scale_quality = wx.IMAGE_QUALITY_HIGH
+        else:
+            raise ValueError('the Quality property can only be set to "normal" or "high"')
+
 
     def CalcBoundingBox(self):
         ## this isn't exact, as fonts don't scale exactly.
@@ -1961,19 +1985,22 @@ class ScaledBitmap(TextObjectMixin, DrawObject, ):
 
     def _Draw(self, dc , WorldToPixel, ScaleWorldToPixel, HTdc=None):
         XY = WorldToPixel(self.XY)
-        H = ScaleWorldToPixel(self.Height)[0]
-        W = H * (self.bmpWidth / self.bmpHeight)
-        if (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
-            self.ScaledHeight = H
-            Img = self.Image.Scale(W, H)
-            self.ScaledBitmap = wx.BitmapFromImage(Img)
+        H = int(round(ScaleWorldToPixel(self.Height)[0]))
+        W = int(round(H * (self.bmpWidth / self.bmpHeight)))
+        if W == 0 or H == 0: # nothign to draw
+            return
+        else:
+            if (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
+                self.ScaledHeight = H
+                Img = self.Image.Scale(W, H, quality=self._scale_quality)
+                self.ScaledBitmap = wx.BitmapFromImage(Img)
 
-        XY = self.ShiftFun(XY[0], XY[1], W, H)
-        dc.DrawBitmapPoint(self.ScaledBitmap, XY, True)
-        if HTdc and self.HitAble:
-            HTdc.SetPen(self.HitPen)
-            HTdc.SetBrush(self.HitBrush)
-            HTdc.DrawRectanglePointSize(XY, (W, H) )
+            XY = self.ShiftFun(XY[0], XY[1], W, H)
+            dc.DrawBitmapPoint(self.ScaledBitmap, XY, True)
+            if HTdc and self.HitAble:
+                HTdc.SetPen(self.HitPen)
+                HTdc.SetBrush(self.HitBrush)
+                HTdc.DrawRectanglePointSize(XY, (W, H) )
 
 class ScaledBitmap2(TextObjectMixin, DrawObject, ):
     """
@@ -1989,7 +2016,8 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
                  Height,
                  Width=None,
                  Position = 'tl',
-                 InForeground = False):
+                 InForeground = False,
+                 Quality='normal'):
 
         DrawObject.__init__(self,InForeground)
 
@@ -2013,6 +2041,29 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         self.ShiftFun = self.ShiftFunDict[Position]
         self.CalcBoundingBox()
         self.ScaledBitmap = None # cache of the last existing scaled bitmap
+        self.Quality = Quality
+
+        # no need for aline width with images.
+        self.MinHitLineWidth = 0
+        self.HitLineWidth = 0
+
+    @property 
+    def Quality(self):
+        if self._scale_quality == wx.IMAGE_QUALITY_NORMAL:
+            return 'normal'
+        elif self._scale_quality == wx.IMAGE_QUALITY_HIGH:
+            return 'high'
+        else:
+            raise ValueError('the _scale_quality attribute should only be set to wx.IMAGE_QUALITY_NORMAL or wx.IMAGE_QUALITY_HIGH')
+
+    @Quality.setter
+    def Quality(self, qual):
+        if qual.lower() == 'normal':
+            self._scale_quality = wx.IMAGE_QUALITY_NORMAL
+        elif qual.lower() == 'high':
+            self._scale_quality = wx.IMAGE_QUALITY_HIGH
+        else:
+            raise ValueError('the Quality property can only be set to "normal" or "high"')
 
     def CalcBoundingBox(self):
         ## this isn't exact, as fonts don't scale exactly.
@@ -2039,22 +2090,25 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
 
         """
         XY = WorldToPixel(self.XY)
-        H = ScaleWorldToPixel(self.Height)[0]
-        W = H * (self.bmpWidth / self.bmpHeight)
-        if (self.ScaledBitmap is None) or (self.ScaledBitmap[0] != (0, 0, self.bmpWidth, self.bmpHeight, W, H) ):
-        #if True: #fixme: (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
-            self.ScaledHeight = H
-            Img = self.Image.Scale(W, H)
-            bmp = wx.BitmapFromImage(Img)
-            self.ScaledBitmap = ((0, 0, self.bmpWidth, self.bmpHeight , W, H), bmp)# this defines the cached bitmap
+        H = int(round(ScaleWorldToPixel(self.Height)[0]))
+        W = int(round(H * (self.bmpWidth / self.bmpHeight)))
+        if W == 0 or H == 0: # nothing to draw
+            return
         else:
-            bmp = self.ScaledBitmap[1]
-        XY = self.ShiftFun(XY[0], XY[1], W, H)
-        dc.DrawBitmapPoint(bmp, XY, True)
-        if HTdc and self.HitAble:
-            HTdc.SetPen(self.HitPen)
-            HTdc.SetBrush(self.HitBrush)
-            HTdc.DrawRectanglePointSize(XY, (W, H) )
+            if (self.ScaledBitmap is None) or (self.ScaledBitmap[0] != (0, 0, self.bmpWidth, self.bmpHeight, W, H) ):
+            #if True: #fixme: (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
+                self.ScaledHeight = H
+                Img = self.Image.Scale(W, H, quality=self._scale_quality)
+                bmp = wx.BitmapFromImage(Img)
+                self.ScaledBitmap = ((0, 0, self.bmpWidth, self.bmpHeight , W, H), bmp)# this defines the cached bitmap
+            else:
+                bmp = self.ScaledBitmap[1]
+            XY = self.ShiftFun(XY[0], XY[1], W, H)
+            dc.DrawBitmapPoint(bmp, XY, True)
+            if HTdc and self.HitAble:
+                HTdc.SetPen(self.HitPen)
+                HTdc.SetBrush(self.HitBrush)
+                HTdc.DrawRectanglePointSize(XY, (W, H) )
 
     def _DrawSubBitmap(self, dc , WorldToPixel, ScaleWorldToPixel, HTdc):
         """
@@ -2109,7 +2163,7 @@ class ScaledBitmap2(TextObjectMixin, DrawObject, ):
         Hs = int(scale * Hb + 0.5)
         if (self.ScaledBitmap is None) or (self.ScaledBitmap[0] != (Xb, Yb, Wb, Hb, Ws, Ws) ):
             Img = self.Image.GetSubImage(wx.Rect(Xb, Yb, Wb, Hb))
-            Img.Rescale(Ws, Hs, quality=wx.IMAGE_QUALITY_HIGH)
+            Img.Rescale(Ws, Hs, quality=self._scale_quality)
             bmp = wx.BitmapFromImage(Img)
             self.ScaledBitmap = ((Xb, Yb, Wb, Hb, Ws, Ws), bmp)# this defines the cached bitmap
             #XY = self.ShiftFun(XY[0], XY[1], W, H)
@@ -2539,6 +2593,7 @@ class FloatCanvas(wx.Panel):
                         EVT_FC_RIGHT_DCLICK: {},
                         EVT_FC_ENTER_OBJECT: {},
                         EVT_FC_LEAVE_OBJECT: {},
+                        EVT_FC_MOTION: {},
                         }
 
     def _RaiseMouseEvent(self, Event, EventType):
@@ -2547,6 +2602,7 @@ class FloatCanvas(wx.Panel):
         """
         pt = self.PixelToWorld( Event.GetPosition() )
         evt = _MouseEvent(EventType, Event, self.GetId(), pt)
+        # called the Windows usual event handler
         self.GetEventHandler().ProcessEvent(evt)
 
     if wx.__version__ >= "2.8":
@@ -2587,15 +2643,28 @@ class FloatCanvas(wx.Panel):
         Object.CallBackFuncs[HitEvent](Object)
 
     def HitTest(self, event, HitEvent):
+        """
+        Does a hit test on objects that are "hit-able"
+
+        If an object is hit, its event handler is called,
+        and this method returns True
+
+        If no object is hit, this method returns False.
+
+        If the event is outside the Window, no object will be considered hit
+        """
         if self.HitDict:
             # check if there are any objects in the dict for this event
             if self.HitDict[ HitEvent ]:
                 xy = event.GetPosition()
-                color = self.GetHitTestColor( xy )
-                if color in self.HitDict[ HitEvent ]:
-                    Object = self.HitDict[ HitEvent ][color]
-                    self._CallHitCallback(Object, xy, HitEvent)
-                    return True
+                winsize = self.Size
+                if not (xy[0] < 0 or xy[1] < 0 or xy[0] > winsize[0] or xy[1] > winsize[1]):
+                    # The mouse event is in the Window
+                    color = self.GetHitTestColor( xy )
+                    if color in self.HitDict[ HitEvent ]:
+                        Object = self.HitDict[ HitEvent ][color]
+                        self._CallHitCallback(Object, xy, HitEvent)
+                        return True
             return False
 
 
@@ -2765,7 +2834,8 @@ class FloatCanvas(wx.Panel):
 
     def OnSize(self, event=None):
         self.InitializePanel()
-        self.SizeTimer.Start(50, oneShot=True)
+        #self.SizeTimer.Start(50, oneShot=True)
+        self.OnSizeTimer()
 
     def OnSizeTimer(self, event=None):
         self.MakeNewBuffers()
@@ -2980,12 +3050,25 @@ class FloatCanvas(wx.Panel):
             self.ViewPortCenter = oldpoint
             self.SetToNewScale()         
 
-    def ZoomToBB(self, NewBB=None, DrawFlag=True):
+    def ZoomToBB(self, NewBB=None, DrawFlag=True, margin_adjust=0.95):
 
         """
 
         Zooms the image to the bounding box given, or to the bounding
         box of all the objects on the canvas, if none is given.
+
+        :param NewBB=None: the bounding box you want to zoom in to.
+                           If None, it will be calcuated from all the
+                           objects on the Canvas.
+        :type NewBB: floatcanvas.utilities.BBox.BBox object (or something compatible).
+
+        :param DrawFlag=True: If True, will force a re-draw, regardless of whether
+                              anythign has changed on the Canvas
+
+        :param margin_adjust=0.95: amount to adjust the scale so the BB will have a
+                                   bit of margin in the Canvas. 1.0 shoud be a tight fit.
+
+        :type margin_adjust: float
 
         """
         if NewBB is not None:
@@ -3002,13 +3085,13 @@ class FloatCanvas(wx.Panel):
             BoundingBox = BoundingBox*self.MapProjectionVector # this does need to make a copy!
             try:
                 self.Scale = min(abs(self.PanelSize[0] / (BoundingBox[1,0]-BoundingBox[0,0])),
-                                 abs(self.PanelSize[1] / (BoundingBox[1,1]-BoundingBox[0,1])) )*0.95
+                                 abs(self.PanelSize[1] / (BoundingBox[1,1]-BoundingBox[0,1])) )*margin_adjust
             except ZeroDivisionError: # this will happen if the BB has zero width or height
                 try: #width == 0
-                    self.Scale = (self.PanelSize[0]  / (BoundingBox[1,0]-BoundingBox[0,0]))*0.95
+                    self.Scale = (self.PanelSize[0]  / (BoundingBox[1,0]-BoundingBox[0,0]))*margin_adjust
                 except ZeroDivisionError:
                     try: # height == 0
-                        self.Scale = (self.PanelSize[1]  / (BoundingBox[1,1]-BoundingBox[0,1]))*0.95
+                        self.Scale = (self.PanelSize[1]  / (BoundingBox[1,1]-BoundingBox[0,1]))*margin_adjust
                     except ZeroDivisionError: #zero size! (must be a single point)
                         self.Scale = 1
 
@@ -3195,7 +3278,7 @@ class FloatCanvas(wx.Panel):
 def _makeFloatCanvasAddMethods(): ## lrk's code for doing this in module __init__
     classnames = ["Circle", "Ellipse", "Arc", "Rectangle", "ScaledText", "Polygon",
                   "Line", "Text", "PointSet","Point", "Arrow", "ArrowLine", "ScaledTextBox",
-                  "SquarePoint","Bitmap", "ScaledBitmap", "Spline", "Group"]
+                  "SquarePoint","Bitmap", "ScaledBitmap", "ScaledBitmap2", "Spline", "Group"]
     for classname in classnames:
         klass = globals()[classname]
         def getaddshapemethod(klass=klass):

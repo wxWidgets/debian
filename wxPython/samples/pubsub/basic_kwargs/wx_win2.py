@@ -1,9 +1,9 @@
-'''
+"""
 Widget from which money can be added or removed from account.
 
 :copyright: Copyright since 2006 by Oliver Schoenborn, all rights reserved.
 :license: BSD, see LICENSE.txt for details.
-'''
+"""
 
 import wx
 from pubsub import pub

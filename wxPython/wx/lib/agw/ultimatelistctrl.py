@@ -3,7 +3,7 @@
 # Inspired by and heavily based on the wxWidgets C++ generic version of wxListCtrl.
 #
 # Andrea Gavana, @ 08 May 2009
-# Latest Revision: 26 Dec 2012, 21.00 GMT
+# Latest Revision: 30 Jul 2014, 21.00 GMT
 #
 #
 # TODO List
@@ -225,7 +225,7 @@ License And Version
 
 UltimateListCtrl is distributed under the wxPython license.
 
-Latest Revision: Andrea Gavana @ 26 Dec 2012, 21.00 GMT
+Latest Revision: Andrea Gavana @ 30 Jul 2014, 21.00 GMT
 
 Version 0.8
 
@@ -4452,6 +4452,8 @@ class UltimateListLineData(object):
         attr = self.GetAttr()
 
         useGradient, gradientStyle = self._owner._usegradients, self._owner._gradientstyle
+        highlightedtextcolour = self._owner._highlightedtextcolour
+        
         useVista = self._owner._vistaselection
         hasFocus = self._owner._hasFocus
         borderOnly = self._owner.HasAGWFlag(ULC_BORDER_SELECT)
@@ -4603,6 +4605,9 @@ class UltimateListLineData(object):
                         dc.SetTextForeground(item.GetColour())
                     elif useVista and drawn:
                         dc.SetTextForeground(wx.BLACK)
+
+                    if highlightedtextcolour and current:
+                        dc.SetTextForeground(highlightedtextcolour)
 
                 if item.IsHyperText():
                     dc.SetFont(self._owner.GetHyperTextFont())
@@ -6109,6 +6114,9 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
         # Vista Selection Styles
         self._vistaselection = False
+
+        # Selected/highlighted item text color. Leave unset for ForegroundColor to always apply, even for selected item
+        self._highlightedtextcolour = None
 
         self.SetImageListCheck(16, 16)        
         
@@ -10690,6 +10698,31 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         self.RefreshSelected()
 
 
+    def SetSelectedTextColour(self, colour=None):
+        """
+        Sets the colour of text applied to an item when it is selected. 
+        If this method is not called, text color of selected items will be
+        the system value ``wx.SYS_COLOUR_HIGHLIGHTTEXT``, or the color set on 
+        the item with SetTextColour.
+
+        :param `colour`: if not ``None``, a valid :class:`Colour` instance. Otherwise,
+         the colour is taken from the system value ``wx.SYS_COLOUR_HIGHLIGHTTEXT``.
+        """
+        
+        if colour is None:
+            colour = wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT)
+
+        self._highlightedtextcolour = colour
+        if self._usegradients:
+            self.RefreshSelected()
+            
+
+    def GetSelectedTextColour(self):
+        """ Returns the colour applied to text when an item is selected. """
+        
+        return self._highlightedtextcolour
+
+
     def SetBackgroundImage(self, image):
         """
         Sets the :class:`UltimateListCtrl` background image.
@@ -13205,6 +13238,26 @@ class UltimateListCtrl(wx.PyControl):
         """
 
         self._mainWin.EnableSelectionVista(enable)
+
+
+    def SetSelectedTextColour(self, colour=None):
+        """
+        Sets the colour of text applied to an item when it is selected. 
+        If this method is not called, text color of selected items will be
+        the system value ``wx.SYS_COLOUR_HIGHLIGHTTEXT``, or the color set on 
+        the item with SetTextColour.
+
+        :param `colour`: if not ``None``, a valid :class:`Colour` instance. Otherwise,
+         the colour is taken from the system value ``wx.SYS_COLOUR_HIGHLIGHTTEXT``.
+        """
+        
+        self._mainWin.SetSelectedTextColour(colour)
+
+
+    def GetSelectedTextColour(self):
+        """ Returns the colour applied to text when an item is selected. """
+        
+        return self._mainWin.GetSelectedTextColour()
 
 
     def SetBackgroundImage(self, image=None):
