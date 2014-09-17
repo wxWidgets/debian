@@ -3,7 +3,7 @@ Author: Nicolas Boulenguez
 Bug-Debian: http://bugs.debian.org/698198
 Bug: http://trac.wxwidgets.org/ticket/15483
 Forwarded: http://trac.wxwidgets.org/ticket/15483
-Last-Update: 2013-09-10
+Last-Update: 2014-09-17
 
 --- a/wxPython/wx/tools/img2py.py	2010-04-15 06:26:37.000000000 +0200
 +++ b/wxPython/wx/tools/img2py.py	2013-01-15 03:39:32.000000000 +0100
@@ -21,7 +21,7 @@ Last-Update: 2013-09-10
          
 -    global app
 -    if not wx.GetApp():
--        app = wx.PySimpleApp()
+-        app = wx.App()
 -        
      # convert the image file to a temporary file
      tfname = tempfile.mktemp()
