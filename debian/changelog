@@ -1,7 +1,14 @@
 wxwidgets3.0 (3.0.1-4) UNRELEASED; urgency=medium
 
+  [ Olly Betts ]
+
   * Disable gcc4.9-workaround.patch, as GCC is now fixed in jessie and this
     bug is new in 4.9 so wheezy was never affected.
+
+  [ Christian Beier ]
+
+  * debian/control.in: Add BD on libnotify-dev to enable use of libnotify.
+    (Closes: #745887)
 
  -- Olly Betts <olly@survex.com>  Mon, 06 Oct 2014 15:19:25 +1300
 
