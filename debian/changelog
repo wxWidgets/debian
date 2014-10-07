@@ -1,7 +1,9 @@
-wxwidgets3.0 (3.0.1-4) UNRELEASED; urgency=medium
+wxwidgets3.0 (3.0.2-1) unstable; urgency=low
 
   [ Olly Betts ]
 
+  * New upstream release:
+    - wxTR_EDIT_LABELS now works again.  (Closes: #762134)
   * Disable gcc4.9-workaround.patch, as GCC is now fixed in jessie and this
     bug is new in 4.9 so wheezy was never affected.
 
@@ -10,7 +12,7 @@ wxwidgets3.0 (3.0.1-4) UNRELEASED; urgency=medium
   * debian/control.in: Add BD on libnotify-dev to enable use of libnotify.
     (Closes: #745887)
 
- -- Olly Betts <olly@survex.com>  Mon, 06 Oct 2014 15:19:25 +1300
+ -- Olly Betts <olly@survex.com>  Tue, 07 Oct 2014 13:12:10 +1300
 
 wxwidgets3.0 (3.0.1-3) unstable; urgency=medium
 
