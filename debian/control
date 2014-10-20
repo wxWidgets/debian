@@ -12,7 +12,7 @@ Build-Depends:
 #    libwxgtk-webview3.0-dev,
     python-all,
     python-all-dev
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Vcs-Git: git://anonscm.debian.org/freewx/wx.git -b wxpy3.0-debian
 Vcs-Browser: https://anonscm.debian.org/gitweb/?p=freewx/wx.git;a=shortlog;h=refs/heads/wxpy3.0-debian
 Homepage: http://wxpython.org/

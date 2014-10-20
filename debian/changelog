@@ -1,3 +1,11 @@
+wxpython3.0 (3.0.1.1+dfsg-2) unstable; urgency=low
+
+  * Disable patch img2py-no-display.patch as it breaks handling of any format
+    except PNG.
+  * debian/control: "Standards-Version: 3.9.6" - no changes required.
+
+ -- Olly Betts <olly@survex.com>  Mon, 20 Oct 2014 15:38:39 +1300
+
 wxpython3.0 (3.0.1.1+dfsg-1) unstable; urgency=medium
 
   * New upstream release:
