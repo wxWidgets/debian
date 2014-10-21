@@ -1,0 +1,25 @@
+Description: Avoid exception from pubsub if __onDead handler not set
+ Patch taken from taskcoach 1.4.1.  Applying it to the wxPython sources
+ means that taskcoach doesn't need a tight dependency on wxPython, and the
+ patch may help other applications.
+ .
+ Unsure who actually came up with the patch.
+Origin: http://sourceforge.net/p/taskcoach/code/HEAD/tree/tags/Release1_4_1/thirdparty/patches/pypubsub.diff
+Bug-Debian: https://bugs.debian.org/762413
+Forwarded: no
+Last-Update: 2014-10-21
+
+--- wxpython3.0-3.0.1.1+dfsg.orig/wxPython/wx/lib/pubsub/core/listenerbase.py
++++ wxpython3.0-3.0.1.1+dfsg/wxPython/wx/lib/pubsub/core/listenerbase.py
+@@ -93,7 +93,10 @@ class ListenerBase:
+     def __notifyOnDead(self, ref):
+         """This gets called when listener weak ref has died. Propagate
+         info to Topic)."""
+-        notifyDeath = self.__onDead
++        try:
++            notifyDeath = self.__onDead
++        except AttributeError:
++            return
+         self._unlinkFromTopic_()
+         if notifyDeath is not None:
+             notifyDeath(self)
