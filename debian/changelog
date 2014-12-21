@@ -1,9 +1,12 @@
-wxwidgets3.0 (3.0.2-2) unstable; urgency=medium
+wxwidgets3.0 (3.0.2-2) UNRELEASED; urgency=medium
 
+  [ Norimitsu Sugimoto ]
   * build with wx3.0-doc package. (Closes: #737050)
-    - get helped by Gianfranco Costamagna <costamagnagianfranco@yahoo.it>.
 
- -- Norimitsu Sugimoto <dictoss@live.jp>  Sun, 26 Oct 2014 10:52:00 +0900
+  [ Gianfranco Costamagna ]
+  * Little tweak the package to use doxygen in build-indep.
+
+ -- Gianfranco Costamagna <costamagnagianfranco@yahoo.it>  Sun, 21 Dec 2014 10:27:01 +0100
 
 wxwidgets3.0 (3.0.2-1) unstable; urgency=low
 

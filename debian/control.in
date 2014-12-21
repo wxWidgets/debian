@@ -1,6 +1,7 @@
 Source: wxwidgets=V
 Section: libs
 Priority: optional
+Build-Depends-indep: doxygen
 Build-Depends: debhelper (>= 9), gettext, libgtk2.0-dev,
  zlib1g-dev, libjpeg-dev, libpng-dev, libtiff5-dev, libsm-dev,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev,
