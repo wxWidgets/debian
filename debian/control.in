@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 9), gettext, libgtk2.0-dev,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev,
  autotools-dev, libexpat1-dev, dpkg-dev (>= 1.16.1~),
  libxt-dev, libgstreamer-plugins-base0.10-dev, libgconf2-dev, libwebkitgtk-dev,
- libnotify-dev
+ libnotify-dev, doxygen
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
 Uploaders: Olly Betts <olly@survex.com>
 Standards-Version: 3.9.5
@@ -250,3 +250,19 @@ Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
  This package contains examples of using the wxWidgets toolkit in
  C++.
 
+Package: wx=V-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}, libjs-jquery
+Suggests: doc-base, www-browser
+Description: wxWidgets Cross-platform C++ GUI toolkit (documentation)
+ wxBase is a collection of C++ classes providing basic data structures
+ (strings, lists, arrays), powerful wxDateTime class for date manipulations,
+ portable wrappers around many OS-specific functions allowing the same
+ program to work for all supported platforms, wxThread class for writing
+ multithreaded programs, and much more.
+ .
+ wxBase currently supports the following platforms: Generic Unix (Linux,
+ FreeBSD, Solaris, HP-UX, ...), Microsoft Windows, and Mac OS X.
+ .
+ This package provides a HTML version of the wxWidgets reference manual.
