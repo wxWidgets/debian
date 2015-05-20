@@ -1,6 +1,6 @@
 Description: Make the build reproducible
 Author: Olly Betts <olly@survex.com>
-Forwarded: no
+Forwarded: http://trac.wxwidgets.org/ticket/17000
 Last-Update: 2015-05-20
 
 --- wxwidgets3.0-3.0.2.orig/src/common/utilscmn.cpp
