@@ -6,8 +6,11 @@ wxwidgets3.0 (3.0.2-2) unstable; urgency=medium
   [ Olly Betts ]
   * Make the build reproducible - new patch: reproducible-build.patch
   * Standards-Version: 3.9.6 (no changes required).
+  * Drop the version requirement in "Suggests" from wx3.0-examples to
+    libwxgtk3.0-dev - the exact version really isn't important, and using
+    "(= ${binary:Version})" isn't satisfiable after a binNMU.
 
- -- Olly Betts <olly@survex.com>  Wed, 20 May 2015 14:56:33 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 20 May 2015 15:48:20 +1200
 
 wxwidgets3.0 (3.0.2-1) unstable; urgency=low
 

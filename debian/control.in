@@ -242,7 +242,7 @@ Package: wx=V-examples
 Architecture: all
 Section: devel
 Depends: ${misc:Depends}
-Suggests: libwxgtk=V-dev (= ${binary:Version}), wx=V-doc
+Suggests: libwxgtk=V-dev, wx=V-doc
 Description: wxWidgets Cross-platform C++ GUI toolkit (examples)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
