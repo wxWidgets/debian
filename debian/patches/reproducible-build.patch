@@ -1,0 +1,24 @@
+Description: Make the build reproducible
+Author: Olly Betts <olly@survex.com>
+Forwarded: no
+Last-Update: 2015-05-20
+
+--- wxwidgets3.0-3.0.2.orig/src/common/utilscmn.cpp
++++ wxwidgets3.0-3.0.2/src/common/utilscmn.cpp
+@@ -1390,7 +1390,6 @@ wxVersionInfo wxGetLibraryVersionInfo()
+     wxString msg;
+     msg.Printf(wxS("wxWidgets Library (%s port)\n")
+                wxS("Version %d.%d.%d (Unicode: %s, debug level: %d),\n")
+-               wxS("compiled at %s %s\n\n")
+                wxS("Runtime version of toolkit used is %d.%d.\n"),
+                wxPlatformInfo::Get().GetPortIdName(),
+                wxMAJOR_VERSION,
+@@ -1404,8 +1403,6 @@ wxVersionInfo wxGetLibraryVersionInfo()
+                "none",
+ #endif
+                wxDEBUG_LEVEL,
+-               __TDATE__,
+-               __TTIME__,
+                wxPlatformInfo::Get().GetToolkitMajorVersion(),
+                wxPlatformInfo::Get().GetToolkitMinorVersion()
+               );
