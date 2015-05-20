@@ -9,8 +9,10 @@ wxwidgets3.0 (3.0.2-2) unstable; urgency=medium
   * Drop the version requirement in "Suggests" from wx3.0-examples to
     libwxgtk3.0-dev - the exact version really isn't important, and using
     "(= ${binary:Version})" isn't satisfiable after a binNMU.
+  * Use dh_autotools-dev_updateconfig and dh_autotools-dev_restoreconfig to
+    manage updating config.guess and config.sub.
 
- -- Olly Betts <olly@survex.com>  Wed, 20 May 2015 15:48:20 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 20 May 2015 15:55:38 +1200
 
 wxwidgets3.0 (3.0.2-1) unstable; urgency=low
 

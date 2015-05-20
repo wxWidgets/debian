@@ -202,9 +202,6 @@ install_all := $(install_all_native) $(install_all_cross)
 
 # The Rules:
 
-config.guess config.sub:
-	ln -sf /usr/share/misc/config.guess /usr/share/misc/config.sub .
-
 debian/control: debian/control.in
 	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g'\
 		< debian/control.in > debian/control
@@ -263,8 +260,9 @@ build-stamp:
 # the config files for wxbase, so we configure a wxbase tree to get
 # these (but we don't need to actually build it).
 
-configure-wxbase-shared-stamp: config.guess
+configure-wxbase-shared-stamp:
 	dh_testdir
+	dh_autotools-dev_updateconfig
 	mkdir -p $(objdir_wxbase_shared)
 	cd $(objdir_wxbase_shared) \
 	    && ../configure $(BASE_CONFIGURE_OPTIONS)
@@ -276,8 +274,9 @@ build-wxbase-shared-stamp: configure-wxbase-shared-stamp
 	#$(FAST_MAKE) -C $(objdir_wxbase_shared)
 	touch $@
 
-configure-gtk-shared-stamp: config.guess
+configure-gtk-shared-stamp:
 	dh_testdir
+	dh_autotools-dev_updateconfig
 	mkdir -p $(objdir_gtk_shared)
 	cd $(objdir_gtk_shared) \
 	    && ../configure $(GTK_CONFIGURE_OPTIONS)
@@ -334,8 +333,9 @@ build-i18n-stamp: build-gtk-shared-stamp
 	$(MAKE) -C $(objdir_i18n) allmo
 	touch $@
 
-configure-msw-shared-stamp: config.guess
+configure-msw-shared-stamp:
 	dh_testdir
+	dh_autotools-dev_updateconfig
 	mkdir -p $(objdir_msw_shared)
 	cd $(objdir_msw_shared)						\
 		&& ../configure --prefix=/usr/$(cross_host)		\
@@ -351,8 +351,9 @@ build-msw-shared-stamp: configure-msw-shared-stamp
 	$(FAST_MAKE) -C $(objdir_msw_shared)
 	touch $@
 
-configure-msw-static-stamp: config.guess
+configure-msw-static-stamp:
 	dh_testdir
+	dh_autotools-dev_updateconfig
 	mkdir -p $(objdir_msw_static)
 	cd $(objdir_msw_static)						\
 		&& ../configure --prefix=/usr/$(cross_host)		\
@@ -390,9 +391,9 @@ clean: debian/control
 	      debian/$(package_msw_dev).* \
 	      debian/lintian-override \
 	      debian/unpack_examples.sh \
-	      docs/doxygen/doxygen.log \
-	      config.guess config.sub
+	      docs/doxygen/doxygen.log
 	rm -rf include/wx-$(release)
+	dh_autotools-dev_restoreconfig
 
 install_arch: build-arch $(install_all_arch)
 
