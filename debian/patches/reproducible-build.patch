@@ -3,8 +3,8 @@ Author: Olly Betts <olly@survex.com>
 Forwarded: http://trac.wxwidgets.org/ticket/17000
 Last-Update: 2015-05-20
 
---- wxwidgets3.0-3.0.2.orig/src/common/utilscmn.cpp
-+++ wxwidgets3.0-3.0.2/src/common/utilscmn.cpp
+--- a/src/common/utilscmn.cpp
++++ b/src/common/utilscmn.cpp
 @@ -1390,7 +1390,6 @@ wxVersionInfo wxGetLibraryVersionInfo()
      wxString msg;
      msg.Printf(wxS("wxWidgets Library (%s port)\n")
@@ -22,3 +22,15 @@ Last-Update: 2015-05-20
                 wxPlatformInfo::Get().GetToolkitMajorVersion(),
                 wxPlatformInfo::Get().GetToolkitMinorVersion()
                );
+index b7a4775..0449dc2 100644
+--- a/docs/doxygen/Doxyfile
++++ b/docs/doxygen/Doxyfile
+@@ -342,7 +342,7 @@ HTML_EXTRA_FILES       = wxwidgets.js
+ HTML_COLORSTYLE_HUE    = 220 # Default: 220
+ HTML_COLORSTYLE_SAT    = 255 # Default: 100
+ HTML_COLORSTYLE_GAMMA  = 100 # Default: 80
+-HTML_TIMESTAMP         = YES
++HTML_TIMESTAMP         = NO
+ HTML_DYNAMIC_SECTIONS  = YES # Default: NO
+ HTML_INDEX_NUM_ENTRIES = 100
+ DISABLE_INDEX          = NO
