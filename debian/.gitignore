@@ -1,12 +1,12 @@
 files
 control
 
-*.docs
-*.doc-base
-*.examples
+*.*.docs
+*.*.doc-base
+*.*.examples
 
-*.prerm
-*.postinst
+*.*.prerm
+*.*.postinst
 *.substvars
 *.debhelper*
 lintian-override
