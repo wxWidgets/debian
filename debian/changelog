@@ -5,8 +5,9 @@ wxwidgets3.0 (3.0.2-2) unstable; urgency=medium
 
   [ Olly Betts ]
   * Make the build reproducible - new patch: reproducible-build.patch
+  * Standards-Version: 3.9.6 (no changes required).
 
- -- Olly Betts <olly@survex.com>  Wed, 20 May 2015 14:42:49 +1200
+ -- Olly Betts <olly@survex.com>  Wed, 20 May 2015 14:56:33 +1200
 
 wxwidgets3.0 (3.0.2-1) unstable; urgency=low
 
