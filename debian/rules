@@ -297,7 +297,7 @@ build-doc-stamp:
 	dh_testdir
 	WX_SKIP_DOXYGEN_VERSION_CHECK=1	docs/doxygen/regen.sh html
 	# Delete intermediate .dot and .md5 files.
-	find $(objdir_doc) -name '*.dot' -o -name '*.md5' -delete
+	find $(objdir_doc) \( -name '*.dot' -o -name '*.md5' \) -delete
 	touch $@
 
 build-examples-stamp: build-gtk-shared-stamp
