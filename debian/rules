@@ -289,7 +289,7 @@ build-gtk-shared-contrib-stamp: build-gtk-shared-stamp
 	$(FAST_MAKE) -C $(objdir_gtk_shared)/utils/wxrc
 	touch $@
 
-build-doc-stamp: build-gtk-shared-stamp
+build-doc-stamp:
 	dh_testdir
 	WX_SKIP_DOXYGEN_VERSION_CHECK=1	docs/doxygen/regen.sh html
 	touch $@
