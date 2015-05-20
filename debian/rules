@@ -149,7 +149,7 @@ objdir_wxbase_shared       = objs_wxbase_sh
 objdir_gtk_shared          = objs_gtk_sh
 objdir_gtk_install         = objs_gtk_install
 
-objdir_doc                 = docs/doxygen/out/html
+objdir_doc                 = docs/doxygen/out
 objdir_examples            = docs/examples
 objdir_i18n                = locale
 
@@ -171,7 +171,7 @@ build_arch_stamps = build-wxbase-shared-stamp \
                     build-gtk-shared-stamp build-gtk-shared-contrib-stamp \
                     build-i18n-stamp
 
-build_indep_stamps = build-examples-stamp build-doc-stamp
+build_indep_stamps = build-doc-stamp build-examples-stamp
 
 build_cross_stamps = build-msw-shared-stamp build-msw-static-stamp
 
@@ -191,7 +191,7 @@ ifndef DEBIAN_WX_DEFAULT_VERSION
   install_all_arch += install-common
 endif
 
-install_all_indep = install-examples install-doc
+install_all_indep = install-doc install-examples
 
 install_all_cross = install-msw-dev install-headers-msw
 
@@ -291,7 +291,7 @@ build-gtk-shared-contrib-stamp: build-gtk-shared-stamp
 
 build-doc-stamp: build-gtk-shared-stamp
 	dh_testdir
-	export WX_SKIP_DOXYGEN_VERSION_CHECK=1;	docs/doxygen/regen.sh html
+	WX_SKIP_DOXYGEN_VERSION_CHECK=1	docs/doxygen/regen.sh html
 	touch $@
 
 build-examples-stamp: build-gtk-shared-stamp
@@ -383,10 +383,9 @@ clean: debian/control
 	      debian/$(package_msw_dev).* \
 	      debian/lintian-override \
 	      debian/unpack_examples.sh \
+	      docs/doxygen/doxygen.log \
 	      config.guess config.sub
 	rm -rf include/wx-$(release)
-	rm -f docs/doxygen/doxygen.log
-	rm -rf docs/doxygen/out
 
 install_arch: build-arch $(install_all_arch)
 
@@ -507,8 +506,7 @@ install-doc: build-doc-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	mkdir -p usr/share/doc/$(package_doc)/
-	dh_install $(objdir_doc) usr/share/doc/$(package_doc)/
+	dh_install $(objdir_doc)/html usr/share/doc/$(package_doc)/
 
 install-examples: DH_OPTIONS=-p$(package_examples)
 install-examples: build-examples-stamp
