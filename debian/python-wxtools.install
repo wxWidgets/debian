@@ -1,3 +1,4 @@
 debian/tmp/usr/bin
-debian/*.desktop usr/share/applications
+wxPython/distrib/PyCrust.desktop usr/share/applications
+wxPython/distrib/XRCed.desktop usr/share/applications
 debian/*.xpm usr/share/pixmaps
