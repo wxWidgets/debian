@@ -14,7 +14,6 @@ import cfg_version as cfg
 
 from distutils.dep_util  import newer
 
-
 version2 = "%d.%d" % (cfg.VER_MAJOR, cfg.VER_MINOR) 
 version3 = "%d.%d.%d" % (cfg.VER_MAJOR, cfg.VER_MINOR, cfg.VER_RELEASE)
 version2_nodot = version2.replace(".", "")
@@ -70,6 +69,7 @@ option_dict = {
     "reswig"        : (False, "Allow SWIG to regenerate the wrappers"),
     "jobs"          : (defJobs, "Number of make jobs to run at one time, if supported. Default: %s" % defJobs),
     "unicode"       : (True, "Build wxPython with unicode support (always on for wx3.0)"),
+    "gtk3"          : (False, "On Linux build for gtk3 (default gtk2)"),
     "osx_cocoa"     : (False, "Build the OS X Cocoa port on Mac"),
     "osx_carbon"    : (True,  "Build the Carbon port on Mac (default)"),
     "mac_arch"      : ("", "Build the specified architectures on Mac, (comma-separated list)"),
@@ -127,6 +127,9 @@ for opt in keys:
                           dest=opt, help=option_dict[opt][1])
         
 options, arguments = parser.parse_args()
+
+if options.osx_cocoa:
+    options.osx_carbon = False
 
 # Compare current command line options to the saved set. If they match then we
 # can save some time by skipping parts of the build.
@@ -311,6 +314,10 @@ else:
         build_options.append("--mac_universal_binary=%s" % options.mac_arch)
         wxpy_build_options.append("ARCH=%s" % options.mac_arch)
 
+    if options.gtk3:
+        build_options.append('--gtk3')
+        wxpy_build_options.append('WXPORT=gtk3')
+        
 
 # now that we've done platform setup, start the common build process
 if options.unicode:
@@ -348,6 +355,10 @@ elif ( not sys.platform.startswith("win") and
 if sys.platform.startswith("darwin") and options.osx_cocoa:
     build_options.append("--osx_cocoa")
     wxpy_build_options.append("WXPORT=osx_cocoa")
+
+if sys.platform.startswith("darwin") and options.osx_carbon:
+    build_options.append("--osx_carbon")
+    wxpy_build_options.append("WXPORT=osx_carbon")
 
 if not sys.platform.startswith("win") and options.install:
     build_options.append('--installdir=%s' % DESTDIR)

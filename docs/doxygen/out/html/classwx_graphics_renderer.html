@@ -23,7 +23,7 @@
     </a>
   </td>
   <td style="padding-left: 0.5em; text-align: right;">
-   <span id="projectnumber">Version: 3.0.1</span>
+   <span id="projectnumber">Version: 3.0.2</span>
   </td>
  </tr>
  </tbody>
@@ -289,7 +289,8 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Creates <a class="el" href="classwx_graphics_bitmap.html" title="Represents a bitmap.">wxGraphicsBitmap</a> from a native bitmap handle. </p>
-<p><em>bitmap</em> meaning is platform-dependent. Currently it's a GDI+ <code>Bitmap</code> pointer under MSW, <code>CGImage</code> pointer under OS X or a <code>cairo_surface_t</code> pointer when using Cairo under any platform. </p>
+<p><em>bitmap</em> meaning is platform-dependent. Currently it's a GDI+ <code>Bitmap</code> pointer under MSW, <code>CGImage</code> pointer under OS X or a <code>cairo_surface_t</code> pointer when using Cairo under any platform.</p>
+<p>Notice that this method takes ownership of <em>bitmap</em>, i.e. it will be destroyed when the returned <a class="el" href="classwx_graphics_bitmap.html" title="Represents a bitmap.">wxGraphicsBitmap</a> is. </p>
 
 </div>
 </div>
@@ -1007,7 +1008,7 @@ Additional Inherited Members</h2></td></tr>
 
 <address class="footer">
 	<small>
-		Generated on Tue Sep 9 2014 15:03:20 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
+		Generated on Thu Nov 27 2014 13:46:48 for wxWidgets by <a href="http://www.doxygen.org/index.html" target="_new">Doxygen</a> 1.8.2
 	</small>
 </address>
 <script src="wxwidgets.js" type="text/javascript"></script>

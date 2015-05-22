@@ -1092,8 +1092,8 @@ class AuiDefaultToolBarArt(object):
             # hover, otherwise hovers won't draw properly for checked items 
             dc.SetPen(wx.Pen(self._highlight_colour))
             dc.SetBrush(wx.Brush(StepColour(self._highlight_colour, 170)))
-            dc.DrawRectangle(button_rect)
-            dc.DrawRectangle(dropdown_rect)
+            dc.DrawRectangleRect(button_rect)
+            dc.DrawRectangleRect(dropdown_rect)
             
         if item.GetState() & AUI_BUTTON_STATE_DISABLED:
         

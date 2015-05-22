@@ -28,9 +28,15 @@
 #ifdef __WXGTK__
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#ifdef __WXGTK3__
+#define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
+                          GDK_WINDOW_XID(gtk_widget_get_window((wxwin)->m_wxwindow)) :	\
+                          GDK_WINDOW_XID(gtk_widget_get_window((wxwin)->m_widget))
+#else
 #define GetXWindow(wxwin) (wxwin)->m_wxwindow ? \
                           GDK_WINDOW_XWINDOW((wxwin)->m_wxwindow->window) : \
                           GDK_WINDOW_XWINDOW((wxwin)->m_widget->window)
+#endif
 #include <locale.h>
 #endif
 
@@ -193,7 +199,7 @@ wxPyApp::~wxPyApp() {
 
 // This one isn't acutally called...  We fake it with _BootstrapApp
 bool wxPyApp::OnInit() {
-    return false;
+    return true;
 }
 
 
@@ -597,10 +603,7 @@ void wxPyApp::_BootstrapApp()
 #if defined(__WXGTK__) && PY_VERSION_HEX < 0x02040000
         setlocale(LC_NUMERIC, "C");
 #endif
-
         wxPyEndBlockThreads(blocked);
-
-        haveInitialized = true;
     }
     else {
         this->argc = 0;
@@ -656,7 +659,18 @@ void wxPyApp::_BootstrapApp()
     if (! result) {
         PyErr_SetString(PyExc_SystemExit, "OnInit returned false, exiting...");
     }
+    else {
+        // On wxOSX_Cocoa a private m_inited flag is set in CallOnInit, (and
+        // pending events processed), and that flag controls things like
+        // whether the various apple-event virtuals in the App object are
+        // called.  So although we have already bootstrapped a call to OnInit,
+        // we still need to call this method to ensure that flag is set.
+        if (! haveInitialized)
+            CallOnInit();
+    }
 
+    haveInitialized = true;
+    
  error:
     Py_XDECREF(retval);
     Py_XDECREF(pyint);
@@ -856,7 +870,9 @@ PyObject* __wxPySetDictionary(PyObject* /* self */, PyObject* args)
     _AddInfoString("wxOSX-cocoa");
 #endif
 #ifdef __WXGTK__
-#ifdef __WXGTK20__
+#ifdef __WXGTK3__
+    _AddInfoString("gtk3");
+#elif __WXGTK20__
     _AddInfoString("gtk2");
 #else
     _AddInfoString("gtk1");

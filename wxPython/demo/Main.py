@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 #----------------------------------------------------------------------------
 # Name:         Main.py
 # Purpose:      Testing lots of stuff, controls, window types, etc.
@@ -1782,7 +1782,7 @@ class wxPythonDemo(wx.Frame):
             panel.Bind(wx.EVT_SIZE, OnOvrSize)
             panel.Bind(wx.EVT_ERASE_BACKGROUND, EmptyHandler)
 
-        if "gtk2" in wx.PlatformInfo:
+        if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
             self.ovr.SetStandardFonts()
         self.SetOverview(self.overviewText, mainOverview)
 

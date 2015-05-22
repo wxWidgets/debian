@@ -5,7 +5,7 @@ aS'--unicode'
 p3
 aS'--build_dir=build/wxbld'
 p4
-aS'--prefix=/opt/wx/2.9'
+aS'--prefix=/opt/wx/3.0'
 p5
 aS'--cairo'
 p6
