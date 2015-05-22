@@ -1,3 +1,10 @@
+wxpython3.0 (3.0.2.0+dfsg-1) UNRELEASED; urgency=medium
+
+  * debian/README.Debian: python-wxtools and python-wxversion are now built
+    from the wxpython3.0 source package.
+
+ -- Olly Betts <olly@survex.com>  Fri, 22 May 2015 17:04:41 +1200
+
 wxpython3.0 (3.0.1.1+dfsg-2) unstable; urgency=low
 
   * Disable patch img2py-no-display.patch as it breaks handling of any format

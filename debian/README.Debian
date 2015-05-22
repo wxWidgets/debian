@@ -2,13 +2,16 @@ wxPython 3.0 for Debian
 =======================
 
 The following packages are potentially built from the wxpython3.0 source
-package (currently the latter two are provided by wxwidgets2.8, but we
-intend to switch this over before jessie):
+package:
 
 python-wxgtk3.0		    Python binding to wxGTK
 python-wxversion	    The wxversion.py version selector (present since
 			    wxPython2.6)
 python-wxtools		    The ancillary tools from the wxPython distribution.
+
+The latter two can only be provided by one version of wxpython, so when a
+new release series is packaged, they will get switched to being built from
+that.
 
 Notable changes from the wxwidgets2.8 packages
 ----------------------------------------------
@@ -29,5 +32,4 @@ since 2.8, please see:
 
 	  http://docs.wxwidgets.org/3.0.0/overview_debugging.html
 
- -- Olly Betts <olly@survex.com>  Wed, 02 Jul 2014 18:44:56 +1200
-
+ -- Olly Betts <olly@survex.com>  Fri, 22 May 2015 17:03:35 +1200
