@@ -1,4 +1,4 @@
-wxpython3.0 (3.0.2.0+dfsg-1) UNRELEASED; urgency=medium
+wxpython3.0 (3.0.2.0+dfsg-1) unstable; urgency=medium
 
   * New upstream release:
     + Drop the following patches which have been applied upstream:
@@ -10,7 +10,7 @@ wxpython3.0 (3.0.2.0+dfsg-1) UNRELEASED; urgency=medium
     from the wxpython3.0 source package.
   * Use the .desktop files from wxPython rather than our own.
 
- -- Olly Betts <olly@survex.com>  Fri, 22 May 2015 17:04:41 +1200
+ -- Olly Betts <olly@survex.com>  Fri, 22 May 2015 17:49:52 +1200
 
 wxpython3.0 (3.0.1.1+dfsg-2) unstable; urgency=low
 
