@@ -6,9 +6,9 @@ Author: Olly Betts <olly@survex.com>
 Forwarded: not-needed
 Last-Update: 2014-08-07
 
---- wxpython3.0-3.0.0.0+dfsg.orig/wxPython/src/_core_ex.py
-+++ wxpython3.0-3.0.0.0+dfsg/wxPython/src/_core_ex.py
-@@ -26,9 +26,12 @@ __version__ = VERSION_STRING
+--- a/wxPython/src/_core_ex.py
++++ b/wxPython/src/_core_ex.py
+@@ -26,9 +26,12 @@
  
  assert MAJOR_VERSION == _core_.MAJOR_VERSION, "wxPython/wxWidgets version mismatch"
  assert MINOR_VERSION == _core_.MINOR_VERSION, "wxPython/wxWidgets version mismatch"
@@ -24,9 +24,9 @@ Last-Update: 2014-08-07
  
  
  def version():
---- wxpython3.0-3.0.0.0+dfsg.orig/wxPython/src/gtk/_core.py
-+++ wxpython3.0-3.0.0.0+dfsg/wxPython/src/gtk/_core.py
-@@ -16627,9 +16627,12 @@ __version__ = VERSION_STRING
+--- a/wxPython/src/gtk/_core.py
++++ b/wxPython/src/gtk/_core.py
+@@ -16624,9 +16624,12 @@
  
  assert MAJOR_VERSION == _core_.MAJOR_VERSION, "wxPython/wxWidgets version mismatch"
  assert MINOR_VERSION == _core_.MINOR_VERSION, "wxPython/wxWidgets version mismatch"

@@ -1,8 +1,6 @@
-diff --git a/wxPython/distrib/DIRLIST b/wxPython/distrib/DIRLIST
-index 688d0d1..82dd00d 100644
 --- a/wxPython/distrib/DIRLIST
 +++ b/wxPython/distrib/DIRLIST
-@@ -149,104 +149,5 @@ wx/tools/XRCed/misc/src-images
+@@ -146,104 +146,5 @@
  wx/tools/XRCed/plugins
  wx/tools/XRCed/plugins/bitmaps
  wx/tools/XRCed/plugins/src-images
@@ -107,11 +105,9 @@ index 688d0d1..82dd00d 100644
 -wx/tools/Editra/tests/syntax
  
  wxversion
-diff --git a/wxPython/setup.py b/wxPython/setup.py
-index 35ce514..76fe6d1 100755
 --- a/wxPython/setup.py
 +++ b/wxPython/setup.py
-@@ -897,13 +897,6 @@ WX_PKGLIST =      [ 'wx',
+@@ -895,13 +895,6 @@
                      'wx.tools',
                      'wx.tools.XRCed',
                      'wx.tools.XRCed.plugins',
@@ -125,7 +121,7 @@ index 35ce514..76fe6d1 100755
                      ]
  
  
-@@ -921,7 +914,6 @@ else:
+@@ -919,7 +912,6 @@
                 opj('scripts/pywrap'),
                 opj('scripts/pywxrc'),
                 opj('scripts/xrced'),
@@ -133,7 +129,7 @@ index 35ce514..76fe6d1 100755
                 ]
      if os.name == 'nt':
          SCRIPTS.append( opj('scripts/genaxmodule') ) 
-@@ -936,16 +928,6 @@ DATA_FILES += find_data_files('wx/tools/XRCed', '*.txt', '*.xrc', '*.htb')
+@@ -934,16 +926,6 @@
  DATA_FILES += find_data_files('wx/tools/XRCed/plugins', '*.crx')
  DATA_FILES += find_data_files('wx/tools/XRCed/plugins/bitmaps', '*.png')
  
@@ -150,7 +146,7 @@ index 35ce514..76fe6d1 100755
  
  ## import pprint
  ## pprint.pprint(DATA_FILES)
-@@ -995,7 +977,6 @@ if EGGing:
+@@ -993,7 +975,6 @@
                                    'pyshell = wx.py.PyShell:main',
                                    'pywrap = wx.py.PyWrap:main',
                                    'helpviewer = wx.tools.helpviewer:main',
