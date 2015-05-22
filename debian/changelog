@@ -1,6 +1,11 @@
 wxpython3.0 (3.0.2.0+dfsg-1) UNRELEASED; urgency=medium
 
-  * New upstream release.
+  * New upstream release:
+    + Drop the following patches which have been applied upstream:
+      - fix-path-to-some-interpreters.patch
+      - wxpython-=-should-be-==.patch
+    + Update the following patches which have been partly applied upstream:
+      - wxpython3.0-eliminate-string-exceptions.patch
   * debian/README.Debian: python-wxtools and python-wxversion are now built
     from the wxpython3.0 source package.
   * Use the .desktop files from wxPython rather than our own.
