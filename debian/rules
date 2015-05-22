@@ -416,6 +416,9 @@ install-wxbase-dev: build-wxbase-shared-stamp install-gtk-shared-stamp
 	dh_prep
 	@# No, this is not a typo, we steal these libs from the gtk build.
 	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_base*.so	usr/lib/$(DEB_HOST_MULTIARCH)
+	# Strip the kernel version of build machine from WXWIN_OS_DESCRIPTION
+	# as it isn't useful information and makes the build less reproducible.
+	sed -i 's/^\(#define WXWIN_OS_DESCRIPTION "[^ ]*\).*/\1"/' $(objdir_wxbase_shared)/lib/wx/include/*/wx/setup.h
 	dh_install $(objdir_wxbase_shared)/lib/wx/include	usr/lib/$(DEB_HOST_MULTIARCH)/wx
 	dh_install $(objdir_wxbase_shared)/lib/wx/config/base*	usr/lib/$(DEB_HOST_MULTIARCH)/wx/config
 
@@ -423,6 +426,9 @@ install-gtk-shared-stamp: build-gtk-shared-stamp build-gtk-shared-contrib-stamp
 	dh_testdir
 	mkdir -p $(objdir_gtk_install)
 	$(MAKE) -C $(objdir_gtk_shared) install prefix=`pwd`/$(objdir_gtk_install)
+	# Strip the kernel version of build machine from WXWIN_OS_DESCRIPTION
+	# as it isn't useful information and makes the build less reproducible.
+	sed -i 's/^\(#define WXWIN_OS_DESCRIPTION "[^ ]*\).*/\1"/' $(objdir_gtk_install)/lib/*/wx/include/*/wx/setup.h
 	touch $@
 
 install-gtk-lib: DH_OPTIONS=-p$(package_gtk_lib)

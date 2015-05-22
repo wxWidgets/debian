@@ -1,3 +1,10 @@
+wxwidgets3.0 (3.0.2-3) UNRELEASED; urgency=medium
+
+  * debian/rules: Remove the kernel version from WXWIN_OS_DESCRIPTION as it
+    makes the build less reproducible.
+
+ -- Olly Betts <olly@survex.com>  Thu, 21 May 2015 15:04:48 +1200
+
 wxwidgets3.0 (3.0.2-2) unstable; urgency=medium
 
   [ Norimitsu Sugimoto, Gianfranco Costamagna ]
