@@ -2,6 +2,8 @@ wxwidgets3.0 (3.0.2-3) UNRELEASED; urgency=medium
 
   * debian/rules: Remove the kernel version from WXWIN_OS_DESCRIPTION as it
     makes the build less reproducible.
+  * Give a warning instead of an error if the compiler ABI used to compile
+    user code is different to that used to compile wxWidgets.
 
  -- Olly Betts <olly@survex.com>  Thu, 21 May 2015 15:04:48 +1200
 
