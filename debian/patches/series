@@ -1,3 +1,2 @@
-wx-config-conditionalise-webview-in-std.patch
 reproducible-build.patch
 warn-for-compiler-abi-mismatch.patch

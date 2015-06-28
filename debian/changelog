@@ -1,9 +1,14 @@
-wxwidgets3.0 (3.0.2-3) UNRELEASED; urgency=medium
+wxwidgets3.0 (3.0.2-3) unstable; urgency=medium
 
   * debian/rules: Remove the kernel version from WXWIN_OS_DESCRIPTION as it
     makes the build less reproducible.
   * Give a warning instead of an error if the compiler ABI used to compile
-    user code is different to that used to compile wxWidgets.
+    user code is different to that used to compile wxWidgets, which should
+    fix GCC5 FTBFS for many of wx's reverse build dependencies.
+  * Stop building with --enable-webview as the only package which was using
+    it (boinc) no longer is, and it uses an obsolete version of webkit.
+    Updating to a supported version would require switching to gtk3, which
+    we probably aren't ready for yet. (Closes: #790222, #786986)
 
  -- Olly Betts <olly@survex.com>  Thu, 21 May 2015 15:04:48 +1200
 

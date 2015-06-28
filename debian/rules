@@ -85,7 +85,6 @@ GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --enable-graphics_ctx \
     --enable-mediactrl \
     --enable-sound \
-    --enable-webview \
     --with-gtk \
     --with-libjpeg=sys \
     --with-libpng=sys \
@@ -118,10 +117,6 @@ package_gtk_dev         := libwxgtk$(release)-dev
 package_gtkmedia_lib    := libwxgtk-media$(sorelease)
 package_gtkmedia_dbg    := libwxgtk-media$(sorelease)-dbg
 package_gtkmedia_dev    := libwxgtk-media$(release)-dev
-
-package_gtkwebview_lib    := libwxgtk-webview$(sorelease)
-package_gtkwebview_dbg    := libwxgtk-webview$(sorelease)-dbg
-package_gtkwebview_dev    := libwxgtk-webview$(release)-dev
 
 package_headers         := wx$(release)-headers
 package_i18n            := wx$(release)-i18n
@@ -184,7 +179,6 @@ build_stamps := $(build_stamps_native) $(build_cross_stamps)
 install_all_arch = install-wxbase-lib install-wxbase-dev \
                    install-gtk-lib install-gtk-dev        \
 		   install-gtkmedia-lib install-gtkmedia-dev \
-		   install-gtkwebview-lib install-gtkwebview-dev \
                    install-headers install-i18n
 
 ifndef DEBIAN_WX_DEFAULT_VERSION
@@ -436,7 +430,7 @@ install-gtk-lib: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install -Xmedia -Xwebview $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so.*	usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -Xmedia $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so.*	usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_installdirs usr/share/lintian/overrides
 	grep ^$(package_gtk_lib): debian/lintian-override > debian/$(package_gtk_lib)/usr/share/lintian/overrides/$(package_gtk_lib)
 
@@ -445,7 +439,7 @@ install-gtk-dev: install-gtk-shared-stamp
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_install -Xmedia -Xwebview $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so	usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -Xmedia $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*.so	usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -Xmediactrl $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/wx/include	usr/lib/$(DEB_HOST_MULTIARCH)/wx
 	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/wx/config/gtk*	usr/lib/$(DEB_HOST_MULTIARCH)/wx/config
 
@@ -464,22 +458,6 @@ install-gtkmedia-dev: install-gtk-shared-stamp
 	dh_testroot
 	dh_prep
 	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*media*.so	usr/lib/$(DEB_HOST_MULTIARCH)
-
-install-gtkwebview-lib: DH_OPTIONS=-p$(package_gtkwebview_lib)
-install-gtkwebview-lib: install-gtk-shared-stamp
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*webview*.so.*        usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_installdirs usr/share/lintian/overrides
-	grep ^$(package_gtkwebview_lib): debian/lintian-override > debian/$(package_gtkwebview_lib)/usr/share/lintian/overrides/$(package_gtkwebview_lib)
-
-install-gtkwebview-dev: DH_OPTIONS=-p$(package_gtkwebview_dev)
-install-gtkwebview-dev: install-gtk-shared-stamp
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_install $(objdir_gtk_install)/lib/$(DEB_HOST_MULTIARCH)/libwx_gtk*webview*.so  usr/lib/$(DEB_HOST_MULTIARCH)
 
 install-common: DH_OPTIONS=-p$(package_common)
 install-common: install-gtk-shared-stamp
@@ -586,7 +564,6 @@ ifneq (, $(filter -a, $(DH_OPTIONS)))
 	DH_OPTIONS= dh_strip -p$(package_wxbase_lib) --dbg-package=$(package_wxbase_dbg)
 	DH_OPTIONS= dh_strip -p$(package_gtk_lib) --dbg-package=$(package_gtk_dbg)
 	DH_OPTIONS= dh_strip -p$(package_gtkmedia_lib) --dbg-package=$(package_gtkmedia_dbg)
-	DH_OPTIONS= dh_strip -p$(package_gtkwebview_lib) --dbg-package=$(package_gtkwebview_dbg)
 	dh_strip --remaining-packages
 endif
 
@@ -641,6 +618,5 @@ binary-cross: control-files-stamp $(install_all_cross)
 	binary-cross						\
 	install install_arch install-gtk-lib install-gtk-dev		\
 	install-gtkmedia-lib install-gtkmedia-dev	\
-	install-gtkwebview-lib install-gtkwebview-dev	\
 	install-common install-headers install-i18n         \
 	install-examples install-msw-dev install-headers-msw
