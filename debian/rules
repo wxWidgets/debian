@@ -371,6 +371,7 @@ clean: debian/control
 
 	rm -rf config_deb.cache config_deb_cross.cache $(objdirs)
 
+	dh_autotools-dev_restoreconfig
 	dh_clean
 	rm -f debian/$(package_wxbase_lib).* \
 	      debian/$(package_wxbase_dev).* \
@@ -386,8 +387,7 @@ clean: debian/control
 	      debian/lintian-override \
 	      debian/unpack_examples.sh \
 	      docs/doxygen/doxygen.log
-	rm -rf include/wx-$(release)
-	dh_autotools-dev_restoreconfig
+
 
 install_arch: build-arch $(install_all_arch)
 

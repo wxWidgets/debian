@@ -9,8 +9,10 @@ wxwidgets3.0 (3.0.2-3) unstable; urgency=medium
     it (boinc) no longer is, and it uses an obsolete version of webkit.
     Updating to a supported version would require switching to gtk3, which
     we probably aren't ready for yet. (Closes: #790222, #786986)
+  * Call dh_autotools-dev_restoreconfig before dh_clean to avoid debhelper
+    logs ending up in the source package.
 
- -- Olly Betts <olly@survex.com>  Thu, 21 May 2015 15:04:48 +1200
+ -- Olly Betts <olly@survex.com>  Mon, 29 Jun 2015 12:32:37 +1200
 
 wxwidgets3.0 (3.0.2-2) unstable; urgency=medium
 
