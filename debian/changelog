@@ -1,3 +1,11 @@
+wxwidgets3.0 (3.0.2-4) UNRELEASED; urgency=medium
+
+  * Restore the webview packages for now - boinc is still using them (I
+    failed to pass -R to dak rm when checking if removing it would break
+    anything).  (Reopens: #790222, #786986)
+
+ -- Olly Betts <olly@survex.com>  Wed, 01 Jul 2015 19:22:53 +1200
+
 wxwidgets3.0 (3.0.2-3) unstable; urgency=medium
 
   * debian/rules: Remove the kernel version from WXWIN_OS_DESCRIPTION as it

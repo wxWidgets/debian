@@ -1,0 +1,52 @@
+Description: wx-config: Conditionalise inclusion of webview in std
+ Only include webview in the "std" gui libs if libwxgtk-webview3.0-dev is
+ installed.
+Author: Olly Betts <olly@survex.com>
+Bug-Debian: http://bugs.debian.org/749292
+Bug: http://trac.wxwidgets.org/ticket/16291
+Forwarded: not-needed
+Last-Update: 2014-06-18
+
+--- a/wx-config.in
++++ b/wx-config.in
+@@ -1199,6 +1199,14 @@
+ # Assume we are using the GUI, unless --libs was specified with no GUI libs
+ using_gui=yes
+ 
++# Debian-specific code:
++# Only include webview in "std" if the appropriate -dev package is installed.
++if dpkg -s libwxgtk-webview3.0-dev > /dev/null 2>&1 ; then
++  STD_GUI_LIBS='@STD_GUI_LIBS@'
++else
++  STD_GUI_LIBS=`echo '@STD_GUI_LIBS@'|sed 's/\<webview\>//'`
++fi
++
+ if is_monolithic; then
+ 
+     # Only add additional info if --libs was specified and not just --optional-libs
+@@ -1225,14 +1233,14 @@
+ 
+     # Import core libs by default, expand std if specified, or add base if omitted.
+     if [ -n "$output_option_libs" ] && [ -z "$libs_parameters" ]; then
+-        wx_libs="@STD_GUI_LIBS@ @STD_BASE_LIBS@"
++        wx_libs="$STD_GUI_LIBS @STD_BASE_LIBS@"
+     elif match_field all $wx_libs; then
+         wx_libs="@BUILT_WX_LIBS@"
+     elif match_field std $wx_libs; then
+         # Bubble any libs that were already specified to the end
+         # of the list and ensure static linking order is retained.
+         wx_libs=`remove_field std $wx_libs`
+-        for i in @STD_GUI_LIBS@ @STD_BASE_LIBS@; do
++        for i in $STD_GUI_LIBS @STD_BASE_LIBS@; do
+             wx_libs="`remove_field $i $wx_libs` $i"
+         done
+     elif not match_field base $wx_libs ; then
+@@ -1245,7 +1253,7 @@
+     if [ -n "$output_option_libs" ]; then
+         using_gui=no
+         for i in $wx_libs ; do
+-            if match_field "$i" @STD_GUI_LIBS@; then
++            if match_field "$i" $STD_GUI_LIBS; then
+                 _guildflags="@WXCONFIG_LDFLAGS_GUI@"
+                 using_gui=yes
+                 break
