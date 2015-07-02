@@ -3,6 +3,9 @@ wxwidgets3.0 (3.0.2-4) UNRELEASED; urgency=medium
   * Restore the webview packages for now - boinc is still using them (I
     failed to pass -R to dak rm when checking if removing it would break
     anything).  (Reopens: #790222, #786986)
+  * Don't package files from the examples which are only useful on other
+    platforms.  A side benefit is that this moves us closer to a reproducible
+    build as "chart.icns" seems to trigger a reproducibility issue in gzip.
 
  -- Olly Betts <olly@survex.com>  Wed, 01 Jul 2015 19:22:53 +1200
 

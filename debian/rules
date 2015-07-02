@@ -311,10 +311,37 @@ build-examples-stamp: build-gtk-shared-stamp
 	rm -f $(objdir_examples)/samples/Makefile
 	cp -a $(objdir_gtk_shared)/samples/Makefile $(objdir_examples)/samples
 
-	find $(objdir_examples)/samples -name 'Makefile.in' -delete
 	for f in `find $(objdir_examples)/samples -name makefile.unx` ; do \
 		mv $$f `dirname $$f`/Makefile ; \
 	done
+
+	# don't install files from the examples which are only useful on other
+	# platforms (the "horse*" files are a special case, as the image sample
+	# uses various foreign image formats as data).
+	find $(objdir_examples)/samples \( \
+		-name 'Makefile.in' -o \
+		-name 'Info*.plist*' -o \
+		-name 'makefile.*' -o \
+		-name '*.bat' -o \
+		-name '*.bdsproj' -o \
+		-name '*.cur' -o \
+		-name '*.dsp' -o \
+		-name '*.dsw' -o \
+		-name '*.icc' -o \
+		-name '*.icns' -o \
+		-name '*.ico' -o \
+		-name '*.mms' -o \
+		-name '*.pbxproj' -o \
+		-name '*.plc' -o \
+		-name '*.r' -o \
+		-name '*.rc' -o \
+		-name '*.rc?' -o \
+		-name '*.vcproj' \
+	    \) \! -name 'horse*' -delete
+
+	# We end up with some empty directories which only had OS X build stuff
+	# in, at least in 3.0.2.
+	find $(objdir_examples)/samples -type d -empty -delete
 
 	echo "generating unpack_examples.sh script"
 	sed -e 's/=V/$(release)/g' < debian/unpack_examples.sh.in	\
