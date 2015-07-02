@@ -1,5 +1,7 @@
-wxwidgets3.0 (3.0.2-4) UNRELEASED; urgency=medium
+wxwidgets3.0 (3.0.2+dfsg-1) UNRELEASED; urgency=medium
 
+  * Repack sources to remove prebuilt .swf and .chm files without sources
+    (or without suitable sources).  (Closes: #788339)
   * Restore the webview packages for now - boinc is still using them (I
     failed to pass -R to dak rm when checking if removing it would break
     anything).  (Reopens: #790222, #786986)
