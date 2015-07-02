@@ -1,4 +1,4 @@
-wxwidgets3.0 (3.0.2+dfsg-1) UNRELEASED; urgency=medium
+wxwidgets3.0 (3.0.2+dfsg-1) unstable; urgency=medium
 
   * Repack sources to remove prebuilt .swf and .chm files without sources
     (or without suitable sources).  (Closes: #788339)
@@ -9,7 +9,7 @@ wxwidgets3.0 (3.0.2+dfsg-1) UNRELEASED; urgency=medium
     platforms.  A side benefit is that this moves us closer to a reproducible
     build as "chart.icns" seems to trigger a reproducibility issue in gzip.
 
- -- Olly Betts <olly@survex.com>  Wed, 01 Jul 2015 19:22:53 +1200
+ -- Olly Betts <olly@survex.com>  Thu, 02 Jul 2015 14:05:32 +1200
 
 wxwidgets3.0 (3.0.2-3) unstable; urgency=medium
 
