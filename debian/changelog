@@ -6,6 +6,8 @@ wxpython3.0 (3.0.2.0+dfsg-1.1) UNRELEASED; urgency=medium
 
   [ Olly Betts ]
   * Restore "Suggests: wx3.0-doc" as wx3.0-doc now exists.
+  * debian/control: "Standards-Version: 3.9.8" - changes for conformance:
+    + debian/python-wxtools.menu: Remove obsolete menu file.
 
  -- Scott Talbert <swt@techie.net>  Wed, 27 Apr 2016 20:38:52 -0400
 
