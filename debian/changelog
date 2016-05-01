@@ -1,4 +1,4 @@
-wxpython3.0 (3.0.2.0+dfsg-1.1) UNRELEASED; urgency=medium
+wxpython3.0 (3.0.2.0+dfsg-2) unstable; urgency=medium
 
   [ Scott Talbert ]
   * Add binary package python-wxgtk-webview3.0 for wx.html2.
@@ -10,7 +10,7 @@ wxpython3.0 (3.0.2.0+dfsg-1.1) UNRELEASED; urgency=medium
     + debian/python-wxtools.menu: Remove obsolete menu file.
   * debian/control: Give secure https URL for anon git access.
 
- -- Scott Talbert <swt@techie.net>  Wed, 27 Apr 2016 20:38:52 -0400
+ -- Olly Betts <olly@survex.com>  Mon, 02 May 2016 11:03:40 +1200
 
 wxpython3.0 (3.0.2.0+dfsg-1) unstable; urgency=medium
 
