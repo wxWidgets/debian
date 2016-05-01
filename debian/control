@@ -9,7 +9,7 @@ Build-Depends:
     libgtk2.0-dev,
     libwxgtk3.0-dev,
     libwxgtk-media3.0-dev,
-#    libwxgtk-webview3.0-dev,
+    libwxgtk-webview3.0-dev,
     python-all,
     python-all-dev
 Standards-Version: 3.9.6
@@ -50,6 +50,17 @@ Description: Python interface to the wxWidgets Cross-platform C++ GUI toolkit (w
  unpopular ones as well).
  .
  This package provides a Python interface to wxMediaCtrl.
+
+Package: python-wxgtk-webview3.0
+Architecture: any
+Depends: python-wxgtk3.0, ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Provides: ${python:Provides}
+Description: Python interface to the wxWidgets Cross-platform C++ GUI toolkit (wx.html2)
+ wxWidgets (formerly known as wxWindows) is a class library for C++ providing
+ GUI components and other facilities on several popular platforms (and some
+ unpopular ones as well).
+ .
+ This package provides a Python interface to wxWebView.
 
 Package: python-wxversion
 Architecture: all

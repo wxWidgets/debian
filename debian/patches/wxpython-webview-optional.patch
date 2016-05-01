@@ -1,0 +1,23 @@
+Description: Allow wx.html2 to be packaged separately
+ Installing it drags in the "libwxgtk-webview3.0-0v5" runtime package which
+ drags in rather a lot of packages.
+Author: Scott Talbert <swt@techie.net>
+Bug-Debian: http://bugs.debian.org/821934
+Forwarded: not-needed
+Last-Update: 2016-04-30
+
+diff -up wxpython3.0-3.0.2.0+dfsg/wxPython/config.py.webview wxpython3.0-3.0.2.0+dfsg/wxPython/config.py
+--- wxpython3.0-3.0.2.0+dfsg/wxPython/config.py.webview	2016-04-29 00:06:26.000000000 -0400
++++ wxpython3.0-3.0.2.0+dfsg/wxPython/config.py	2016-04-29 20:14:59.830690131 -0400
+@@ -660,7 +660,10 @@ def adjustLFLAGS(lflags, libdirs, libs):
+         if flag[:2] == '-L':
+             libdirs.append(flag[2:])
+         elif flag[:2] == '-l':
+-            libs.append(flag[2:])
++            # Remove 'webview' from the default libs so we don't always link
++            # with it.  It gets added specifically for html2 elsewhere.
++            if flag[2:] != makeLibName('webview')[0]:
++                libs.append(flag[2:])
+         else:
+             newLFLAGS.append(flag)
+     return removeDuplicates(newLFLAGS) 

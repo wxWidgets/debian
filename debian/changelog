@@ -1,3 +1,9 @@
+wxpython3.0 (3.0.2.0+dfsg-1.1) UNRELEASED; urgency=medium
+
+  * Add binary package python-wxgtk-webview3.0 for wx.html2.  (Closes: #821934)
+
+ -- Scott Talbert <swt@techie.net>  Wed, 27 Apr 2016 20:38:52 -0400
+
 wxpython3.0 (3.0.2.0+dfsg-1) unstable; urgency=medium
 
   * New upstream release:
