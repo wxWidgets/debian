@@ -20,7 +20,7 @@ Homepage: http://wxpython.org/
 Package: python-wxgtk3.0
 Architecture: any
 Depends: python-wxversion, ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
-#Suggests: wx3.0-doc, wx3.0-examples
+Suggests: wx3.0-doc
 Provides: ${python:Provides}
 Description: Python interface to the wxWidgets Cross-platform C++ GUI toolkit
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
