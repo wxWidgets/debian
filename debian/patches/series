@@ -10,3 +10,4 @@ suppress_warning_about_release_version_mismatch.patch
 wxpython-media-optional.patch
 pypubsub-for-taskcoach.patch
 wxpython-webview-optional.patch
+wxpython-fix-plot.patch
