@@ -2,7 +2,7 @@ Source: wxpython3.0
 Section: python
 Priority: optional
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
-Uploaders: Olly Betts <olly@survex.com>
+Uploaders: Olly Betts <olly@survex.com>, Scott Talbert <swt@techie.net>
 Build-Depends:
     debhelper (>= 9),
     dh-python,

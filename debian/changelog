@@ -1,3 +1,9 @@
+wxpython3.0 (3.0.2.0+dfsg-3) UNRELEASED; urgency=medium
+
+  * Add myself to Uploaders.
+
+ -- Scott Talbert <swt@techie.net>  Sun, 17 Jul 2016 20:54:15 -0400
+
 wxpython3.0 (3.0.2.0+dfsg-2) unstable; urgency=medium
 
   [ Scott Talbert ]
