@@ -1,9 +1,9 @@
-wxpython3.0 (3.0.2.0+dfsg-3) UNRELEASED; urgency=medium
+wxpython3.0 (3.0.2.0+dfsg-3) unstable; urgency=medium
 
   * Add myself to Uploaders.
   * Add patch to fix wx.lib.plot (LP: #1545698)
 
- -- Scott Talbert <swt@techie.net>  Sun, 17 Jul 2016 20:54:15 -0400
+ -- Scott Talbert <swt@techie.net>  Mon, 18 Jul 2016 20:21:42 -0400
 
 wxpython3.0 (3.0.2.0+dfsg-2) unstable; urgency=medium
 
