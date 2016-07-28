@@ -1,3 +1,5 @@
 wx-config-conditionalise-webview-in-std.patch
 reproducible-build.patch
 warn-for-compiler-abi-mismatch.patch
+gst1.0.patch
+Define-wxIsNaN-as-std-isnan-in-C-11-mode.patch

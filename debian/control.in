@@ -3,11 +3,12 @@ Section: libs
 Priority: optional
 Build-Depends-indep: doxygen
 Build-Depends: debhelper (>= 9), gettext, libgtk2.0-dev,
+ g++ (>= 4:5.2),
  zlib1g-dev, libjpeg-dev, libpng-dev, libtiff5-dev, libsm-dev,
- libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libesd0-dev,
- autotools-dev, libexpat1-dev, dpkg-dev (>= 1.16.1~),
- libxt-dev, libgstreamer-plugins-base0.10-dev, libgconf2-dev, libwebkitgtk-dev,
- libnotify-dev
+ libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
+ autotools-dev, autoconf, libexpat1-dev, dpkg-dev (>= 1.16.1~), libxt-dev,
+ libgstreamer1.0-dev, libgstreamer-plugins-base1.0-dev,
+ libwebkitgtk-dev, libnotify-dev
 Maintainer: wxWidgets Maintainers <freewx-maint@lists.alioth.debian.org>
 Uploaders: Olly Betts <olly@survex.com>
 Standards-Version: 3.9.6
@@ -20,6 +21,8 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Multi-Arch: same
+Breaks: libwxbase3.0-0
+Replaces: libwxbase3.0-0
 Description: wxBase library (runtime) - non-GUI support classes of wxWidgets toolkit
  wxBase is a collection of C++ classes providing basic data structures
  (strings, lists, arrays), powerful wxDateTime class for date manipulations,
@@ -59,6 +62,8 @@ Section: debug
 Priority: extra
 Depends: libwxbase=SOV (= ${binary:Version}), ${misc:Depends}
 Multi-Arch: same
+Breaks: libwxbase3.0-0-dbg
+Replaces: libwxbase3.0-0-dbg
 Description: debugging symbols for the wxBase library
  This package contains detached debugging symbols for the wxBase library
  (part of wxWidgets).
@@ -77,6 +82,8 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Multi-Arch: same
+Breaks: libwxgtk3.0-0
+Replaces: libwxgtk3.0-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ runtime)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -109,6 +116,8 @@ Section: debug
 Priority: extra
 Depends: libwxgtk=SOV (= ${binary:Version}), libwxbase=SOV-dbg (= ${binary:Version}), ${misc:Depends}
 Multi-Arch: same
+Breaks: libwxgtk3.0-0-dbg
+Replaces: libwxgtk3.0-0-dbg
 Description: debugging symbols for the wxGTK GUI toolkit library
  This package contains detached debugging symbols for the wxGTK library
  (part of wxWidgets).
@@ -120,8 +129,13 @@ Description: debugging symbols for the wxGTK GUI toolkit library
 Package: libwxgtk-media=SOV
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends},
+  gstreamer1.0-plugins-base,
+  gstreamer1.0-plugins-good,
+  gstreamer1.0-x
 Multi-Arch: same
+Breaks: libwxgtk-media3.0-0
+Replaces: libwxgtk-media3.0-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (GTK+ media library runtime)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -137,6 +151,8 @@ Section: debug
 Priority: extra
 Depends: libwxgtk-media=SOV (= ${binary:Version}), libwxgtk=SOV-dbg (= ${binary:Version}), ${misc:Depends}
 Multi-Arch: same
+Breaks: libwxgtk-media3.0-0-dbg
+Replaces: libwxgtk-media3.0-0-dbg
 Description: debugging symbols for the wxGTK media library
  This package contains detached debugging symbols for the wxGTK media library
  (part of wxWidgets).
@@ -163,6 +179,8 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Multi-Arch: same
+Breaks: libwxgtk-webview3.0-0
+Replaces: libwxgtk-webview3.0-0
 Description: wxWidgets Cross-platform C++ GUI toolkit (webview library runtime)
  wxWidgets (formerly known as wxWindows) is a class library for C++ providing
  GUI components and other facilities on several popular platforms (and some
@@ -179,6 +197,8 @@ Priority: extra
 Depends: libwxgtk-webview=SOV (= ${binary:Version}), libwxgtk=SOV-dbg (= ${binary:Version}), ${misc:Depends}
 Suggests: libwebkitgtk-3.0-0-dbg
 Multi-Arch: same
+Breaks: libwxgtk-webview3.0-0-dbg
+Replaces: libwxgtk-webview3.0-0-dbg
 Description: debugging symbols for the wxGTK webview library
  This package contains detached debugging symbols for the wxGTK webview library
  (part of wxWidgets).

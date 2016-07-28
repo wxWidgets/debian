@@ -50,7 +50,7 @@ so_cur := $(shell sed 's,<set var="WX_CURRENT">\([0-9]\+\)</set>,\1,p;d' build/b
 so_age := $(shell sed 's,<set var="WX_AGE">\([0-9]\+\)</set>,\1,p;d' build/bakefiles/version.bkl)
 soversion := $(shell expr $(so_cur) - $(so_age))
 
-sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))
+sorelease := $(release:%-$(DEBIAN_WXFLAVOUR)=%)-$(soversion)$(addprefix -,$(DEBIAN_WXFLAVOUR))v5
 
 # Base value for alternative priorities.
 alt_prio  := $(subst .,,$(release))
@@ -262,6 +262,7 @@ build-stamp:
 
 configure-wxbase-shared-stamp:
 	dh_testdir
+	autoconf -f -B build/autoconf_prepend-include
 	dh_autotools-dev_updateconfig
 	mkdir -p $(objdir_wxbase_shared)
 	cd $(objdir_wxbase_shared) \
@@ -276,6 +277,7 @@ build-wxbase-shared-stamp: configure-wxbase-shared-stamp
 
 configure-gtk-shared-stamp:
 	dh_testdir
+	autoconf -f -B build/autoconf_prepend-include
 	dh_autotools-dev_updateconfig
 	mkdir -p $(objdir_gtk_shared)
 	cd $(objdir_gtk_shared) \
@@ -362,6 +364,7 @@ build-i18n-stamp: build-gtk-shared-stamp
 
 configure-msw-shared-stamp:
 	dh_testdir
+	autoconf -f -B build/autoconf_prepend-include
 	dh_autotools-dev_updateconfig
 	mkdir -p $(objdir_msw_shared)
 	cd $(objdir_msw_shared)						\
@@ -380,6 +383,7 @@ build-msw-shared-stamp: configure-msw-shared-stamp
 
 configure-msw-static-stamp:
 	dh_testdir
+	autoconf -f -B build/autoconf_prepend-include
 	dh_autotools-dev_updateconfig
 	mkdir -p $(objdir_msw_static)
 	cd $(objdir_msw_static)						\

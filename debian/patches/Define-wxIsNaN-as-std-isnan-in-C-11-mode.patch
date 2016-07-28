@@ -1,0 +1,48 @@
+From bc41cbeb253eac2ba21f6245e869250971b91898 Mon Sep 17 00:00:00 2001
+From: Benjamin Drung <bdrung@debian.org>
+Date: Fri, 13 May 2016 23:18:41 +0200
+Subject: [PATCH] Define wxIsNaN() as std::isnan() in C++11 mode
+
+std::isnan() is always available when using C++11, so just use it.
+
+Also pout the test for C++11 implementations of both wxIsNaN() and wxFinite()
+first, eventually the rest of the checks will become obsolete and will be
+removed.
+
+Closes https://github.com/wxWidgets/wxWidgets/pull/283
+---
+ include/wx/math.h | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+--- a/include/wx/math.h
++++ b/include/wx/math.h
+@@ -53,11 +53,18 @@
+ 
+ #ifdef __cplusplus
+ 
+-/* Any C++11 compiler should provide isfinite() */
++/*
++    Things are simple with C++11: we have everything we need in std.
++    Eventually we will only have this section and not the legacy stuff below.
++ */
+ #if __cplusplus >= 201103
+     #include <cmath>
++
+     #define wxFinite(x) std::isfinite(x)
+-#elif defined(__VISUALC__) || defined(__BORLANDC__) || defined(__WATCOMC__)
++    #define wxIsNaN(x) std::isnan(x)
++#else /* C++98 */
++
++#if defined(__VISUALC__) || defined(__BORLANDC__) || defined(__WATCOMC__)
+     #include <float.h>
+     #define wxFinite(x) _finite(x)
+ #elif defined(__MINGW64_TOOLCHAIN__) || defined(__clang__)
+@@ -93,6 +100,8 @@
+     #define wxIsNaN(x) ((x) != (x))
+ #endif
+ 
++#endif /* C++11/C++98 */
++
+ #ifdef __INTELC__
+ 
+     inline bool wxIsSameDouble(double x, double y)
