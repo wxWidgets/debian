@@ -3,6 +3,8 @@ wxwidgets3.0 (3.0.2+dfsg-2) UNRELEASED; urgency=medium
   * ACK NMUs.
   * debian/rules: Remove non-functional --with-sdl from configure invocation,
     reported by gregory hainaut. (Closes: #802770)
+  * New patch Fix-STC-compilation-with-GCC6.patch to fix FTBFS with GCC6.
+    (Closes: #828926)
 
  -- Olly Betts <olly@survex.com>  Fri, 29 Jul 2016 11:40:53 +1200
 
