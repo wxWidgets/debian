@@ -91,7 +91,6 @@ GTK_CONFIGURE_OPTIONS = $(COMMON_CONFIGURE_OPTIONS) \
     --with-libpng=sys \
     --with-libtiff=sys \
     --with-opengl \
-    --with-sdl \
     --without-gnomeprint \
     --libdir=\$${exec_prefix}/lib/$(DEB_HOST_MULTIARCH)
 
