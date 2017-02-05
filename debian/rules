@@ -201,9 +201,10 @@ install_all := $(install_all_native) $(install_all_cross)
 
 # The Rules:
 
-debian/control: debian/control.in
-	sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g'\
-		< debian/control.in > debian/control
+debian/control: debian/control.in $(control_msw_in)
+	cat debian/control.in $(control_msw_in) |\
+	    sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g'\
+		> debian/control
 
 control-files-stamp: debian/control
 	dh_testdir
@@ -654,11 +655,8 @@ binary: binary-arch binary-indep
 # but may be run separately to build the extra packages.
 # There is an implied build dep on the mingw32 cross compiler
 # that is not in the control file.
+binary-cross: control_msw_in=debian/control.msw.in
 binary-cross: control-files-stamp $(install_all_cross)
-	cat debian/control.in debian/control.msw.in |\
-	    sed -e 's/=V/$(release)/g;s/=SOV/$(sorelease)/g'\
-		> debian/control
-
 	$(MAKE) -f debian/rules \
 		DH_OPTIONS="-p$(package_msw_dev) -p$(package_headers_msw)" \
 		binary-common
